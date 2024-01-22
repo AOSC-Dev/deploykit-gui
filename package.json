@@ -1,0 +1,25 @@
+{
+  "name": "deploykit-gui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "vue": "^3.3.4",
+    "vue-i18n": "^9.8.0",
+    "vue-router": "^4.2.5",
+    "human-format": "^1.2.0",
+    "@tauri-apps/api": "^1.5.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.2.3",
+    "vite": "^5.0.0",
+    "@tauri-apps/cli": "^1.5.8",
+    "@intlify/vite-plugin-vue-i18n": "^6.0.1"
+  }
+}

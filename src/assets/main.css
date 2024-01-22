@@ -1,0 +1,120 @@
+@import "./base.css";
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  font-weight: normal;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+  }
+}
+
+.form-layout {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}
+
+input {
+  appearance: none;
+  background: var(--dk-button-color);
+  border: 0;
+  color: var(--color-text);
+  padding-left: 0.2rem;
+}
+
+input:hover {
+  background: #ffffff30;
+}
+
+input:focus {
+  background: #a2a2a230;
+  outline: none;
+}
+
+select {
+  appearance: none;
+  background: var(--dk-button-color);
+  border: 0;
+  color: var(--color-text);
+  text-align: center;
+}
+
+select:hover {
+  background: #ffffff30;
+}
+
+select:focus {
+  background: #a2a2a230;
+  outline: none;
+}
+
+.select::after {
+  content: " ";
+  display: block;
+  height: 0.625em;
+  margin-top: -1.6em;
+  pointer-events: none;
+  right: 0.725em;
+  position: absolute;
+  border: 2px solid #fff;
+  border-right: 0;
+  border-top: 0;
+  width: 0.625em;
+  transform: rotate(-45deg);
+  transform-origin: center;
+}
+
+.button {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+
+  background: var(--dk-button-color);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: "Source Sans 3", "Noto Sans", sans;
+
+  align-items: center;
+  display: flex;
+  justify-content: center;
+
+  /* Used to position the triangle */
+  position: relative;
+
+  /* Size */
+  height: var(--dk-button-height);
+
+  /* Spacing */
+  padding: 0.25rem 0.5rem;
+}
+
+.button:hover {
+  background: #dddddd56;
+}
+
+button:disabled,
+button[disabled] {
+  color: #8f8f8f;
+  cursor: not-allowed;
+}
+
+.error-msg {
+  color: var(--dk-accent);
+}
+
+.loading {
+  cursor: wait;
+  height: 85%;
+}

@@ -1,0 +1,190 @@
+{
+    "lang": "English (United States)",
+    "welcome": {
+        "title": "Welcome",
+        "p1": "In the following pages, AOSC OS Installer will guide you through...",
+        "l1": "Variant selection",
+        "l2": "Disk partitioning",
+        "l3": "System configuration",
+        "p2": "The installation process should only take a few minutes, but will require more time on slower hardware.",
+        "sr-help": "Please note that Installer may use external programs that does not come with screen reader support, such as GParted, which is used for partitioning. You may want to seek assistance at those steps. Installer will notify you by announcing \"Please seek help before doing so.\""
+    },
+    "variant": {
+        "title": "Variants",
+        "p1": "Please select from below your desired distribution."
+    },
+    "error": {
+        "title": "Error",
+        "p1": "Installer has encountered an error."
+    },
+    "install": {
+        "firefox": "Launch Firefox",
+        "bgm-off": "Mute BGM",
+        "bgm-on": "Unmute BGM",
+        "i1": "Formatting partitions...",
+        "i2": "Downloading system release...",
+        "i3": "Verifying system release...",
+        "i4": "Unpacking system release...",
+        "i5": "Generating initramfs (initial RAM filesystem)...",
+        "i6": "Installing and configuring GRUB bootloader...",
+        "i7": "Finalizing installation...",
+        "status": "Step {curr}/{total}: {msg} ({perc}%)"
+    },
+    "host": {
+        "title": "Hostname",
+        "p1": "Please input your desired hostname. This is otherwise known as a device name used for identification. Your hostname may only consist letters a-z, numbers 0-9, and dashes (\"-\").",
+        "bad": "Hostname contains invalid characters."
+    },
+    "abort": {
+        "title": "Abort?",
+        "p1": "Do you really want to abort installation? Doing so will result in an {0} AOSC OS installation in the target partition you specified.",
+        "p1-1": "incomplete or corrupted",
+        "p2": "Would you like to save your current installation configuration? When you return, by selecting the original installation partition, installer will restart based on your previous configuration.",
+        "resume": "Resume",
+        "save": "Save Configuration & Quit",
+        "quit": "Quit"
+    },
+    "finish": {
+        "title": "And... Done!",
+        "p1": "Installer has successfully installed AOSC OS on your device!",
+        "p2": "As you click on \"Finish,\" Installer will restart your device and AOSC OS will take it from here. Please eject or unplug your installation media when prompted to do so.",
+        "sr-help": "Please seek help before doing so, as this screen reader will stop guiding you after the installer exits. AOSC OS does not come with screen reader and other accessibility settings enabled by default, so you may need assistance setting up. Your assistant may find relevant documentations on our Wiki site.",
+        "p3": "Thank you for your time and for choosing AOSC OS!",
+        "finish": "Finish"
+    },
+    "swap": {
+        "title": "Swapfile",
+        "o1": "Automatic",
+        "o2": "Custom",
+        "o3": "Disabled",
+        "p1": "Would you like to create a swapfile? A swapfile could help when your system is under high memory load by offloading some of your program data to your storage device, thereby improving system stability.",
+        "w1": "Running AOSC OS without a swapfile may cause instability at high memory load, resulting in possible application crashes and data loss!",
+        "l1": "Your system has {size} of RAM.",
+        "l2": "Installer will create a swapfile of {size} on your AOSC OS system partition.",
+        "l3": "Installer recommends that you create a swapfile of {size} in size."
+    },
+    "rescue": {
+        "title": "RescueKit",
+        "p1": "RescueKit is a rescue and restoration environment for AOSC OS. RescueKit provides tools for data backup and recovery, reinstallation, and more. Would you like to install RescueKit?",
+        "yes": "Yes",
+        "no": "No (Not Recommended)",
+        "l1": "Installer will create a RescueKit {size} partition within the AOSC OS system partition at {path}.",
+        "w1": "Without RescueKit, you will likely need to use an external live media (like LiveKit) to repair or reinstall AOSC OS.",
+        "bad1": "Installer has detected insufficient space on your storage device. RescueKit requires 5GiB of additional space in your system partition to install.",
+        "bad2": "Installer has detected a non-GPT partition scheme on your storage device. RescueKit is only available for devices with a GPT partition scheme."
+    },
+    "part": {
+        "title": "Partitioning",
+        "k0": "Unknown/Unformatted",
+        "k1": "(EFI System)",
+        "k2": "(Windows Recovery)",
+        "k3": "(MBR Boot)",
+        "k4": "({other_os})",
+        "k5": "({other_os}...)",
+        "r1": "Analyzing your system...",
+        "p1": "Please select a partition as AOSC OS system partition. If you would like to make changes to your partitions, please select the \"Manage partitions with GParted\" button below.",
+        "p2": "It seems like you have an empty or new storage device. Installer can help you create a standard partition scheme based on your storage configuration, as you press \"Next,\" installer will partition your storage device based on the following specifications.",
+        "p3": "If you would like to partition the storage device yourself, please press the \"Manage partitions with GParted\" button below.",
+        "b1": "Manage partitions with GParted",
+        "l1": "Create a {0} EFI System Partition.",
+        "l2": "Create a {0} AOSC OS System Partition."
+    },
+    "mirror": {
+        "title": "Download Source",
+        "p1": "Installer will now detect the fastest mirror to download AOSC OS from. If you would like to manual select a mirror, press \"Customize...\" below.",
+        "b1": "Customize...",
+        "p2": "Below are a list of available mirrors to download AOSC OS from. You may make selection based on the mirror's location or by benchmarking them using the \"Benchmark...\" button.",
+        "b2": "Benchmark...",
+        "k1": "Running benchmarks..."
+    },
+    "user": {
+        "title": "User Account",
+        "p1": "Please enter and confirm your desired username and password. Please note that your username must start with a lower-cased alphabetical letter (a-z), and contain only lower-cased letters a-z, numbers 0-9, and dash (\"-\").",
+        "l1": "Username",
+        "l2": "Password",
+        "l3": "Confirm Password",
+        "bad1": "Username can't be empty.",
+        "bad2": "Password can't be empty.",
+        "bad3": "Passwords do not match.",
+        "bad4": "Invalid username."
+    },
+    "confirm": {
+        "title": "Pre-Flight Check",
+        "p1": "Installer will perform the following operations:",
+        "l1": "{path} will be {explain}.",
+        "l1-1": "erased and formatted as {format}",
+        "l2": "A {size} partition will be created for RescueKit.",
+        "l3": "AOSC OS {variant} will be downloaded from {mirror}.",
+        "l4": "User {0} will be created.",
+        "l5": "AOSC OS will use the {0} locale.",
+        "l6": "Your timezone will be set to {0}.",
+        "l7": "AOSC OS will use {0}.",
+        "l7-1": "UTC as local time",
+        "l7-2": "RTC as local time",
+        "w1": "If everything looks right to you, by pressing \"Next,\" Installer will begin downloading, installing, and configuring AOSC OS on your device. Otherwise, please use the \"Previous\" button to go back top revious configuration pages."
+    },
+    "locale": {
+        "title": "Locale & Time",
+        "p1": "Please select your preferred locale. Your locale setting will affect your system's display language and other preferences.",
+        "p2": "Please select your local time zone. Linux systems usually use UTC as local time by default, but may result in time discrepancy with your other operating systems, like Windows. Setting RTC time as local time will prevent this.",
+        "l1": "Locale",
+        "l2": "Timezone",
+        "l3": "Reference Time",
+        "o1": "UTC (Recommended)",
+        "o2": "RTC (like Windows)"
+    },
+    "d": {
+        "sr-close": "close button",
+        "sr-close-icon": "close button",
+        "sr-progress": "overall progress",
+        "nav-0": "Introduction",
+        "nav-1": "User Preferences",
+        "nav-2": "Installation",
+        "nav-3": "Final Steps",
+        "eta-0": "{time_lo} - {time_hi} minutes remaining...",
+        "eta-1": "Almost finished... | Nearly finished... | {time} minutes remaining...",
+        "eta-2": "Almost finished..."
+    },
+    "driver": {
+        "title": "NVIDIA",
+        "p1": "Installer has detected a graphics card on your device that is supported by NVIDIA's official Linux driver. Installing this driver may improve system stability, power efficiency, and graphical performance. This driver is considered proprietary software and carries additional licensing terms in the {0}.",
+        "p1-1": "License For Customer Use of NVIDIA GeForce Software",
+        "eula_link": "https://www.nvidia.com/en-us/drivers/geforce-license/",
+        "p2": "Would you like to install a system release with official NVIDIA drivers preinstalled?",
+        "l1": "Installer will download and install NVIDIA's official Linux driver. By proceeding with this option, you agree to the aforementioned licensing terms.",
+        "l2": "Installer will proceed to install AOSC OS preinstalled with the open source Nouveau graphical stack. When used with newer NVIDIA graphics cards, you may encounter issues such as display artifacts, freezes, startup failures, and lowered performance."
+    },
+    "slides": {
+        "t1": "Made with Love",
+        "p1": "AOSC OS is brought to you by a group of enthusiastic maintainers who works on their free time, hoping to bring you an efficient and reliable Linux experience.\nInstallation should take only a few minutes, but could take longer depending on your device's performance and Internet bandwidth. Please sit back and relax.\nDrinks are self-served, but we provide a complimentary Web browser, along with a sweet tune.",
+        "t2": "Work Ready",
+        "p2": "Built with out-of-the-box usability and easy maintenance in mind, AOSC OS is a ready-made toolbox for your everyday computing.\nFrom office productivity to server administration, photoediting to 3D modeling, note-taking to translation projects, AOSC OS has the right tools ready for you. With our clear and refined software repository, we will get you right under way for whatever awaits.\nFor Internet-restricted regions, AOSC OS is ready to help you connect with the globalized world.",
+        "t3": "Play Ready",
+        "p3": "Powered by a solid graphical stack and strong community support, AOSC OS is ready for your entertainment needs.\nPlay your favorite CD with Strawberry, watch your latest block-buster movies with VLC, or share them together with friends and family with Kodi, AOSC OS has everything you need for a good time.\nPlay your favorite Linux and Windows® games with Steam®, fuel your nostalgia with console emulators! If you feel like a game or two, we have you covered.",
+        "t4": "Disaster Ready",
+        "p4": "AOSC OS comes pre-installed with RescueKit where available, a self-contained maintenance and rescue environment.\nCorrupted file system? Accidental deletes? Messed up system updates? No worries! RescueKit has most (if not everything) you need to get your AOSC OS back on track.\nIf you are the cautious type, RescueKit also comes with essential tools for backing up your system for a rainy day.",
+        "t5": "Device Ready",
+        "p5": "Built on the highly scalable Linux Kernel and its portable and vibrant userspace, AOSC OS is ready for your single-board computers, laptops, desktops, and servers.\nConfigured for full feature sets, AOSC OS readies your new and old devices and peripherals for maximal functionality.\nProprietary drivers needed? No problem! With our liberal software support policies, if your hardware vendors let us, we will ship them for you.",
+        "t6": "Retro Ready",
+        "p6": "Still holding onto your 486? No worries, our maintainers love their old computers, and intend to have them run AOSC OS.\nAOSC OS/Retro is a purpose-built distribution optimised for devices with limited RAM, processing power, and storage space. With six architectures supported and counting, AOSC OS/Retro keeps your old and tired computers going with optimized and up-to-date software.\n",
+        "t7": "You Ready",
+        "p7": "At AOSC, we pride ourselves with friendly and ready support for our users. Warranty and merchantability notwithstanding, we believe that our users should be respected of their time and energy spent on adapting to a new work environment.\nAt Telegram, Discord, IRC, or Matrix, our maintainers, contributors, and friends are ready to offer help. We wish you much joy at our community and great success with AOSC OS.\nEnjoy!"
+    },
+    "logo-p1": "AOSC OS",
+    "logo-p2": "Installation",
+    "loading": "Loading...",
+    "previous": "Previous",
+    "yes": "Yes",
+    "no": "No",
+    "cancel": "Cancel",
+    "next": "Next",
+    "retry": "Retry",
+    "exit": "Exit",
+    "select": "Select...",
+    "search": "Start typing to search...",
+    "empty": "No result",
+    "sys-title": "AOSC OS Installer",
+    "error1": "Internal Error: Inter-process communication was not successful: {msg}.",
+    "error2": "Your system does not have the minimum required disk space available. Required: {r_size}, found: {f_size}.",
+    "error3": "Dear time traveller, unfortunately, the AOSC OS installer at this timeline only supports up to 8PiB of RAM. So please try limiting the RAM available to this system if possible."
+}
