@@ -8,9 +8,9 @@ import UserView from "@/views/UserView.vue";
 import ConfirmView from "@/views/ConfirmView.vue";
 import SwapFileView from "@/views/SwapFileView.vue";
 import LocaleView from "@/views/LocaleView.vue";
-import MirrorView from "@/views/MirrorView.vue";
+// import MirrorView from "@/views/MirrorView.vue";
 import MirrorSelectView from "@/views/MirrorSelectView.vue";
-import RescueKitView from "@/views/RescueKitView.vue";
+// import RescueKitView from "@/views/RescueKitView.vue";
 import PartitionView from "@/views/PartitionView.vue";
 import VariantView from "@/views/VariantView.vue";
 import InstallView from "@/views/InstallView.vue";
@@ -24,12 +24,6 @@ const router = createRouter({
       name: "home",
       component: WelcomeView,
       meta: { steps: 0, next: "/variants" },
-    },
-    {
-      path: "/rescue",
-      name: "rescue",
-      component: RescueKitView,
-      meta: { steps: 0, next: "/users" },
     },
     {
       path: "/users",
@@ -61,12 +55,6 @@ const router = createRouter({
       meta: { steps: 1, next: "/confirm" },
     },
     {
-      path: "/mirrors",
-      name: "mirrors",
-      component: MirrorView,
-      meta: { steps: 0, next: "/partitions" },
-    },
-    {
       path: "/mirrors-sel",
       name: "mirrors-sel",
       component: MirrorSelectView,
@@ -94,13 +82,13 @@ const router = createRouter({
       path: "/partitions",
       name: "partitions",
       component: PartitionView,
-      meta: { steps: 0, next: "/rescue" },
+      meta: { steps: 0, next: "/users" },
     },
     {
       path: "/variants",
       name: "variants",
       component: VariantView,
-      meta: { steps: 0, next: "/mirrors" },
+      meta: { steps: 0, next: "/mirrors-sel" },
     },
     {
       path: "/install",
