@@ -1,7 +1,912 @@
 [
-    { "id": "en", "title": "AOSC OS Installer", "aosc": "AOSC OS", "inst": "Installer", "lang": "English (United States)", "next": "Next"},
-    { "id": "zh-CN", "title": "AOSC OS 安装程序", "aosc": "AOSC OS", "inst": "安装程序", "lang": "简体中文", "next": "下一步"},
-    { "id": "zh-TW", "title": "AOSC OS 安裝程式", "aosc": "AOSC OS", "inst": "安裝程式", "lang": "中文（臺灣）", "next": "繼續"},
-    { "id": "ja", "title": "AOSC OS インストーラー", "aosc": "AOSC OS", "inst": "インストーラー", "lang": "日本語", "next": "次へ"},
-    { "id": "fr", "title": "Installateur du système d'exploitation AOSC", "aosc": "AOSC OS", "inst": "Installateur du système d'exploitation", "lang": "français", "next": "suivant", "anastrophe": true}
+    {
+        "lang_english": "Chinese (Simplified)",
+        "locale": "zh_CN.UTF-8",
+        "title": "AOSC OS 安装程序",
+        "lang": "中文(简体)",
+        "aosc": "AOSC OS",
+        "inst": "安装程序",
+        "next": "下一步",
+        "id": "zh-CN"
+    },
+    {
+        "lang_english": "Chinese (Traditional)",
+        "locale": "zh_TW.UTF-8",
+        "title": "AOSC OS 安装程式",
+        "lang": "中文(繁體)",
+        "aosc": "AOSC OS",
+        "inst": "安装程式",
+        "next": "下一步",
+        "id": "zh-TW"
+    },
+    {
+        "lang_english": "English",
+        "locale": "en_US.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "English",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Albanian",
+        "locale": "sq_AL.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Shqip",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Amharic",
+        "locale": "am_ET",
+        "title": "AOSC OS Installer",
+        "lang": "አማርኛ",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Arabic",
+        "locale": "ar_EG.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "عربي",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Assamese",
+        "locale": "as_IN",
+        "title": "AOSC OS Installer",
+        "lang": "অসমীয়া",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Asturian",
+        "locale": "ast_ES.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Asturianu",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Bangla",
+        "locale": "bn_BD",
+        "title": "AOSC OS Installer",
+        "lang": "বাংলা",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Basque",
+        "locale": "eu_ES.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Euskara",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Belarusian",
+        "locale": "be_BY.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Беларуская",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Bosnian",
+        "locale": "bs_BA.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Bosanski",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Breton",
+        "locale": "br_FR.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Brezhoneg",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Bulgarian",
+        "locale": "bg_BG.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Български",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Burmese",
+        "locale": "my_MM",
+        "title": "AOSC OS Installer",
+        "lang": "မြန်မာစာ",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Catalan",
+        "locale": "ca_ES.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Català",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Croatian",
+        "locale": "hr_HR.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Hrvatski",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Czech",
+        "locale": "cs_CZ.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Čeština",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Danish",
+        "locale": "da_DK.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Dansk",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Dutch",
+        "locale": "nl_NL.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Nederlands",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Dzongkha",
+        "locale": "dz_BT",
+        "title": "AOSC OS Installer",
+        "lang": "རྫོང་ཁ།",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Esperanto",
+        "locale": "eo.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Esperanto",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Estonian",
+        "locale": "et_EE.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Eesti",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Finnish",
+        "locale": "fi_FI.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Suomi",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "French",
+        "locale": "fr_FR.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Français",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Galician",
+        "locale": "gl_ES.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Galego",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Georgian",
+        "locale": "ka_GE.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "ქართული",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "German",
+        "locale": "de_DE.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Deutsch",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Greek",
+        "locale": "el_GR.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Ελληνικά",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Gujarati",
+        "locale": "gu_IN",
+        "title": "AOSC OS Installer",
+        "lang": "ગુજરાતી",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Hebrew",
+        "locale": "he_IL.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "עברית",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Hindi",
+        "locale": "hi_IN",
+        "title": "AOSC OS Installer",
+        "lang": "हिन्दी ",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Hungarian",
+        "locale": "hu_HU.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Magyar",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Icelandic",
+        "locale": "is_IS.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Íslenska",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Indonesian",
+        "locale": "id_ID.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Bahasa Indonesia",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Irish",
+        "locale": "ga_IE.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Gaeilge",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Italian",
+        "locale": "it_IT.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Italiano",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Jamaican Creole English",
+        "locale": "jam_JM",
+        "title": "AOSC OS Installer",
+        "lang": "Jamaican Creole English",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Japanese",
+        "locale": "ja_JP.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "日本語",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Kabyle",
+        "locale": "kab_DZ.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Taqbaylit",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Kannada",
+        "locale": "kn_IN",
+        "title": "AOSC OS Installer",
+        "lang": "ಕನ್ನಡ",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Kazakh",
+        "locale": "kk_KZ.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Қазақ",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Khmer",
+        "locale": "km_KH",
+        "title": "AOSC OS Installer",
+        "lang": "ខ្មែរ",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Korean",
+        "locale": "ko_KR.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "한국어",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Kurdish",
+        "locale": "ku_TR.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Kurdî",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Kurdish, Central",
+        "locale": "ckb_IQ",
+        "title": "AOSC OS Installer",
+        "lang": "کوردیی ناوەندی",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Lao",
+        "locale": "lo_LA",
+        "title": "AOSC OS Installer",
+        "lang": "ລາວ",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Latvian",
+        "locale": "lv_LV.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Latviski",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Lithuanian",
+        "locale": "lt_LT.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Lietuviškai",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Macedonian",
+        "locale": "mk_MK.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Македонски",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Malagasy",
+        "locale": "mg_MG.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Malagasy",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Malay",
+        "locale": "ms_MY.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Bahasa Malaysia",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Malayalam",
+        "locale": "ml_IN",
+        "title": "AOSC OS Installer",
+        "lang": "മലയാളം",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Marathi",
+        "locale": "mr_IN",
+        "title": "AOSC OS Installer",
+        "lang": "मराठी",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Nepali",
+        "locale": "ne_NP",
+        "title": "AOSC OS Installer",
+        "lang": "नेपाली ",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Northern Sami",
+        "locale": "se_NO",
+        "title": "AOSC OS Installer",
+        "lang": "Sámegillii",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Norwegian Bokmaal",
+        "locale": "nb_NO.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Norsk bokmål",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Norwegian Nynorsk",
+        "locale": "nn_NO.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Norsk nynorsk",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Occitan",
+        "locale": "oc_FR.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Occitan",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Odia",
+        "locale": "or_IN",
+        "title": "AOSC OS Installer",
+        "lang": "ଓଡ଼ିଆ",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Ossetian",
+        "locale": "os_RU",
+        "title": "AOSC OS Installer",
+        "lang": "Ирон æвзаг",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Persian",
+        "locale": "fa_IR",
+        "title": "AOSC OS Installer",
+        "lang": "فارسی",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Polish",
+        "locale": "pl_PL.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Polski",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Portuguese",
+        "locale": "pt_PT.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Português",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Portuguese (Brazil)",
+        "locale": "pt_BR.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Português do Brasil",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Punjabi (Gurmukhi)",
+        "locale": "pa_IN",
+        "title": "AOSC OS Installer",
+        "lang": "ਪੰਜਾਬੀ",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Romanian",
+        "locale": "ro_RO.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Română",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Russian",
+        "locale": "ru_RU.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Русский",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Sanskrit",
+        "locale": "sa_IN",
+        "title": "AOSC OS Installer",
+        "lang": "संस्कृत",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Serbian (Cyrillic)",
+        "locale": "sr_RS",
+        "title": "AOSC OS Installer",
+        "lang": "Српски",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Serbian (Latin)",
+        "locale": "sr_RS@latin",
+        "title": "AOSC OS Installer",
+        "lang": "Srpski",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Silesian",
+        "locale": "szl_PL",
+        "title": "AOSC OS Installer",
+        "lang": "Ślůnski",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Sinhala",
+        "locale": "si_LK",
+        "title": "AOSC OS Installer",
+        "lang": "සිංහල",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Slovak",
+        "locale": "sk_SK.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Slovenčina",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Slovenian",
+        "locale": "sl_SI.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Slovenščina",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Spanish",
+        "locale": "es_ES.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Español",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Swedish",
+        "locale": "sv_SE.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Svenska",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Tagalog",
+        "locale": "tl_PH.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Tagalog",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Tajik",
+        "locale": "tg_TJ.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Тоҷикӣ",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Tamil",
+        "locale": "ta_IN",
+        "title": "AOSC OS Installer",
+        "lang": "தமிழ்",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Telugu",
+        "locale": "te_IN",
+        "title": "AOSC OS Installer",
+        "lang": "తెలుగు",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Thai",
+        "locale": "th_TH.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "ภาษาไทย",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Tibetan",
+        "locale": "bo_IN",
+        "title": "AOSC OS Installer",
+        "lang": "བོད་ཡིག",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Turkish",
+        "locale": "tr_TR.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Türkçe",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Ukrainian",
+        "locale": "uk_UA.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Українська",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Urdu",
+        "locale": "ur_PK.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "اردو",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Uyghur",
+        "locale": "ug_CN",
+        "title": "AOSC OS Installer",
+        "lang": "ئۇيغۇرچە",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Valencian-Catalan",
+        "locale": "ca_ES.UTF-8@valencia",
+        "title": "AOSC OS Installer",
+        "lang": "Valencià-Català",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Vietnamese",
+        "locale": "vi_VN",
+        "title": "AOSC OS Installer",
+        "lang": "Tiếng Việt",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Welsh",
+        "locale": "cy_GB.UTF-8",
+        "title": "AOSC OS Installer",
+        "lang": "Cymraeg",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    },
+    {
+        "lang_english": "Wolof",
+        "locale": "wo_SN",
+        "title": "AOSC OS Installer",
+        "lang": "Wolof",
+        "aosc": "AOSC OS",
+        "inst": "Installer",
+        "next": "Next",
+        "id": "en"
+    }
 ]
