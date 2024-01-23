@@ -7,8 +7,8 @@ import DKBottomActions from "@/components/DKBottomActions.vue";
 
 <script>
 import lang_data from "../lang_select.json";
-import { invoke } from "@tauri-apps/api";
 export default {
+  inject: ["config"],
   data: function () {
     return {
       lang_data: lang_data,
@@ -24,7 +24,7 @@ export default {
   methods: {
     select: function (idx) {
       this.$emit("update:lang", this.lang_data[idx].id);
-      invoke("set_config", { "name": "locale", "value": this.lang_data[idx].locale });
+      this.config.locale = this.lang_data[idx].locale;
     },
   },
 };

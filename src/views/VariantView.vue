@@ -5,14 +5,22 @@ import DKBottomSteps from "@/components/DKBottomSteps.vue";
 const options = [
   {
     title: "Desktop",
+    title_machine: "desktop",
+    body: "Powered by the KDE Plasma Desktop, comes complete with an elegant and powerful set of applications.",
+  },
+  {
+    title: "Desktop (NVIDIA)",
+    title_machine: "desktop-nvidia",
     body: "Powered by the KDE Plasma Desktop, comes complete with an elegant and powerful set of applications.",
   },
   {
     title: "Server",
+    title_machine: "server",
     body: "Comes with tools for hosting remote files and contents, network routing, and other functions that enriches network resource access client devices.",
   },
   {
     title: "Base",
+    title_machine: "base",
     body: "Minimal system release with a basic set of tools.",
   },
 ];
