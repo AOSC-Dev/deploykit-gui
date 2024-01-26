@@ -15,6 +15,11 @@
       "shell": {
         "all": false,
         "open": true
+      },
+      "http": {
+        "all": true,
+        "request": true,
+        "scope": ["https://releases.aosc.io/*"]
       }
     },
     "bundle": {

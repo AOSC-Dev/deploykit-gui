@@ -7,7 +7,18 @@ import DKSpinner from "@/components/DKSpinner.vue";
 </script>
 
 <script>
+import { getClient } from '@tauri-apps/api/http';
+
+async function getMirrors() {
+  const client = await getClient();
+  const response = await client.get("https://releases.aosc.io/manifest/recipe.json");
+  const data = response.data;
+  
+  return data.mirrors;
+}
+
 export default {
+  inject: ["config"],
   data: function () {
     return {
       mirrors: [],
@@ -25,29 +36,28 @@ export default {
       this.loading = true;
       this.$ipc.call("bench", []).then((data) => {
         this.mirrors = data;
-        this.loading = false;
+        this.loading = true;
         this.selected = 0;
       });
     },
   },
+  async created () {
+    const mirrors = await getMirrors();
+    this.mirrors = mirrors;
+    this.loading = false;
+  }
 };
 </script>
 
 <template>
   <div v-if="!loading">
     <h1>{{ $t("mirror.title") }}</h1>
-    <section>
       <p>{{ $t("mirror.p2") }}</p>
-      <DKListSelect
-        :no_margin="true"
-        :options="mirrors"
-        v-model:selected="selected"
-      >
+      <section style="max-height: 50vh; overflow-y: scroll">
+      <DKListSelect :no_margin="true" :options="mirrors" v-model:selected="selected">
         <template #item="option">
           <div>
-            <span
-              ><b>{{ option.name }}</b></span
-            >
+            <span><b>{{ option.name }}</b></span>
             &nbsp;
             <span>({{ option.region }})</span>
           </div>
@@ -64,7 +74,9 @@ export default {
     <DKStripButton :text="$t('mirror.b2')" @click="run_bench">
       <img src="@/assets/histogram-symbolic.svg" height="36" />
     </DKStripButton>
-    <DKStepButtons />
+    <DKStepButtons
+      :trigger="() => (config.mirror = mirrors[selected])"
+      :can_proceed="selected != null"/>
   </DKBottomActions>
 </template>
 

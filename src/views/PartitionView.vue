@@ -60,6 +60,9 @@ export default {
       });
     },
   },
+  created: async function () {
+    
+  }
 };
 </script>
 

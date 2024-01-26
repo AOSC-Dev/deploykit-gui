@@ -1,12 +1,9 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use eyre::bail;
 use eyre::Result;
 use once_cell::sync::Lazy;
 use once_cell::sync::OnceCell;
-use serde::Deserialize;
-use serde_json::Value;
 use tokio::runtime::Runtime;
 use zbus::dbus_proxy;
 use zbus::Connection;
@@ -26,31 +23,6 @@ trait Deploykit {
     async fn auto_partition(&self, dev: &str) -> zResult<String>;
     async fn start_install(&self) -> zResult<String>;
     async fn get_auto_partition_progress(&self) -> zResult<String>;
-}
-
-#[derive(Debug, Deserialize)]
-struct Dbus {
-    result: DbusResult,
-    data: Value,
-}
-
-impl TryFrom<String> for Dbus {
-    type Error = eyre::Error;
-
-    fn try_from(value: String) -> std::prelude::v1::Result<Self, <Dbus as TryFrom<String>>::Error> {
-        let res = serde_json::from_str::<Dbus>(&value)?;
-
-        match res.result {
-            DbusResult::Ok => Ok(res),
-            DbusResult::Error => bail!("Failed to execute query: {:?}", res.data),
-        }
-    }
-}
-
-#[derive(Debug, Deserialize, PartialEq, Eq)]
-enum DbusResult {
-    Ok,
-    Error,
 }
 
 static TOKIO: Lazy<Runtime> = Lazy::new(|| {
@@ -78,7 +50,22 @@ fn set_config(field: &str, value: &str) -> String {
     }
 }
 
-fn main() -> Result<()> {
+#[tauri::command]
+fn list_devices() -> String {
+    let proxy = PROXY.get().unwrap();
+    let res = TOKIO.block_on(proxy.get_list_devices());
+
+    match res {
+        Ok(res) => res,
+        Err(e) => serde_json::json!({
+            "result": "Error",
+            "data": format!("{:?}", e),
+        })
+        .to_string(),
+    }
+}
+
+fn main() {
     // init tokio runtime
     let tokio = &*TOKIO;
 
@@ -99,9 +86,7 @@ fn main() -> Result<()> {
     println!("{:?}", TOKIO.block_on(proxy.get_config("")));
 
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![set_config])
+        .invoke_handler(tauri::generate_handler![set_config, list_devices])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
-
-    Ok(())
 }
