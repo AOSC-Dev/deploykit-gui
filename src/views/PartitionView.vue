@@ -118,7 +118,7 @@ export default {
     <DKStripButton @click="launch_gparted" :text="$t('part.b1')">
       <img src="@/assets/drive-harddisk-root-symbolic.svg" height="18" />
     </DKStripButton>
-    <DKStepButtons :trigger="() => (config.partition = devices[selected])" :can_proceed="valid" />
+    <DKStepButtons :trigger="() => (config.partition = partitions[selected])" :can_proceed="valid" />
   </DKBottomActions>
 </template>
 

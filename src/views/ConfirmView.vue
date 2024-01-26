@@ -1,6 +1,7 @@
 <script>
 import DKBottomSteps from "@/components/DKBottomSteps.vue";
 export default {
+  inject: ["config"],
   props: {
     part: String,
     part_fmt: String,
@@ -22,36 +23,31 @@ export default {
     <p>{{ $t("confirm.p1") }}</p>
     <ul>
       <i18n-t keypath="confirm.l1" tag="li">
-        <template v-slot:path>
-          <span class="emphasis">/dev/nvme0n1p2</span>
+        <template v-slot:path>  
+          <span class="emphasis">{{ config.partition.path }}</span>
         </template>
         <template v-slot:explain>
           <span class="emphasis">{{
-            $t("confirm.l1-1", { format: "ext4" })
+            $t("confirm.l1-1", { format: config.partition.fs_type })
           }}</span>
         </template>
       </i18n-t>
-      <ul v-if="rescue_size > 0">
-        <li>
-          {{ $t("confirm.l2", { size: `${rescue_size}GiB` }) }}
-        </li>
-      </ul>
       <i18n-t keypath="confirm.l3" tag="li">
         <template v-slot:variant>
-          <span class="emphasis">Desktop</span>
+          <span class="emphasis">{{ config.variant.title }}</span>
         </template>
         <template v-slot:mirror>
-          <span class="emphasis">Fastly CDN</span>
+          <span class="emphasis">{{ config.mirror.name }}</span>
         </template>
       </i18n-t>
       <i18n-t keypath="confirm.l4" tag="li">
-        <span class="emphasis">anan</span>
+        <span class="emphasis"> {{ config.user }}</span>
       </i18n-t>
       <i18n-t keypath="confirm.l5" tag="li">
-        <span class="emphasis">English (United States)</span>
+        <span class="emphasis">{{ config.locale.text }}</span>
       </i18n-t>
       <i18n-t keypath="confirm.l6" tag="li">
-        <span class="emphasis">Asia/Shanghai</span>
+        <span class="emphasis">{{ config.timezone.text }}</span>
       </i18n-t>
       <ul>
         <i18n-t keypath="confirm.l7" tag="li">

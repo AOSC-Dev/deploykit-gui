@@ -24,7 +24,7 @@ export default {
   methods: {
     select: function (idx) {
       this.$emit("update:lang", this.lang_data[idx].id);
-      this.config.locale = this.lang_data[idx].locale;
+      this.config.locale = this.lang_data[idx];
     },
   },
 };

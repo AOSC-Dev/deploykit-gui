@@ -31,7 +31,7 @@ export default {
   inject: ["config"],
   data: function () {
     return {
-      selected: this.config.variant,
+      selected: null,
     };
   },
 };
@@ -50,7 +50,7 @@ export default {
     </section>
   </div>
   <DKBottomSteps
-    :trigger="() => (config.variant = selected)"
+    :trigger="() => (config.variant = options[selected])"
     :can_proceed="selected != null"
   />
 </template>

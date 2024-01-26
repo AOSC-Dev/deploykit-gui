@@ -7,7 +7,8 @@
         "aosc": "AOSC OS",
         "inst": "安装程序",
         "next": "下一步",
-        "id": "zh-CN"
+        "id": "zh-CN",
+        "text": "中文(简体)"
     },
     {
         "lang_english": "Chinese (Traditional)",
@@ -17,7 +18,8 @@
         "aosc": "AOSC OS",
         "inst": "安装程式",
         "next": "下一步",
-        "id": "zh-TW"
+        "id": "zh-TW",
+        "text": "中文(繁體)"
     },
     {
         "lang_english": "English",
@@ -27,7 +29,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "English"
     },
     {
         "lang_english": "Albanian",
@@ -37,7 +40,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Shqip"
     },
     {
         "lang_english": "Amharic",
@@ -47,7 +51,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "አማርኛ"
     },
     {
         "lang_english": "Arabic",
@@ -57,7 +62,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "عربي"
     },
     {
         "lang_english": "Assamese",
@@ -67,7 +73,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "অসমীয়া"
     },
     {
         "lang_english": "Asturian",
@@ -77,7 +84,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Asturianu"
     },
     {
         "lang_english": "Bangla",
@@ -87,7 +95,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "বাংলা"
     },
     {
         "lang_english": "Basque",
@@ -97,7 +106,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Euskara"
     },
     {
         "lang_english": "Belarusian",
@@ -107,7 +117,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Беларуская"
     },
     {
         "lang_english": "Bosnian",
@@ -117,7 +128,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Bosanski"
     },
     {
         "lang_english": "Breton",
@@ -127,7 +139,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Brezhoneg"
     },
     {
         "lang_english": "Bulgarian",
@@ -137,7 +150,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Български"
     },
     {
         "lang_english": "Burmese",
@@ -147,7 +161,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "မြန်မာစာ"
     },
     {
         "lang_english": "Catalan",
@@ -157,7 +172,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Català"
     },
     {
         "lang_english": "Croatian",
@@ -167,7 +183,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Hrvatski"
     },
     {
         "lang_english": "Czech",
@@ -177,7 +194,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Čeština"
     },
     {
         "lang_english": "Danish",
@@ -187,7 +205,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Dansk"
     },
     {
         "lang_english": "Dutch",
@@ -197,7 +216,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Nederlands"
     },
     {
         "lang_english": "Dzongkha",
@@ -207,7 +227,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "རྫོང་ཁ།"
     },
     {
         "lang_english": "Esperanto",
@@ -217,7 +238,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Esperanto"
     },
     {
         "lang_english": "Estonian",
@@ -227,7 +249,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Eesti"
     },
     {
         "lang_english": "Finnish",
@@ -237,7 +260,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Suomi"
     },
     {
         "lang_english": "French",
@@ -247,7 +271,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Français"
     },
     {
         "lang_english": "Galician",
@@ -257,7 +282,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Galego"
     },
     {
         "lang_english": "Georgian",
@@ -267,7 +293,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "ქართული"
     },
     {
         "lang_english": "German",
@@ -277,7 +304,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Deutsch"
     },
     {
         "lang_english": "Greek",
@@ -287,7 +315,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Ελληνικά"
     },
     {
         "lang_english": "Gujarati",
@@ -297,7 +326,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "ગુજરાતી"
     },
     {
         "lang_english": "Hebrew",
@@ -307,7 +337,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "עברית"
     },
     {
         "lang_english": "Hindi",
@@ -317,7 +348,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "हिन्दी "
     },
     {
         "lang_english": "Hungarian",
@@ -327,7 +359,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Magyar"
     },
     {
         "lang_english": "Icelandic",
@@ -337,7 +370,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Íslenska"
     },
     {
         "lang_english": "Indonesian",
@@ -347,7 +381,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Bahasa Indonesia"
     },
     {
         "lang_english": "Irish",
@@ -357,7 +392,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Gaeilge"
     },
     {
         "lang_english": "Italian",
@@ -367,7 +403,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Italiano"
     },
     {
         "lang_english": "Jamaican Creole English",
@@ -377,7 +414,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Jamaican Creole English"
     },
     {
         "lang_english": "Japanese",
@@ -387,7 +425,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "日本語"
     },
     {
         "lang_english": "Kabyle",
@@ -397,7 +436,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Taqbaylit"
     },
     {
         "lang_english": "Kannada",
@@ -407,7 +447,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "ಕನ್ನಡ"
     },
     {
         "lang_english": "Kazakh",
@@ -417,7 +458,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Қазақ"
     },
     {
         "lang_english": "Khmer",
@@ -427,7 +469,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "ខ្មែរ"
     },
     {
         "lang_english": "Korean",
@@ -437,7 +480,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "한국어"
     },
     {
         "lang_english": "Kurdish",
@@ -447,7 +491,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Kurdî"
     },
     {
         "lang_english": "Kurdish, Central",
@@ -457,7 +502,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "کوردیی ناوەندی"
     },
     {
         "lang_english": "Lao",
@@ -467,7 +513,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "ລາວ"
     },
     {
         "lang_english": "Latvian",
@@ -477,7 +524,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Latviski"
     },
     {
         "lang_english": "Lithuanian",
@@ -487,7 +535,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Lietuviškai"
     },
     {
         "lang_english": "Macedonian",
@@ -497,7 +546,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Македонски"
     },
     {
         "lang_english": "Malagasy",
@@ -507,7 +557,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Malagasy"
     },
     {
         "lang_english": "Malay",
@@ -517,7 +568,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Bahasa Malaysia"
     },
     {
         "lang_english": "Malayalam",
@@ -527,7 +579,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "മലയാളം"
     },
     {
         "lang_english": "Marathi",
@@ -537,7 +590,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "मराठी"
     },
     {
         "lang_english": "Nepali",
@@ -547,7 +601,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "नेपाली "
     },
     {
         "lang_english": "Northern Sami",
@@ -557,7 +612,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Sámegillii"
     },
     {
         "lang_english": "Norwegian Bokmaal",
@@ -567,7 +623,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Norsk bokmål"
     },
     {
         "lang_english": "Norwegian Nynorsk",
@@ -577,7 +634,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Norsk nynorsk"
     },
     {
         "lang_english": "Occitan",
@@ -587,7 +645,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Occitan"
     },
     {
         "lang_english": "Odia",
@@ -597,7 +656,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "ଓଡ଼ିଆ"
     },
     {
         "lang_english": "Ossetian",
@@ -607,7 +667,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Ирон æвзаг"
     },
     {
         "lang_english": "Persian",
@@ -617,7 +678,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "فارسی"
     },
     {
         "lang_english": "Polish",
@@ -627,7 +689,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Polski"
     },
     {
         "lang_english": "Portuguese",
@@ -637,7 +700,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Português"
     },
     {
         "lang_english": "Portuguese (Brazil)",
@@ -647,7 +711,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Português do Brasil"
     },
     {
         "lang_english": "Punjabi (Gurmukhi)",
@@ -657,7 +722,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "ਪੰਜਾਬੀ"
     },
     {
         "lang_english": "Romanian",
@@ -667,7 +733,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Română"
     },
     {
         "lang_english": "Russian",
@@ -677,7 +744,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Русский"
     },
     {
         "lang_english": "Sanskrit",
@@ -687,7 +755,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "संस्कृत"
     },
     {
         "lang_english": "Serbian (Cyrillic)",
@@ -697,7 +766,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Српски"
     },
     {
         "lang_english": "Serbian (Latin)",
@@ -707,7 +777,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Srpski"
     },
     {
         "lang_english": "Silesian",
@@ -717,7 +788,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Ślůnski"
     },
     {
         "lang_english": "Sinhala",
@@ -727,7 +799,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "සිංහල"
     },
     {
         "lang_english": "Slovak",
@@ -737,7 +810,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Slovenčina"
     },
     {
         "lang_english": "Slovenian",
@@ -747,7 +821,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Slovenščina"
     },
     {
         "lang_english": "Spanish",
@@ -757,7 +832,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Español"
     },
     {
         "lang_english": "Swedish",
@@ -767,7 +843,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Svenska"
     },
     {
         "lang_english": "Tagalog",
@@ -777,7 +854,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Tagalog"
     },
     {
         "lang_english": "Tajik",
@@ -787,7 +865,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Тоҷикӣ"
     },
     {
         "lang_english": "Tamil",
@@ -797,7 +876,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "தமிழ்"
     },
     {
         "lang_english": "Telugu",
@@ -807,7 +887,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "తెలుగు"
     },
     {
         "lang_english": "Thai",
@@ -817,7 +898,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "ภาษาไทย"
     },
     {
         "lang_english": "Tibetan",
@@ -827,7 +909,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "བོད་ཡིག"
     },
     {
         "lang_english": "Turkish",
@@ -837,7 +920,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Türkçe"
     },
     {
         "lang_english": "Ukrainian",
@@ -847,7 +931,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Українська"
     },
     {
         "lang_english": "Urdu",
@@ -857,7 +942,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "اردو"
     },
     {
         "lang_english": "Uyghur",
@@ -867,7 +953,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "ئۇيغۇرچە"
     },
     {
         "lang_english": "Valencian-Catalan",
@@ -877,7 +964,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Valencià-Català"
     },
     {
         "lang_english": "Vietnamese",
@@ -887,7 +975,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Tiếng Việt"
     },
     {
         "lang_english": "Welsh",
@@ -897,7 +986,8 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Cymraeg"
     },
     {
         "lang_english": "Wolof",
@@ -907,6 +997,7 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en"
+        "id": "en",
+        "text": "Wolof"
     }
 ]

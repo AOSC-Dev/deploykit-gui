@@ -4,22 +4,14 @@ import DKBottomSteps from "@/components/DKBottomSteps.vue";
 </script>
 
 <script>
+import lang_data from "../lang_select.json";
 export default {
   // TODO: add locales and timezones here
   props: {},
   inject: ["config"],
   data: function () {
     return {
-      locales: [
-        {
-          text: "English",
-          data: "en_US",
-        },
-        {
-          text: "中文",
-          data: "zh_CN",
-        },
-      ],
+      locales: lang_data,
       timezones: [
         {
           text: "UTC (+0:00)",
@@ -30,16 +22,16 @@ export default {
           data: "Asia/Shanghai",
         },
       ],
-      selected_locale: this.config.locale,
+      selected_locale: lang_data.findIndex((v) => v.locale === this.config.locale.locale),
       rtc_tz: `${!(this.config.rtc_utc || true) | 0}`,
-      timezone: this.config.timezone,
+      timezone: 0,
     };
   },
   methods: {
     save_config: function () {
       this.config.rtc_utc = this.rtc_tz == "0";
-      this.config.timezone = this.timezone;
-      this.config.locale = this.selected_locale;
+      this.config.timezone = this.timezones[this.timezone];
+      this.config.locale = lang_data[this.selected_locale];
     },
   },
 };
