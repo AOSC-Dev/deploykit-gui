@@ -7,6 +7,8 @@ import DKSpinner from "@/components/DKSpinner.vue";
 </script>
 
 <script>
+import { invoke } from "@tauri-apps/api";
+
 export default {
   inject: ["config", "humanSize"],
   data: function () {
@@ -14,7 +16,7 @@ export default {
       selected: null,
       gparted: false,
       partitions: [],
-      loading: false,
+      loading: true,
     };
   },
   computed: {
@@ -60,8 +62,14 @@ export default {
       });
     },
   },
-  created: async function () {
-    
+  async created() {
+    const device = this.config.device.path;
+    const req = await invoke("list_partitions", { dev: device });
+    const resp = JSON.parse(req);
+    if (resp.result == "Ok") {
+      this.partitions = resp.data;
+    }
+    this.loading = false;
   }
 };
 </script>
@@ -72,17 +80,11 @@ export default {
     <section v-if="!new_disk">
       <p>{{ $t("part.p1") }}</p>
       <section>
-        <DKListSelect
-          :no_margin="true"
-          v-model:selected="selected"
-          :options="partitions"
-        >
+        <DKListSelect :no_margin="true" v-model:selected="selected" :options="partitions">
           <template #item="option">
             <div style="width: 100%">
-              <span class="column-85"
-                >{{ option.path }}&nbsp;{{ comment(option.comment) }}</span
-              >
-              <span class="column-15">{{ option.size }}</span>
+              <span class="column-85">{{ option.path }}</span>
+              <span class="column-15">{{ humanSize(option.size) }}</span>
               <p class="secondary">
                 <span>{{ option.fs_type || $t("part.k0") }}</span>
               </p>
@@ -116,7 +118,7 @@ export default {
     <DKStripButton @click="launch_gparted" :text="$t('part.b1')">
       <img src="@/assets/drive-harddisk-root-symbolic.svg" height="18" />
     </DKStripButton>
-    <DKStepButtons :can_proceed="valid" />
+    <DKStepButtons :trigger="() => (config.partition = devices[selected])" :can_proceed="valid" />
   </DKBottomActions>
 </template>
 

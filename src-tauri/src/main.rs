@@ -23,6 +23,7 @@ trait Deploykit {
     async fn auto_partition(&self, dev: &str) -> zResult<String>;
     async fn start_install(&self) -> zResult<String>;
     async fn get_auto_partition_progress(&self) -> zResult<String>;
+    async fn get_list_partitions(&self, dev: &str) -> zResult<String>;
 }
 
 static TOKIO: Lazy<Runtime> = Lazy::new(|| {
@@ -65,6 +66,21 @@ fn list_devices() -> String {
     }
 }
 
+#[tauri::command]
+fn list_partitions(dev: &str) -> String {
+    let proxy = PROXY.get().unwrap();
+    let res = TOKIO.block_on(proxy.get_list_partitions(dev));
+
+    match res {
+        Ok(res) => res,
+        Err(e) => serde_json::json!({
+            "result": "Error",
+            "data": format!("{:?}", e),
+        })
+        .to_string(),
+    }
+}
+
 fn main() {
     // init tokio runtime
     let tokio = &*TOKIO;
@@ -86,7 +102,11 @@ fn main() {
     println!("{:?}", TOKIO.block_on(proxy.get_config("")));
 
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![set_config, list_devices])
+        .invoke_handler(tauri::generate_handler![
+            set_config,
+            list_devices,
+            list_partitions
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
