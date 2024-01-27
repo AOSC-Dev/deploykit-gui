@@ -1,5 +1,6 @@
 <script>
 import DKBottomSteps from "@/components/DKBottomSteps.vue";
+import { invoke } from "@tauri-apps/api";
 export default {
   inject: ["config"],
   props: {
@@ -14,6 +15,11 @@ export default {
     rescue_size: Number,
   },
   components: { DKBottomSteps },
+  methods: {
+    set_config: function () {
+      invoke("set_config", { config: JSON.stringify(this.config) });
+    }
+  }
 };
 </script>
 
@@ -57,7 +63,7 @@ export default {
     </ul>
     <p>{{ $t("confirm.w1") }}</p>
   </div>
-  <DKBottomSteps />
+  <DKBottomSteps :trigger="set_config"/>
 </template>
 
 <style scoped>

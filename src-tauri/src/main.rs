@@ -43,21 +43,6 @@ static TOKIO: Lazy<Runtime> = Lazy::new(|| {
 
 static PROXY: OnceCell<DeploykitProxy> = OnceCell::new();
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-fn set_config(field: &str, value: &str) -> String {
-    let proxy = PROXY.get().unwrap();
-    let res = TOKIO.block_on(proxy.set_config(field, value));
-
-    match res {
-        Ok(res) => res,
-        Err(e) => serde_json::json!({
-            "result": "Error",
-            "data": format!("{:?}", e),
-        })
-        .to_string(),
-    }
-}
 
 #[tauri::command]
 fn gparted() {
@@ -97,6 +82,12 @@ fn list_timezone() -> String {
         })
         .to_string(),
     }
+}
+
+#[tauri::command]
+fn set_config(config: &str) {
+    let proxy = PROXY.get().unwrap();
+    dbg!(config);
 }
 
 #[tauri::command]
