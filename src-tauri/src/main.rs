@@ -30,6 +30,8 @@ trait Deploykit {
     async fn start_install(&self) -> zResult<String>;
     async fn get_auto_partition_progress(&self) -> zResult<String>;
     async fn get_list_partitions(&self, dev: &str) -> zResult<String>;
+    async fn get_recommend_swap_size(&self) -> zResult<String>;
+    async fn get_memory(&self) -> zResult<String>;
 }
 
 static TOKIO: Lazy<Runtime> = Lazy::new(|| {
@@ -112,6 +114,36 @@ fn list_partitions(dev: &str) -> String {
     }
 }
 
+#[tauri::command]
+fn get_recommend_swap_size() -> String {
+    let proxy = PROXY.get().unwrap();
+    let res = TOKIO.block_on(proxy.get_recommend_swap_size());
+
+    match res {
+        Ok(res) => res,
+        Err(e) => serde_json::json!({
+            "result": "Error",
+            "data": format!("{:?}", e),
+        })
+        .to_string(),
+    }
+}
+
+#[tauri::command]
+fn get_memory() -> String {
+    let proxy = PROXY.get().unwrap();
+    let res = TOKIO.block_on(proxy.get_memory());
+
+    match res {
+        Ok(res) => res,
+        Err(e) => serde_json::json!({
+            "result": "Error",
+            "data": format!("{:?}", e),
+        })
+        .to_string(),
+    }
+}
+
 fn main() {
     // init tokio runtime
     let tokio = &*TOKIO;
@@ -138,7 +170,9 @@ fn main() {
             list_devices,
             list_partitions,
             gparted,
-            list_timezone
+            list_timezone,
+            get_recommend_swap_size,
+            get_memory,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

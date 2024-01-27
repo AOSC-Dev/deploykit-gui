@@ -1,5 +1,6 @@
 <script>
 import DKBottomSteps from "@/components/DKBottomSteps.vue";
+import { invoke } from "@tauri-apps/api";
 export default {
   inject: ["config", "humanSize"],
   computed: {
@@ -14,16 +15,31 @@ export default {
   data: function () {
     return {
       type: 0,
-      ram_size: 16e9,
+      ram_size: 0,
       size: 16,
-      rec_size: 16e9,
+      rec_size: 0,
+      loading: true,
     };
   },
+  async created() {
+    const req_ram_size = await invoke("get_memory");
+    const req_rec_swap_size = await invoke("get_recommend_swap_size");
+
+    const resp_ram_size = JSON.parse(req_ram_size);
+    const resp_rec_swap_size = JSON.parse(req_rec_swap_size);
+
+    if (resp_ram_size.result === "Ok" && resp_rec_swap_size.result === "Ok") {
+      this.ram_size = resp_ram_size.data;
+      this.rec_size = resp_rec_swap_size.data;
+    }
+
+    this.loading = false;
+  }
 };
 </script>
 
 <template>
-  <div>
+  <div v-if="!loading">
     <h1>{{ $t("swap.title") }}</h1>
     <p>
       {{ $t("swap.p1") }}
@@ -51,14 +67,7 @@ export default {
       <br />
       <div style="display: flex" v-if="type === 1">
         <section style="width: 75%; margin-left: 0.7rem">
-          <input
-            class="dk-slider"
-            type="range"
-            :max="max_size"
-            min="0"
-            step="0.5"
-            v-model="size"
-          />
+          <input class="dk-slider" type="range" :max="max_size" min="0" step="0.5" v-model="size" />
           <div class="sliderticks">
             <p>0GiB</p>
             <p>{{ rec_size_gb }}GiB</p>
@@ -66,15 +75,7 @@ export default {
           </div>
         </section>
         <span style="float: right; width: 25%; margin-left: 2rem">
-          <input
-            type="number"
-            :max="max_size"
-            min="0"
-            step="0.5"
-            style="width: 67%"
-            v-model="size"
-            required
-          />
+          <input type="number" :max="max_size" min="0" step="0.5" style="width: 67%" v-model="size" required />
           GiB
         </span>
       </div>
