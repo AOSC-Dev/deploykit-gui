@@ -5,23 +5,15 @@ import DKBottomSteps from "@/components/DKBottomSteps.vue";
 
 <script>
 import lang_data from "../lang_select.json";
+import { invoke } from "@tauri-apps/api";
 export default {
-  // TODO: add locales and timezones here
   props: {},
   inject: ["config"],
   data: function () {
     return {
+      loading: true,
       locales: lang_data,
-      timezones: [
-        {
-          text: "UTC (+0:00)",
-          data: "UTC",
-        },
-        {
-          text: "Asia/Shanghai (+8:00)",
-          data: "Asia/Shanghai",
-        },
-      ],
+      timezones: [],
       selected_locale: lang_data.findIndex((v) => v.locale === this.config.locale.locale),
       rtc_tz: `${!(this.config.rtc_utc || true) | 0}`,
       timezone: 0,
@@ -34,6 +26,14 @@ export default {
       this.config.locale = lang_data[this.selected_locale];
     },
   },
+  async created() {
+    const req = await invoke("list_timezone");
+    const resp = JSON.parse(req);
+    if (resp.result == "Ok") {
+      this.timezones = resp.data;
+    }
+    this.loading = false;
+  }
 };
 </script>
 
@@ -57,6 +57,7 @@ export default {
       <label for="timezone">{{ $t("locale.l2") }}</label>
       <p>
         <DKFilterSelect
+          v-if="!loading"
           :default="timezone"
           :options="timezones"
           id="timezone"

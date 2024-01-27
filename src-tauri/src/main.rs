@@ -1,12 +1,19 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use std::process::Command;
+
 use once_cell::sync::Lazy;
 use once_cell::sync::OnceCell;
+use parser::list_zoneinfo;
+use serde::Serialize;
+use serde_json::Value;
 use tokio::runtime::Runtime;
 use zbus::dbus_proxy;
 use zbus::Connection;
 use zbus::Result as zResult;
+
+mod parser;
 
 #[dbus_proxy(
     interface = "io.aosc.Deploykit1",
@@ -51,12 +58,37 @@ fn set_config(field: &str, value: &str) -> String {
 }
 
 #[tauri::command]
+fn gparted() {
+    Command::new("gparted").output().ok();
+}
+
+#[tauri::command]
 fn list_devices() -> String {
     let proxy = PROXY.get().unwrap();
     let res = TOKIO.block_on(proxy.get_list_devices());
 
     match res {
         Ok(res) => res,
+        Err(e) => serde_json::json!({
+            "result": "Error",
+            "data": format!("{:?}", e),
+        })
+        .to_string(),
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct ZoneInfoResult {
+    pub result: String,
+    pub data: Value,
+}
+
+#[tauri::command]
+fn list_timezone() -> String {
+    let timezone = list_zoneinfo();
+
+    match timezone {
+        Ok(t) => t,
         Err(e) => serde_json::json!({
             "result": "Error",
             "data": format!("{:?}", e),
@@ -104,7 +136,9 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             set_config,
             list_devices,
-            list_partitions
+            list_partitions,
+            gparted,
+            list_timezone
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

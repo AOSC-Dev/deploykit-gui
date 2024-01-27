@@ -8,7 +8,8 @@
         "inst": "安装程序",
         "next": "下一步",
         "id": "zh-CN",
-        "text": "中文(简体)"
+        "text": "中文(简体)",
+        "data": "zh_CN.UTF-8"
     },
     {
         "lang_english": "Chinese (Traditional)",
@@ -19,7 +20,8 @@
         "inst": "安装程式",
         "next": "下一步",
         "id": "zh-TW",
-        "text": "中文(繁體)"
+        "text": "中文(繁體)",
+        "data": "zh_TW.UTF-8"
     },
     {
         "lang_english": "English",
@@ -30,7 +32,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "English"
+        "text": "English",
+        "data": "en_US.UTF-8"
     },
     {
         "lang_english": "Albanian",
@@ -41,7 +44,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Shqip"
+        "text": "Shqip",
+        "data": "sq_AL.UTF-8"
     },
     {
         "lang_english": "Amharic",
@@ -52,7 +56,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "አማርኛ"
+        "text": "አማርኛ",
+        "data": "am_ET"
     },
     {
         "lang_english": "Arabic",
@@ -63,7 +68,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "عربي"
+        "text": "عربي",
+        "data": "ar_EG.UTF-8"
     },
     {
         "lang_english": "Assamese",
@@ -74,7 +80,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "অসমীয়া"
+        "text": "অসমীয়া",
+        "data": "as_IN"
     },
     {
         "lang_english": "Asturian",
@@ -85,7 +92,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Asturianu"
+        "text": "Asturianu",
+        "data": "ast_ES.UTF-8"
     },
     {
         "lang_english": "Bangla",
@@ -96,7 +104,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "বাংলা"
+        "text": "বাংলা",
+        "data": "bn_BD"
     },
     {
         "lang_english": "Basque",
@@ -107,7 +116,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Euskara"
+        "text": "Euskara",
+        "data": "eu_ES.UTF-8"
     },
     {
         "lang_english": "Belarusian",
@@ -118,7 +128,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Беларуская"
+        "text": "Беларуская",
+        "data": "be_BY.UTF-8"
     },
     {
         "lang_english": "Bosnian",
@@ -129,7 +140,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Bosanski"
+        "text": "Bosanski",
+        "data": "bs_BA.UTF-8"
     },
     {
         "lang_english": "Breton",
@@ -140,7 +152,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Brezhoneg"
+        "text": "Brezhoneg",
+        "data": "br_FR.UTF-8"
     },
     {
         "lang_english": "Bulgarian",
@@ -151,7 +164,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Български"
+        "text": "Български",
+        "data": "bg_BG.UTF-8"
     },
     {
         "lang_english": "Burmese",
@@ -162,7 +176,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "မြန်မာစာ"
+        "text": "မြန်မာစာ",
+        "data": "my_MM"
     },
     {
         "lang_english": "Catalan",
@@ -173,7 +188,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Català"
+        "text": "Català",
+        "data": "ca_ES.UTF-8"
     },
     {
         "lang_english": "Croatian",
@@ -184,7 +200,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Hrvatski"
+        "text": "Hrvatski",
+        "data": "hr_HR.UTF-8"
     },
     {
         "lang_english": "Czech",
@@ -195,7 +212,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Čeština"
+        "text": "Čeština",
+        "data": "cs_CZ.UTF-8"
     },
     {
         "lang_english": "Danish",
@@ -206,7 +224,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Dansk"
+        "text": "Dansk",
+        "data": "da_DK.UTF-8"
     },
     {
         "lang_english": "Dutch",
@@ -217,7 +236,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Nederlands"
+        "text": "Nederlands",
+        "data": "nl_NL.UTF-8"
     },
     {
         "lang_english": "Dzongkha",
@@ -228,7 +248,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "རྫོང་ཁ།"
+        "text": "རྫོང་ཁ།",
+        "data": "dz_BT"
     },
     {
         "lang_english": "Esperanto",
@@ -239,7 +260,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Esperanto"
+        "text": "Esperanto",
+        "data": "eo.UTF-8"
     },
     {
         "lang_english": "Estonian",
@@ -250,7 +272,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Eesti"
+        "text": "Eesti",
+        "data": "et_EE.UTF-8"
     },
     {
         "lang_english": "Finnish",
@@ -261,7 +284,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Suomi"
+        "text": "Suomi",
+        "data": "fi_FI.UTF-8"
     },
     {
         "lang_english": "French",
@@ -272,7 +296,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Français"
+        "text": "Français",
+        "data": "fr_FR.UTF-8"
     },
     {
         "lang_english": "Galician",
@@ -283,7 +308,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Galego"
+        "text": "Galego",
+        "data": "gl_ES.UTF-8"
     },
     {
         "lang_english": "Georgian",
@@ -294,7 +320,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "ქართული"
+        "text": "ქართული",
+        "data": "ka_GE.UTF-8"
     },
     {
         "lang_english": "German",
@@ -305,7 +332,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Deutsch"
+        "text": "Deutsch",
+        "data": "de_DE.UTF-8"
     },
     {
         "lang_english": "Greek",
@@ -316,7 +344,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Ελληνικά"
+        "text": "Ελληνικά",
+        "data": "el_GR.UTF-8"
     },
     {
         "lang_english": "Gujarati",
@@ -327,7 +356,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "ગુજરાતી"
+        "text": "ગુજરાતી",
+        "data": "gu_IN"
     },
     {
         "lang_english": "Hebrew",
@@ -338,7 +368,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "עברית"
+        "text": "עברית",
+        "data": "he_IL.UTF-8"
     },
     {
         "lang_english": "Hindi",
@@ -349,7 +380,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "हिन्दी "
+        "text": "हिन्दी ",
+        "data": "hi_IN"
     },
     {
         "lang_english": "Hungarian",
@@ -360,7 +392,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Magyar"
+        "text": "Magyar",
+        "data": "hu_HU.UTF-8"
     },
     {
         "lang_english": "Icelandic",
@@ -371,7 +404,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Íslenska"
+        "text": "Íslenska",
+        "data": "is_IS.UTF-8"
     },
     {
         "lang_english": "Indonesian",
@@ -382,7 +416,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Bahasa Indonesia"
+        "text": "Bahasa Indonesia",
+        "data": "id_ID.UTF-8"
     },
     {
         "lang_english": "Irish",
@@ -393,7 +428,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Gaeilge"
+        "text": "Gaeilge",
+        "data": "ga_IE.UTF-8"
     },
     {
         "lang_english": "Italian",
@@ -404,7 +440,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Italiano"
+        "text": "Italiano",
+        "data": "it_IT.UTF-8"
     },
     {
         "lang_english": "Jamaican Creole English",
@@ -415,7 +452,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Jamaican Creole English"
+        "text": "Jamaican Creole English",
+        "data": "jam_JM"
     },
     {
         "lang_english": "Japanese",
@@ -426,7 +464,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "日本語"
+        "text": "日本語",
+        "data": "ja_JP.UTF-8"
     },
     {
         "lang_english": "Kabyle",
@@ -437,7 +476,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Taqbaylit"
+        "text": "Taqbaylit",
+        "data": "kab_DZ.UTF-8"
     },
     {
         "lang_english": "Kannada",
@@ -448,7 +488,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "ಕನ್ನಡ"
+        "text": "ಕನ್ನಡ",
+        "data": "kn_IN"
     },
     {
         "lang_english": "Kazakh",
@@ -459,7 +500,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Қазақ"
+        "text": "Қазақ",
+        "data": "kk_KZ.UTF-8"
     },
     {
         "lang_english": "Khmer",
@@ -470,7 +512,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "ខ្មែរ"
+        "text": "ខ្មែរ",
+        "data": "km_KH"
     },
     {
         "lang_english": "Korean",
@@ -481,7 +524,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "한국어"
+        "text": "한국어",
+        "data": "ko_KR.UTF-8"
     },
     {
         "lang_english": "Kurdish",
@@ -492,7 +536,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Kurdî"
+        "text": "Kurdî",
+        "data": "ku_TR.UTF-8"
     },
     {
         "lang_english": "Kurdish, Central",
@@ -503,7 +548,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "کوردیی ناوەندی"
+        "text": "کوردیی ناوەندی",
+        "data": "ckb_IQ"
     },
     {
         "lang_english": "Lao",
@@ -514,7 +560,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "ລາວ"
+        "text": "ລາວ",
+        "data": "lo_LA"
     },
     {
         "lang_english": "Latvian",
@@ -525,7 +572,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Latviski"
+        "text": "Latviski",
+        "data": "lv_LV.UTF-8"
     },
     {
         "lang_english": "Lithuanian",
@@ -536,7 +584,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Lietuviškai"
+        "text": "Lietuviškai",
+        "data": "lt_LT.UTF-8"
     },
     {
         "lang_english": "Macedonian",
@@ -547,7 +596,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Македонски"
+        "text": "Македонски",
+        "data": "mk_MK.UTF-8"
     },
     {
         "lang_english": "Malagasy",
@@ -558,7 +608,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Malagasy"
+        "text": "Malagasy",
+        "data": "mg_MG.UTF-8"
     },
     {
         "lang_english": "Malay",
@@ -569,7 +620,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Bahasa Malaysia"
+        "text": "Bahasa Malaysia",
+        "data": "ms_MY.UTF-8"
     },
     {
         "lang_english": "Malayalam",
@@ -580,7 +632,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "മലയാളം"
+        "text": "മലയാളം",
+        "data": "ml_IN"
     },
     {
         "lang_english": "Marathi",
@@ -591,7 +644,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "मराठी"
+        "text": "मराठी",
+        "data": "mr_IN"
     },
     {
         "lang_english": "Nepali",
@@ -602,7 +656,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "नेपाली "
+        "text": "नेपाली ",
+        "data": "ne_NP"
     },
     {
         "lang_english": "Northern Sami",
@@ -613,7 +668,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Sámegillii"
+        "text": "Sámegillii",
+        "data": "se_NO"
     },
     {
         "lang_english": "Norwegian Bokmaal",
@@ -624,7 +680,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Norsk bokmål"
+        "text": "Norsk bokmål",
+        "data": "nb_NO.UTF-8"
     },
     {
         "lang_english": "Norwegian Nynorsk",
@@ -635,7 +692,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Norsk nynorsk"
+        "text": "Norsk nynorsk",
+        "data": "nn_NO.UTF-8"
     },
     {
         "lang_english": "Occitan",
@@ -646,7 +704,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Occitan"
+        "text": "Occitan",
+        "data": "oc_FR.UTF-8"
     },
     {
         "lang_english": "Odia",
@@ -657,7 +716,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "ଓଡ଼ିଆ"
+        "text": "ଓଡ଼ିଆ",
+        "data": "or_IN"
     },
     {
         "lang_english": "Ossetian",
@@ -668,7 +728,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Ирон æвзаг"
+        "text": "Ирон æвзаг",
+        "data": "os_RU"
     },
     {
         "lang_english": "Persian",
@@ -679,7 +740,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "فارسی"
+        "text": "فارسی",
+        "data": "fa_IR"
     },
     {
         "lang_english": "Polish",
@@ -690,7 +752,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Polski"
+        "text": "Polski",
+        "data": "pl_PL.UTF-8"
     },
     {
         "lang_english": "Portuguese",
@@ -701,7 +764,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Português"
+        "text": "Português",
+        "data": "pt_PT.UTF-8"
     },
     {
         "lang_english": "Portuguese (Brazil)",
@@ -712,7 +776,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Português do Brasil"
+        "text": "Português do Brasil",
+        "data": "pt_BR.UTF-8"
     },
     {
         "lang_english": "Punjabi (Gurmukhi)",
@@ -723,7 +788,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "ਪੰਜਾਬੀ"
+        "text": "ਪੰਜਾਬੀ",
+        "data": "pa_IN"
     },
     {
         "lang_english": "Romanian",
@@ -734,7 +800,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Română"
+        "text": "Română",
+        "data": "ro_RO.UTF-8"
     },
     {
         "lang_english": "Russian",
@@ -745,7 +812,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Русский"
+        "text": "Русский",
+        "data": "ru_RU.UTF-8"
     },
     {
         "lang_english": "Sanskrit",
@@ -756,7 +824,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "संस्कृत"
+        "text": "संस्कृत",
+        "data": "sa_IN"
     },
     {
         "lang_english": "Serbian (Cyrillic)",
@@ -767,7 +836,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Српски"
+        "text": "Српски",
+        "data": "sr_RS"
     },
     {
         "lang_english": "Serbian (Latin)",
@@ -778,7 +848,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Srpski"
+        "text": "Srpski",
+        "data": "sr_RS@latin"
     },
     {
         "lang_english": "Silesian",
@@ -789,7 +860,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Ślůnski"
+        "text": "Ślůnski",
+        "data": "szl_PL"
     },
     {
         "lang_english": "Sinhala",
@@ -800,7 +872,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "සිංහල"
+        "text": "සිංහල",
+        "data": "si_LK"
     },
     {
         "lang_english": "Slovak",
@@ -811,7 +884,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Slovenčina"
+        "text": "Slovenčina",
+        "data": "sk_SK.UTF-8"
     },
     {
         "lang_english": "Slovenian",
@@ -822,7 +896,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Slovenščina"
+        "text": "Slovenščina",
+        "data": "sl_SI.UTF-8"
     },
     {
         "lang_english": "Spanish",
@@ -833,7 +908,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Español"
+        "text": "Español",
+        "data": "es_ES.UTF-8"
     },
     {
         "lang_english": "Swedish",
@@ -844,7 +920,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Svenska"
+        "text": "Svenska",
+        "data": "sv_SE.UTF-8"
     },
     {
         "lang_english": "Tagalog",
@@ -855,7 +932,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Tagalog"
+        "text": "Tagalog",
+        "data": "tl_PH.UTF-8"
     },
     {
         "lang_english": "Tajik",
@@ -866,7 +944,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Тоҷикӣ"
+        "text": "Тоҷикӣ",
+        "data": "tg_TJ.UTF-8"
     },
     {
         "lang_english": "Tamil",
@@ -877,7 +956,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "தமிழ்"
+        "text": "தமிழ்",
+        "data": "ta_IN"
     },
     {
         "lang_english": "Telugu",
@@ -888,7 +968,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "తెలుగు"
+        "text": "తెలుగు",
+        "data": "te_IN"
     },
     {
         "lang_english": "Thai",
@@ -899,7 +980,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "ภาษาไทย"
+        "text": "ภาษาไทย",
+        "data": "th_TH.UTF-8"
     },
     {
         "lang_english": "Tibetan",
@@ -910,7 +992,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "བོད་ཡིག"
+        "text": "བོད་ཡིག",
+        "data": "bo_IN"
     },
     {
         "lang_english": "Turkish",
@@ -921,7 +1004,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Türkçe"
+        "text": "Türkçe",
+        "data": "tr_TR.UTF-8"
     },
     {
         "lang_english": "Ukrainian",
@@ -932,7 +1016,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Українська"
+        "text": "Українська",
+        "data": "uk_UA.UTF-8"
     },
     {
         "lang_english": "Urdu",
@@ -943,7 +1028,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "اردو"
+        "text": "اردو",
+        "data": "ur_PK.UTF-8"
     },
     {
         "lang_english": "Uyghur",
@@ -954,7 +1040,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "ئۇيغۇرچە"
+        "text": "ئۇيغۇرچە",
+        "data": "ug_CN"
     },
     {
         "lang_english": "Valencian-Catalan",
@@ -965,7 +1052,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Valencià-Català"
+        "text": "Valencià-Català",
+        "data": "ca_ES.UTF-8@valencia"
     },
     {
         "lang_english": "Vietnamese",
@@ -976,7 +1064,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Tiếng Việt"
+        "text": "Tiếng Việt",
+        "data": "vi_VN"
     },
     {
         "lang_english": "Welsh",
@@ -987,7 +1076,8 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Cymraeg"
+        "text": "Cymraeg",
+        "data": "cy_GB.UTF-8"
     },
     {
         "lang_english": "Wolof",
@@ -998,6 +1088,7 @@
         "inst": "Installer",
         "next": "Next",
         "id": "en",
-        "text": "Wolof"
+        "text": "Wolof",
+        "data": "wo_SN"
     }
 ]

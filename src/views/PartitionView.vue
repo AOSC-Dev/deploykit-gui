@@ -50,16 +50,15 @@ export default {
       }
       return this.$t("part.k4", { other_os: comment });
     },
-    launch_gparted: function () {
-      this.gparted = true;
-      this.$ipc.call("exec", ["gparted"]).then(this.list_partitions);
-    },
-    list_partitions: function () {
-      this.loading = this.gparted = true;
-      this.$ipc.call("list_partitions", []).then((data) => {
-        this.partitions = data;
-        this.gparted = this.loading = false;
-      });
+    launch_gparted: async function () {
+      invoke("gparted");
+      this.gparted = this.loading = true;
+      const req = await invoke("list_partitions", { dev: this.config.device.path });
+      const resp = JSON.parse(req);
+      if (resp.result == "Ok") {
+        this.partitions = resp.data;
+      }
+      this.gparted = this.loading = false;
     },
   },
   async created() {
