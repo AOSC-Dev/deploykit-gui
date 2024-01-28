@@ -14,6 +14,7 @@ use zbus::Connection;
 use zbus::Result as zResult;
 
 mod parser;
+mod utils;
 
 #[dbus_proxy(
     interface = "io.aosc.Deploykit1",
@@ -42,7 +43,7 @@ static TOKIO: Lazy<Runtime> = Lazy::new(|| {
 });
 
 static PROXY: OnceCell<DeploykitProxy> = OnceCell::new();
-
+static RECIPE: OnceCell<String> = OnceCell::new();
 
 #[tauri::command]
 fn gparted() {
@@ -88,6 +89,15 @@ fn list_timezone() -> String {
 fn set_config(config: &str) {
     let proxy = PROXY.get().unwrap();
     dbg!(config);
+}
+
+#[tauri::command]
+fn get_recipe() -> String {
+    match RECIPE.get_or_try_init(|| -> eyre::Result<String> { TOKIO.block_on(utils::get_recpie()) })
+    {
+        Ok(s) => todo!(),
+        Err(_) => todo!(),
+    }
 }
 
 #[tauri::command]

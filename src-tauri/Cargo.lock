@@ -737,11 +737,13 @@ dependencies = [
  "eyre",
  "nom",
  "once_cell",
+ "reqwest",
  "serde",
  "serde_json",
  "tauri",
  "tauri-build",
  "tokio",
+ "url",
  "zbus",
 ]
 

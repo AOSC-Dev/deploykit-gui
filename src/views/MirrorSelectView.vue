@@ -9,12 +9,12 @@ import DKSpinner from "@/components/DKSpinner.vue";
 <script>
 import { getClient } from '@tauri-apps/api/http';
 
-async function getMirrors() {
+async function getRecipe() {
   const client = await getClient();
   const response = await client.get("https://releases.aosc.io/manifest/recipe.json");
   const data = response.data;
   
-  return data.mirrors;
+  return data;
 }
 
 export default {
@@ -42,8 +42,8 @@ export default {
     },
   },
   async created () {
-    const mirrors = await getMirrors();
-    this.mirrors = mirrors;
+    const recipe = await getRecipe();
+    this.mirrors = recipe.data.mirrors;
     this.loading = false;
   }
 };
