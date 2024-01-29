@@ -27,12 +27,18 @@ pub struct InstallConfig {
     pub locale: Locale,
     pub variant: Variant,
     mirror: Mirror,
-    partition: Partition,
+    pub partition: Partition,
     pub user: String,
     pub pwd: String,
     pub hostname: String,
     pub rtc_utc: bool,
     pub timezone: Timezone,
+    pub swapfile: SwapFile,
+}
+
+#[derive(Deserialize)]
+pub struct SwapFile {
+    pub size: usize,
 }
 
 #[derive(Deserialize)]
@@ -63,8 +69,8 @@ struct Mirror {
     url: String,
 }
 
-#[derive(Deserialize)]
-struct Partition {
+#[derive(Deserialize, Serialize)]
+pub struct Partition {
     fs_type: String,
     parent_path: Option<String>,
     path: Option<String>,

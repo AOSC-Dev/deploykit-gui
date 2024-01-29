@@ -93,6 +93,7 @@ fn list_timezone() -> String {
 fn set_config(config: &str) -> String {
     let proxy = PROXY.get().unwrap();
     let config = handle_serde_config(config);
+
     let config = match config {
         Ok(config) => config,
         Err(e) => {
@@ -129,8 +130,6 @@ fn set_config(config: &str) -> String {
         })
         .to_string();
     }
-
-    dbg!(download_value);
 
     if let Err(e) = TOKIO.block_on(proxy.set_config("locale", &config.locale.locale)) {
         return serde_json::json!({
@@ -173,7 +172,44 @@ fn set_config(config: &str) -> String {
         .to_string();
     }
 
-    if let Err(e) = TOKIO.block_on(proxy.set_config("rtc_as_localtime", &config.rtc_utc.to_string())) {
+    if let Err(e) =
+        TOKIO.block_on(proxy.set_config("rtc_as_localtime", &(!config.rtc_utc).to_string()))
+    {
+        return serde_json::json!({
+            "result": "Error",
+            "data": format!("{:?}", e),
+        })
+        .to_string();
+    }
+
+    let swap_config = match config.swapfile.size {
+        0 => "\"Disable\"".to_string(),
+        x => serde_json::json!({
+            "Custom": x
+        })
+        .to_string(),
+    };
+
+    if let Err(e) = TOKIO.block_on(proxy.set_config("swapfile", &swap_config)) {
+        return serde_json::json!({
+            "result": "Error",
+            "data": format!("{:?}", e),
+        })
+        .to_string();
+    }
+
+    let part_config = match serde_json::to_string(&config.partition) {
+        Ok(p) => p,
+        Err(e) => {
+            return serde_json::json!({
+                "result": "Error",
+                "data": format!("{:?}", e),
+            })
+            .to_string();
+        }
+    };
+
+    if let Err(e) = TOKIO.block_on(proxy.set_config("target_partition", &part_config)) {
         return serde_json::json!({
             "result": "Error",
             "data": format!("{:?}", e),

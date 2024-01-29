@@ -1,6 +1,11 @@
 <script>
 import DKBottomSteps from "@/components/DKBottomSteps.vue";
 import { invoke } from "@tauri-apps/api";
+
+function rec_size_gb(rec_size) {
+  return Math.floor(rec_size / 1073741824);
+}
+
 export default {
   inject: ["config", "humanSize"],
   computed: {
@@ -16,7 +21,7 @@ export default {
     return {
       type: 0,
       ram_size: 0,
-      size: 16,
+      size: 0,
       rec_size: 0,
       loading: true,
     };
@@ -31,6 +36,7 @@ export default {
     if (resp_ram_size.result === "Ok" && resp_rec_swap_size.result === "Ok") {
       this.ram_size = resp_ram_size.data;
       this.rec_size = resp_rec_swap_size.data;
+      this.size = rec_size_gb(this.rec_size);
     }
 
     this.loading = false;
@@ -90,11 +96,11 @@ export default {
       </p>
     </form>
   </div>
-  <DKBottomSteps />
+  <DKBottomSteps :trigger= "() => (config.swapfile = { size: Number(size) })"/>
 </template>
 
 <style scoped>
-.error-msg {
+.error-msg {      
   color: var(--dk-accent);
 }
 

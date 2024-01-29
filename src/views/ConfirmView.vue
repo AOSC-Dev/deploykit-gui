@@ -16,8 +16,9 @@ export default {
   },
   components: { DKBottomSteps },
   methods: {
-    set_config: function () {
-      invoke("set_config", { config: JSON.stringify(this.config) });
+    set_config: async function () {
+      const res = invoke("set_config", { config: JSON.stringify(this.config) });
+      console.log(res);
     }
   }
 };
