@@ -4,18 +4,10 @@ import DKStepButtons from "@/components/DKStepButtons.vue";
 import DKStripButton from "@/components/DKStripButton.vue";
 import DKListSelect from "@/components/DKListSelect.vue";
 import DKSpinner from "@/components/DKSpinner.vue";
+import { invoke } from "@tauri-apps/api";
 </script>
 
 <script>
-import { getClient } from '@tauri-apps/api/http';
-
-async function getRecipe() {
-  const client = await getClient();
-  const response = await client.get("https://releases.aosc.io/manifest/recipe.json");
-  const data = response.data;
-  
-  return data;
-}
 
 export default {
   inject: ["config"],
@@ -42,9 +34,13 @@ export default {
     },
   },
   async created () {
-    const recipe = await getRecipe();
-    this.mirrors = recipe.data.mirrors;
-    this.loading = false;
+    const req = await invoke("get_recipe");
+    const resp = JSON.parse(req);
+    if (resp.result == "Ok") {
+      let variants = resp.data.mirrors;
+      this.mirrors = variants;
+      this.loading = false;
+    }
   }
 };
 </script>

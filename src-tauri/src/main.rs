@@ -9,6 +9,7 @@ use parser::list_zoneinfo;
 use serde::Serialize;
 use serde_json::Value;
 use tokio::runtime::Runtime;
+use utils::Recipe;
 use zbus::dbus_proxy;
 use zbus::Connection;
 use zbus::Result as zResult;
@@ -43,7 +44,7 @@ static TOKIO: Lazy<Runtime> = Lazy::new(|| {
 });
 
 static PROXY: OnceCell<DeploykitProxy> = OnceCell::new();
-static RECIPE: OnceCell<String> = OnceCell::new();
+static RECIPE: OnceCell<Recipe> = OnceCell::new();
 
 #[tauri::command]
 fn gparted() {
@@ -93,10 +94,17 @@ fn set_config(config: &str) {
 
 #[tauri::command]
 fn get_recipe() -> String {
-    match RECIPE.get_or_try_init(|| -> eyre::Result<String> { TOKIO.block_on(utils::get_recpie()) })
-    {
-        Ok(s) => todo!(),
-        Err(_) => todo!(),
+    match RECIPE.get_or_try_init(|| TOKIO.block_on(utils::get_recpie())) {
+        Ok(s) => serde_json::json!({
+            "result": "Ok",
+            "data": s,
+        })
+        .to_string(),
+        Err(e) => serde_json::json!({
+            "result": "Error",
+            "data": format!("{:?}", e),
+        })
+        .to_string(),
     }
 }
 
@@ -174,6 +182,7 @@ fn main() {
             list_timezone,
             get_recommend_swap_size,
             get_memory,
+            get_recipe,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
