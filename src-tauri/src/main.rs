@@ -8,7 +8,6 @@ use once_cell::sync::OnceCell;
 use parser::list_zoneinfo;
 use serde::Serialize;
 use serde_json::Value;
-use tauri::utils::config;
 use tokio::runtime::Runtime;
 use utils::Recipe;
 use zbus::dbus_proxy;
@@ -132,6 +131,56 @@ fn set_config(config: &str) -> String {
     }
 
     dbg!(download_value);
+
+    if let Err(e) = TOKIO.block_on(proxy.set_config("locale", &config.locale.locale)) {
+        return serde_json::json!({
+            "result": "Error",
+            "data": format!("{:?}", e),
+        })
+        .to_string();
+    }
+
+    if let Err(e) = TOKIO.block_on(
+        proxy.set_config(
+            "user",
+            &serde_json::json! {{
+                "username": &config.user,
+                "password": &config.pwd,
+            }}
+            .to_string(),
+        ),
+    ) {
+        return serde_json::json!({
+            "result": "Error",
+            "data": format!("{:?}", e),
+        })
+        .to_string();
+    }
+
+    if let Err(e) = TOKIO.block_on(proxy.set_config("timezone", &config.timezone.data)) {
+        return serde_json::json!({
+            "result": "Error",
+            "data": format!("{:?}", e),
+        })
+        .to_string();
+    }
+
+    if let Err(e) = TOKIO.block_on(proxy.set_config("hostname", &config.hostname)) {
+        return serde_json::json!({
+            "result": "Error",
+            "data": format!("{:?}", e),
+        })
+        .to_string();
+    }
+
+    if let Err(e) = TOKIO.block_on(proxy.set_config("rtc_as_localtime", &config.rtc_utc.to_string())) {
+        return serde_json::json!({
+            "result": "Error",
+            "data": format!("{:?}", e),
+        })
+        .to_string();
+    }
+
     dbg!(TOKIO.block_on(proxy.get_config("")));
 
     return serde_json::json!({

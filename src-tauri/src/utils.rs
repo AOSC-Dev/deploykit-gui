@@ -24,20 +24,20 @@ pub async fn get_recpie() -> Result<Recipe> {
 
 #[derive(Deserialize)]
 pub struct InstallConfig {
-    locale: Locale,
+    pub locale: Locale,
     pub variant: Variant,
     mirror: Mirror,
     partition: Partition,
-    user: String,
-    pwd: String,
-    hostname: String,
-    rtc_utc: bool,
-    timezone: Timezone,
+    pub user: String,
+    pub pwd: String,
+    pub hostname: String,
+    pub rtc_utc: bool,
+    pub timezone: Timezone,
 }
 
 #[derive(Deserialize)]
-struct Locale {
-    locale: String,
+pub struct Locale {
+    pub locale: String,
 }
 
 #[derive(Deserialize)]
@@ -72,8 +72,8 @@ struct Partition {
 }
 
 #[derive(Deserialize)]
-struct Timezone {
-    data: String,
+pub struct Timezone {
+    pub data: String,
 }
 
 pub fn get_download_info(config: &InstallConfig) -> Result<(String, String)> {
