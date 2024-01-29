@@ -185,7 +185,7 @@ fn set_config(config: &str) -> String {
     let swap_config = match config.swapfile.size {
         0 => "\"Disable\"".to_string(),
         x => serde_json::json!({
-            "Custom": x
+            "Custom": x * 1024 * 1024 * 1024
         })
         .to_string(),
     };
