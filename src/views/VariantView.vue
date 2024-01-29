@@ -23,7 +23,7 @@ export default {
         i.title = i.name;
         i.body = i.description;
       }
-      this.options = variants.filter((v) => !v.retro);
+      this.options = variants.filter((v) => !v.retro && v.name !== "BuildKit");
     }
 
     this.loading = false;
@@ -32,10 +32,10 @@ export default {
 </script>
 
 <template>
-  <div v-if="!loading">
+  <div>
     <h1>{{ $t("variant.title") }}</h1>
     <p>{{ $t("variant.p1") }}</p>
-    <section>
+    <section v-if="!loading">
       <DKListSelect :selected="selected" :options="options" @update:selected="(v) => (selected = v)" />
     </section>
   </div>

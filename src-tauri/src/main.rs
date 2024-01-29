@@ -8,11 +8,15 @@ use once_cell::sync::OnceCell;
 use parser::list_zoneinfo;
 use serde::Serialize;
 use serde_json::Value;
+use tauri::utils::config;
 use tokio::runtime::Runtime;
 use utils::Recipe;
 use zbus::dbus_proxy;
 use zbus::Connection;
 use zbus::Result as zResult;
+
+use crate::utils::get_download_info;
+use crate::utils::handle_serde_config;
 
 mod parser;
 mod utils;
@@ -87,9 +91,54 @@ fn list_timezone() -> String {
 }
 
 #[tauri::command]
-fn set_config(config: &str) {
+fn set_config(config: &str) -> String {
     let proxy = PROXY.get().unwrap();
-    dbg!(config);
+    let config = handle_serde_config(config);
+    let config = match config {
+        Ok(config) => config,
+        Err(e) => {
+            return serde_json::json!({
+                "result": "Error",
+                "data": format!("{:?}", e),
+            })
+            .to_string()
+        }
+    };
+
+    let (url, sha256sum) = match get_download_info(&config) {
+        Ok((url, sha256sum)) => (url, sha256sum),
+        Err(e) => {
+            return serde_json::json!({
+                "result": "Error",
+                "data": format!("{:?}", e),
+            })
+            .to_string()
+        }
+    };
+
+    let download_value = serde_json::json!({
+        "Http": {
+            "url": url,
+            "hash": sha256sum,
+        }
+    });
+
+    if let Err(e) = TOKIO.block_on(proxy.set_config("download", &download_value.to_string())) {
+        return serde_json::json!({
+            "result": "Error",
+            "data": format!("{:?}", e),
+        })
+        .to_string();
+    }
+
+    dbg!(download_value);
+    dbg!(TOKIO.block_on(proxy.get_config("")));
+
+    return serde_json::json!({
+        "result": "Ok",
+        "data": "",
+    })
+    .to_string();
 }
 
 #[tauri::command]
