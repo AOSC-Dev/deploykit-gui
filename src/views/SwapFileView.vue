@@ -27,16 +27,19 @@ export default {
     };
   },
   async created() {
-    const req_ram_size = await invoke("get_memory");
-    const req_rec_swap_size = await invoke("get_recommend_swap_size");
+    try {
+      const req_ram_size = await invoke("get_memory");
+      const req_rec_swap_size = await invoke("get_recommend_swap_size");
 
-    const resp_ram_size = JSON.parse(req_ram_size);
-    const resp_rec_swap_size = JSON.parse(req_rec_swap_size);
+      const resp_ram_size = JSON.parse(req_ram_size);
+      const resp_rec_swap_size = JSON.parse(req_rec_swap_size);
 
-    if (resp_ram_size.result === "Ok" && resp_rec_swap_size.result === "Ok") {
-      this.ram_size = resp_ram_size.data;
-      this.rec_size = resp_rec_swap_size.data;
+      this.ram_size = resp_ram_size;
+      this.rec_size = resp_rec_swap_size;
       this.size = rec_size_gb(this.rec_size);
+    } catch (e) {
+      console.error(e);
+      this.$router.replace("/error")
     }
 
     this.loading = false;
@@ -96,11 +99,11 @@ export default {
       </p>
     </form>
   </div>
-  <DKBottomSteps :trigger= "() => (config.swapfile = { size: Number(size) })"/>
+  <DKBottomSteps :trigger="() => (config.swapfile = { size: Number(size) })" />
 </template>
 
 <style scoped>
-.error-msg {      
+.error-msg {
   color: var(--dk-accent);
 }
 

@@ -1,8 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::process::Command;
-
 use eyre::bail;
 use eyre::Result;
 use once_cell::sync::Lazy;
@@ -11,6 +9,9 @@ use parser::list_zoneinfo;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
+use std::io;
+use std::io::ErrorKind;
+use std::process::Command;
 use tokio::runtime::Runtime;
 use utils::is_efi;
 use utils::Recipe;
@@ -50,6 +51,20 @@ struct Dbus {
     data: Value,
 }
 
+#[derive(Debug)]
+enum DbusMethod<'a> {
+    SetConfig(&'a str, &'a str),
+    AutoPartition(&'a str),
+    GetProgress,
+    StartInstall,
+    GetAutoPartitionProgress,
+    FindEspPartition(&'a str),
+    ListPpartitions(&'a str),
+    ListDevice,
+    GetRecommendSwapSize,
+    GetMemory,
+}
+
 #[derive(Debug, Deserialize, PartialEq, Eq)]
 enum DbusResult {
     Ok,
@@ -70,45 +85,21 @@ impl TryFrom<String> for Dbus {
 }
 
 impl Dbus {
-    async fn set_config(proxy: &DeploykitProxy<'_>, field: &str, value: &str) -> Result<Self> {
-        let res = proxy.set_config(field, value).await?;
-        let res = Self::try_from(res)?;
+    async fn run(proxy: &DeploykitProxy<'_>, method: DbusMethod<'_>) -> Result<Self> {
+        let s = match method {
+            DbusMethod::SetConfig(field, value) => proxy.set_config(field, value).await?,
+            DbusMethod::AutoPartition(p) => proxy.auto_partition(p).await?,
+            DbusMethod::GetProgress => proxy.get_progress().await?,
+            DbusMethod::StartInstall => proxy.start_install().await?,
+            DbusMethod::GetAutoPartitionProgress => proxy.get_auto_partition_progress().await?,
+            DbusMethod::FindEspPartition(dev) => proxy.find_esp_partition(dev).await?,
+            DbusMethod::ListPpartitions(dev) => proxy.get_list_partitions(dev).await?,
+            DbusMethod::ListDevice => proxy.get_list_devices().await?,
+            DbusMethod::GetRecommendSwapSize => proxy.get_recommend_swap_size().await?,
+            DbusMethod::GetMemory => proxy.get_memory().await?,
+        };
 
-        Ok(res)
-    }
-
-    async fn auto_partition(proxy: &DeploykitProxy<'_>, dev: &str) -> Result<Self> {
-        let res = proxy.auto_partition(dev).await?;
-        let res = Self::try_from(res)?;
-
-        Ok(res)
-    }
-
-    async fn get_progress(proxy: &DeploykitProxy<'_>) -> Result<Self> {
-        let res = proxy.get_progress().await?;
-        let res = Self::try_from(res)?;
-
-        Ok(res)
-    }
-
-    async fn start_install(proxy: &DeploykitProxy<'_>) -> Result<Self> {
-        let res = proxy.start_install().await?;
-        let res = Self::try_from(res)?;
-
-        Ok(res)
-    }
-
-    async fn get_auto_partition_progress(proxy: &DeploykitProxy<'_>) -> Result<Self> {
-        let res = proxy.get_auto_partition_progress().await?;
-        let res = Self::try_from(res)?;
-
-        Ok(res)
-    }
-
-    async fn find_esp_partition(proxy: &DeploykitProxy<'_>, dev: &str) -> Result<Self> {
-        let res = proxy.find_esp_partition(dev).await?;
-        let res = Self::try_from(res)?;
-
+        let res = Self::try_from(s)?;
         Ok(res)
     }
 }
@@ -123,24 +114,42 @@ static TOKIO: Lazy<Runtime> = Lazy::new(|| {
 static PROXY: OnceCell<DeploykitProxy> = OnceCell::new();
 static RECIPE: OnceCell<Recipe> = OnceCell::new();
 
-#[tauri::command]
-fn gparted() {
-    Command::new("gparted").output().ok();
+type TauriResult<T> = std::result::Result<T, DeploykitGuiError>;
+
+#[derive(Debug, thiserror::Error)]
+enum DeploykitGuiError {
+    #[error(transparent)]
+    Io(#[from] std::io::Error),
+    #[error(transparent)]
+    Zbus(#[from] zbus::Error),
+    #[error(transparent)]
+    Eyre(#[from] eyre::Error),
+    #[error(transparent)]
+    SerdeJson(#[from] serde_json::Error),
+}
+
+impl Serialize for DeploykitGuiError {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::ser::Serializer,
+    {
+        serializer.serialize_str(self.to_string().as_ref())
+    }
 }
 
 #[tauri::command]
-fn list_devices() -> String {
-    let proxy = PROXY.get().unwrap();
-    let res = TOKIO.block_on(proxy.get_list_devices());
+fn gparted() -> TauriResult<()> {
+    Command::new("gparted").output()?;
 
-    match res {
-        Ok(res) => res,
-        Err(e) => serde_json::json!({
-            "result": "Error",
-            "data": format!("{:?}", e),
-        })
-        .to_string(),
-    }
+    Ok(())
+}
+
+#[tauri::command]
+async fn list_devices() -> TauriResult<String> {
+    let proxy = PROXY.get().unwrap();
+    let res = Dbus::run(proxy, DbusMethod::ListDevice).await?;
+
+    Ok(serde_json::to_string(&res.data)?)
 }
 
 #[derive(Debug, Serialize)]
@@ -150,45 +159,16 @@ pub struct ZoneInfoResult {
 }
 
 #[tauri::command]
-fn list_timezone() -> String {
-    let timezone = list_zoneinfo();
-
-    match timezone {
-        Ok(t) => t,
-        Err(e) => serde_json::json!({
-            "result": "Error",
-            "data": format!("{:?}", e),
-        })
-        .to_string(),
-    }
+fn list_timezone() -> TauriResult<String> {
+    Ok(list_zoneinfo()?)
 }
 
 #[tauri::command]
-fn set_config(config: &str) -> String {
+async fn set_config(config: &str) -> TauriResult<()> {
     let proxy = PROXY.get().unwrap();
-    let config = handle_serde_config(config);
+    let config = handle_serde_config(config)?;
 
-    let config = match config {
-        Ok(config) => config,
-        Err(e) => {
-            return serde_json::json!({
-                "result": "Error",
-                "data": format!("{:?}", e),
-            })
-            .to_string()
-        }
-    };
-
-    let (url, sha256sum) = match get_download_info(&config) {
-        Ok((url, sha256sum)) => (url, sha256sum),
-        Err(e) => {
-            return serde_json::json!({
-                "result": "Error",
-                "data": format!("{:?}", e),
-            })
-            .to_string()
-        }
-    };
+    let (url, sha256sum) = get_download_info(&config)?;
 
     let download_value = serde_json::json!({
         "Http": {
@@ -197,69 +177,42 @@ fn set_config(config: &str) -> String {
         }
     });
 
-    if let Err(e) = TOKIO.block_on(Dbus::set_config(
+    Dbus::run(
         proxy,
-        "download",
-        &download_value.to_string(),
-    )) {
-        return serde_json::json!({
-            "result": "Error",
-            "data": format!("{:?}", e),
-        })
-        .to_string();
-    }
-
-    if let Err(e) = TOKIO.block_on(Dbus::set_config(proxy, "locale", &config.locale.locale)) {
-        return serde_json::json!({
-            "result": "Error",
-            "data": format!("{:?}", e),
-        })
-        .to_string();
-    }
-
-    if let Err(e) = TOKIO.block_on(Dbus::set_config(
+        DbusMethod::SetConfig("download", &download_value.to_string()),
+    )
+    .await?;
+    Dbus::run(
         proxy,
-        "user",
-        &serde_json::json! {{
-            "username": &config.user,
-            "password": &config.pwd,
-        }}
-        .to_string(),
-    )) {
-        return serde_json::json!({
-            "result": "Error",
-            "data": format!("{:?}", e),
-        })
-        .to_string();
-    }
+        DbusMethod::SetConfig("locale", &config.locale.locale),
+    )
+    .await?;
 
-    if let Err(e) = TOKIO.block_on(Dbus::set_config(proxy, "timezone", &config.timezone.data)) {
-        return serde_json::json!({
-            "result": "Error",
-            "data": format!("{:?}", e),
-        })
-        .to_string();
-    }
-
-    if let Err(e) = TOKIO.block_on(Dbus::set_config(proxy, "hostname", &config.hostname)) {
-        return serde_json::json!({
-            "result": "Error",
-            "data": format!("{:?}", e),
-        })
-        .to_string();
-    }
-
-    if let Err(e) = TOKIO.block_on(Dbus::set_config(
+    Dbus::run(
         proxy,
-        "rtc_as_localtime",
-        &(!config.rtc_utc).to_string(),
-    )) {
-        return serde_json::json!({
-            "result": "Error",
-            "data": format!("{:?}", e),
-        })
-        .to_string();
-    }
+        DbusMethod::SetConfig(
+            "user",
+            &serde_json::json! {{
+                "username": &config.user,
+                "password": &config.pwd,
+            }}
+            .to_string(),
+        ),
+    )
+    .await?;
+
+    Dbus::run(
+        proxy,
+        DbusMethod::SetConfig("timezone", &config.timezone.data),
+    )
+    .await?;
+
+    Dbus::run(proxy, DbusMethod::SetConfig("hostname", &config.hostname)).await?;
+    Dbus::run(
+        proxy,
+        DbusMethod::SetConfig("rtc_as_localtime", &(!config.rtc_utc).to_string()),
+    )
+    .await?;
 
     let swap_config = match config.swapfile.size {
         0 => "\"Disable\"".to_string(),
@@ -269,165 +222,76 @@ fn set_config(config: &str) -> String {
         .to_string(),
     };
 
-    if let Err(e) = TOKIO.block_on(Dbus::set_config(proxy, "swapfile", &swap_config)) {
-        return serde_json::json!({
-            "result": "Error",
-            "data": format!("{:?}", e),
-        })
-        .to_string();
-    }
+    Dbus::run(proxy, DbusMethod::SetConfig("swapfile", &swap_config)).await?;
 
-    let part_config = match serde_json::to_string(&config.partition) {
-        Ok(p) => p,
-        Err(e) => {
-            return serde_json::json!({
-                "result": "Error",
-                "data": format!("{:?}", e),
-            })
-            .to_string();
-        }
-    };
+    let part_config = serde_json::to_string(&config.partition)?;
 
-    if let Err(e) = TOKIO.block_on(Dbus::set_config(proxy, "target_partition", &part_config)) {
-        return serde_json::json!({
-            "result": "Error",
-            "data": format!("{:?}", e),
-        })
-        .to_string();
-    }
+    Dbus::run(
+        proxy,
+        DbusMethod::SetConfig("target_partition", &part_config),
+    )
+    .await?;
 
     if let Some(efi) = config.efi_partition {
-        let part_config = match serde_json::to_string(&efi) {
-            Ok(p) => p,
-            Err(e) => {
-                return serde_json::json!({
-                    "result": "Error",
-                    "data": format!("{:?}", e),
-                })
-                .to_string();
-            }
-        };
-        if let Err(e) = TOKIO.block_on(proxy.set_config("efi_partition", &part_config)) {
-            return serde_json::json!({
-                "result": "Error",
-                "data": format!("{:?}", e),
-            })
-            .to_string();
-        }
+        let part_config = serde_json::to_string(&efi)?;
+        Dbus::run(proxy, DbusMethod::SetConfig("efi_partition", &part_config)).await?;
     } else if is_efi() {
         let parent_path = config.partition.parent_path;
 
         if parent_path.is_none() {
-            return serde_json::json!({
-                "result": "Error",
-                "data": format!("Parent path is not set"),
-            })
-            .to_string();
+            return Err(DeploykitGuiError::Io(io::Error::new(
+                ErrorKind::NotFound,
+                "Failed to find EFI partition",
+            )));
         }
-        let efi_part = TOKIO.block_on(Dbus::find_esp_partition(proxy, &parent_path.unwrap()));
+        let efi_part =
+            Dbus::run(proxy, DbusMethod::FindEspPartition(&parent_path.unwrap())).await?;
 
-        match efi_part {
-            Ok(efi) => {
-                dbg!(1);
-                let part_config = match serde_json::to_string(&efi.data) {
-                    Ok(p) => p,
-                    Err(e) => {
-                        return serde_json::json!({
-                            "result": "Error",
-                            "data": format!("{:?}", e),
-                        })
-                        .to_string();
-                    }
-                };
-
-                if let Err(e) =
-                    TOKIO.block_on(Dbus::set_config(proxy, "efi_partition", &part_config))
-                {
-                    return serde_json::json!({
-                        "result": "Error",
-                        "data": format!("{:?}", e),
-                    })
-                    .to_string();
-                }
-            }
-            Err(e) => {
-                return serde_json::json!({
-                    "result": "Error",
-                    "data": format!("{:?}", e),
-                })
-                .to_string();
-            }
-        }
+        let part_config = serde_json::to_string(&efi_part.data)?;
+        Dbus::run(proxy, DbusMethod::SetConfig("efi_partition", &part_config)).await?;
     }
 
-    println!("{:?}", TOKIO.block_on(proxy.get_config("")));
+    println!("{:?}", proxy.get_config("").await?);
 
-    return serde_json::json!({
-        "result": "Ok",
-        "data": "",
-    })
-    .to_string();
+    Ok(())
 }
 
 #[tauri::command]
-fn get_recipe() -> String {
-    match RECIPE.get_or_try_init(|| TOKIO.block_on(utils::get_recpie())) {
-        Ok(s) => serde_json::json!({
-            "result": "Ok",
-            "data": s,
-        })
-        .to_string(),
-        Err(e) => serde_json::json!({
-            "result": "Error",
-            "data": format!("{:?}", e),
-        })
-        .to_string(),
-    }
+fn get_recipe() -> TauriResult<String> {
+    let recipe = RECIPE.get_or_try_init(|| TOKIO.block_on(utils::get_recpie()))?;
+
+    Ok(serde_json::to_string(recipe)?)
 }
 
 #[tauri::command]
-fn list_partitions(dev: &str) -> String {
+async fn list_partitions(dev: &str) -> TauriResult<String> {
     let proxy = PROXY.get().unwrap();
-    let res = TOKIO.block_on(proxy.get_list_partitions(dev));
+    let res = Dbus::run(proxy, DbusMethod::ListPpartitions(dev)).await?;
 
-    match res {
-        Ok(res) => res,
-        Err(e) => serde_json::json!({
-            "result": "Error",
-            "data": format!("{:?}", e),
-        })
-        .to_string(),
-    }
+    Ok(serde_json::to_string(&res.data)?)
 }
 
 #[tauri::command]
-fn get_recommend_swap_size() -> String {
+async fn get_recommend_swap_size() -> TauriResult<String> {
     let proxy = PROXY.get().unwrap();
-    let res = TOKIO.block_on(proxy.get_recommend_swap_size());
+    let res = Dbus::run(proxy, DbusMethod::GetRecommendSwapSize).await?;
 
-    match res {
-        Ok(res) => res,
-        Err(e) => serde_json::json!({
-            "result": "Error",
-            "data": format!("{:?}", e),
-        })
-        .to_string(),
-    }
+    Ok(serde_json::to_string(&res.data)?)
 }
 
 #[tauri::command]
-fn get_memory() -> String {
+async fn get_memory() -> TauriResult<String> {
     let proxy = PROXY.get().unwrap();
-    let res = TOKIO.block_on(proxy.get_memory());
+    let res = Dbus::run(proxy, DbusMethod::GetMemory).await?;
 
-    match res {
-        Ok(res) => res,
-        Err(e) => serde_json::json!({
-            "result": "Error",
-            "data": format!("{:?}", e),
-        })
-        .to_string(),
-    }
+    Ok(serde_json::to_string(&res.data)?)
+}
+
+#[derive(Debug, Deserialize)]
+enum ProgressStatus {
+    Pending,
+    Working(u8, f64, usize),
+    Error(Value),
 }
 
 fn main() {

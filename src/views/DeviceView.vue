@@ -17,13 +17,14 @@ export default {
   },
   methods: {},
   async created() {
-    const req = await invoke("list_devices");
-    const resp = JSON.parse(req);
-    if (resp.result == "Ok") {
-      this.devices = resp.data;
-    } else {
-      this.$router.push("/abort");
+    try {
+      const devices = await invoke("list_devices");
+      this.devices = JSON.parse(devices);
+    } catch (e) {
+      this.$router.replace("/error");
+      console.error(e);
     }
+  
     this.loading = false;
   }
 }

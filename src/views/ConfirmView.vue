@@ -17,8 +17,14 @@ export default {
   components: { DKBottomSteps },
   methods: {
     set_config: async function () {
-      const res = invoke("set_config", { config: JSON.stringify(this.config) });
-      console.log(res);
+      try {
+        const log = await invoke("set_config", { config: JSON.stringify(this.config) })
+        console.log(log);
+      }
+      catch (e) {
+        this.$router.replace("/error")
+        console.error(e);
+      }
     }
   }
 };
@@ -30,7 +36,7 @@ export default {
     <p>{{ $t("confirm.p1") }}</p>
     <ul>
       <i18n-t keypath="confirm.l1" tag="li">
-        <template v-slot:path>  
+        <template v-slot:path>
           <span class="emphasis">{{ config.partition.path }}</span>
         </template>
         <template v-slot:explain>
@@ -64,7 +70,7 @@ export default {
     </ul>
     <p>{{ $t("confirm.w1") }}</p>
   </div>
-  <DKBottomSteps :trigger="set_config"/>
+  <DKBottomSteps :trigger="set_config" />
 </template>
 
 <style scoped>

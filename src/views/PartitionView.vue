@@ -53,20 +53,26 @@ export default {
     launch_gparted: async function () {
       invoke("gparted");
       this.gparted = this.loading = true;
-      const req = await invoke("list_partitions", { dev: this.config.device.path });
-      const resp = JSON.parse(req);
-      if (resp.result == "Ok") {
-        this.partitions = resp.data;
+      try {
+        const partition = await invoke("list_partitions", { dev: this.config.device.path });
+        this.partitions = JSON.parse(partition);
+      } catch (e) {
+        console.error(e);
+        this.$router.replace("/error");
       }
+
       this.gparted = this.loading = false;
     },
   },
   async created() {
     const device = this.config.device.path;
-    const req = await invoke("list_partitions", { dev: device });
-    const resp = JSON.parse(req);
-    if (resp.result == "Ok") {
-      this.partitions = resp.data;
+    try {
+      const req = await invoke("list_partitions", { dev: device });
+      const resp = JSON.parse(req);
+      this.partitions = resp;
+    } catch (e) {
+      console.error(e);
+      this.$router.replace("/error");
     }
     this.loading = false;
   }

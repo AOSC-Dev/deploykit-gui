@@ -1,6 +1,7 @@
 <script>
 import DKStripButton from "@/components/DKStripButton.vue";
 import DKBottomActions from "@/components/DKBottomActions.vue";
+import { invoke } from "@tauri-apps/api";
 
 export default {
   data: function () {
@@ -39,15 +40,24 @@ export default {
       this.$ipc.call("exec_nowait", ["firefox"]);
     },
   },
-  mounted: function () {
+  mounted: async function () {
     this.current_slide = {
       title: this.slides[0].title,
       paras: this.slides[0].body.split("\n"),
     };
+
     this.timer = setInterval(this.next_slide, 6000);
-    this.$ipc.call("wait_install").then(() => {
-      this.$router.replace("/finish");
-    });
+
+    // const req = await invoke("start_install");
+    // const resp = JSON.parse(req);
+
+    // if (resp.result === "Error") {
+    //   this.$router.replace("/error");
+    // }
+
+    // this.$ipc.call("wait_install").then(() => {
+    //   this.$router.replace("/finish");
+    // });
   },
   beforeUnmount: function () {
     clearInterval(this.timer);
@@ -66,12 +76,7 @@ export default {
     </article>
   </div>
   <DKBottomActions>
-    <DKStripButton
-      omit_bline="1"
-      show_arrow="1"
-      :text="$t('install.firefox')"
-      @click="launch_ff"
-    >
+    <DKStripButton omit_bline="1" show_arrow="1" :text="$t('install.firefox')" @click="launch_ff">
       <img src="@/assets/web-browser-symbolic.svg" height="36" />
     </DKStripButton>
     <DKStripButton :text="$t('install.bgm-off')">

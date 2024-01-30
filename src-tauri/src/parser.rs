@@ -13,8 +13,6 @@ use nom::{
 use eyre::eyre;
 use serde::Serialize;
 
-use crate::ZoneInfoResult;
-
 #[inline]
 fn zone1970_single_line(input: &[u8]) -> IResult<&[u8], &[u8]> {
     let (input, (_, _, _, _, tz, _, _)) = tuple((
@@ -92,10 +90,5 @@ pub fn list_zoneinfo() -> eyre::Result<String> {
         },
     );
 
-    let v = serde_json::to_value(list)?;
-
-    Ok(serde_json::to_string(&ZoneInfoResult {
-        result: "Ok".to_owned(),
-        data: v,
-    })?)
+    Ok(serde_json::to_string(&list)?)
 }

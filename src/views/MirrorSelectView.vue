@@ -34,13 +34,15 @@ export default {
     },
   },
   async created () {
-    const req = await invoke("get_recipe");
-    const resp = JSON.parse(req);
-    if (resp.result == "Ok") {
-      let variants = resp.data.mirrors;
-      this.mirrors = variants;
-      this.loading = false;
+    try {
+      const data = await invoke("get_recipe");
+      this.mirrors = JSON.parse(data).mirrors;
+    } catch (e) {
+      this.$router.replace("/error");
+      console.error(e);
     }
+
+    this.loading = false;
   }
 };
 </script>

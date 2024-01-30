@@ -15,15 +15,18 @@ export default {
     };
   },
   async created() {
-    const req = await invoke("get_recipe");
-    const resp = JSON.parse(req);
-    if (resp.result == "Ok") {
-      let variants = resp.data.variants;
+    try {
+      const req = await invoke("get_recipe");
+      const resp = JSON.parse(req);
+      let variants = resp.variants;
       for (let i of variants) {
         i.title = i.name;
         i.body = i.description;
       }
       this.options = variants.filter((v) => !v.retro && v.name !== "BuildKit");
+    } catch (e) {
+      console.error(e);
+      this.$router.replace("/error");
     }
 
     this.loading = false;

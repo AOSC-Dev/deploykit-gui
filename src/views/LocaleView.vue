@@ -27,11 +27,15 @@ export default {
     },
   },
   async created() {
-    const req = await invoke("list_timezone");
-    const resp = JSON.parse(req);
-    if (resp.result == "Ok") {
-      this.timezones = resp.data;
+    try {
+      const data = await invoke("list_timezone");
+      console.log(data);
+      this.timezones = JSON.parse(data);
+    } catch (e) {
+      this.$router.replace("/error");
+      console.error(e);
     }
+
     this.loading = false;
   }
 };
