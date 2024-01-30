@@ -1,3 +1,5 @@
+use std::path::Path;
+
 use eyre::{eyre, Result};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
@@ -28,6 +30,7 @@ pub struct InstallConfig {
     pub variant: Variant,
     mirror: Mirror,
     pub partition: Partition,
+    pub efi_partition: Option<Partition>,
     pub user: String,
     pub pwd: String,
     pub hostname: String,
@@ -72,7 +75,7 @@ struct Mirror {
 #[derive(Deserialize, Serialize)]
 pub struct Partition {
     fs_type: String,
-    parent_path: Option<String>,
+    pub parent_path: Option<String>,
     path: Option<String>,
     size: u64,
 }
@@ -139,4 +142,9 @@ pub(crate) fn get_arch_name() -> Option<&'static str> {
         "loongarch64" => Some("loongarch64"),
         _ => None,
     }
+}
+
+pub fn is_efi() -> bool {
+    let efi_path = "/sys/firmware/efi";
+    Path::new(efi_path).exists()
 }
