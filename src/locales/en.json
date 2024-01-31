@@ -23,11 +23,12 @@
         "bgm-on": "Unmute BGM",
         "i1": "Formatting partitions...",
         "i2": "Downloading system release...",
-        "i3": "Verifying system release...",
-        "i4": "Unpacking system release...",
+        "i3": "Unpacking system release...",
+        "i4": "Generating fstab...",
         "i5": "Generating initramfs (initial RAM filesystem)...",
         "i6": "Installing and configuring GRUB bootloader...",
-        "i7": "Finalizing installation...",
+        "i7": "Generating SSH Key...",
+        "i8": "Finalizing installation...",
         "status": "Step {curr}/{total}: {msg} ({perc}%)"
     },
     "host": {

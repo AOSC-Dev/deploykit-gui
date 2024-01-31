@@ -290,6 +290,26 @@ async fn get_memory() -> TauriResult<String> {
     Ok(serde_json::to_string(&res.data)?)
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(tag = "status")]
+enum ProgressStatus {
+    Pending,
+    Working { step: u8, progress: f64, v: usize },
+    Error(Value),
+}
+
+#[derive(Debug, Serialize)]
+struct GuiProgress {
+    status: GuiProgressStatus,
+}
+
+#[derive(Debug, Serialize)]
+struct GuiProgressStatus {
+    c: u8,
+    t: u8,
+    p: f64,
+}
+
 #[tauri::command]
 async fn start_install(window: Window) -> TauriResult<()> {
     let proxy = PROXY.get().unwrap();
@@ -297,18 +317,24 @@ async fn start_install(window: Window) -> TauriResult<()> {
 
     loop {
         let progress = Dbus::run(proxy, DbusMethod::GetProgress).await?;
-        let data = progress.data;
-        window.emit("progress", &data).unwrap();
-        println!("emit:{:?}", data);
+        let data: ProgressStatus = serde_json::from_value(progress.data)?;
+        match data {
+            ProgressStatus::Working { step, progress, .. } => {
+                let data = GuiProgress {
+                    status: GuiProgressStatus {
+                        c: step,
+                        t: 8,
+                        p: progress,
+                    },
+                };
+                window.emit("progress", &data).unwrap();
+                println!("emit:{:?}", data);
+            }
+            _ => window.emit("progress", &data).unwrap(),
+        }
+
         thread::sleep(Duration::from_millis(100));
     }
-}
-
-#[derive(Debug, Deserialize)]
-enum ProgressStatus {
-    Pending,
-    Working(u8, f64, usize),
-    Error(Value),
 }
 
 fn main() {
