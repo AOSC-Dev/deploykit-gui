@@ -12,6 +12,8 @@ use serde_json::Value;
 use std::io;
 use std::io::ErrorKind;
 use std::process::Command;
+use std::thread;
+use std::time::Duration;
 use tauri::Window;
 use tokio::runtime::Runtime;
 use utils::is_efi;
@@ -298,6 +300,7 @@ async fn start_install(window: Window) -> TauriResult<()> {
         let data = progress.data;
         window.emit("progress", &data).unwrap();
         println!("emit:{:?}", data);
+        thread::sleep(Duration::from_millis(100));
     }
 }
 
