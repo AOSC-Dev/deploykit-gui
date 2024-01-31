@@ -18,8 +18,7 @@ export default {
   methods: {
     set_config: async function () {
       try {
-        const log = await invoke("set_config", { config: JSON.stringify(this.config) })
-        console.log(log);
+        await invoke("set_config", { config: JSON.stringify(this.config) })
       }
       catch (e) {
         this.$router.replace("/error")

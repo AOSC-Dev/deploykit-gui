@@ -2,6 +2,7 @@
 import DKStripButton from "@/components/DKStripButton.vue";
 import DKBottomActions from "@/components/DKBottomActions.vue";
 import { invoke } from "@tauri-apps/api";
+import { listen } from "@tauri-apps/api/event";
 
 export default {
   data: function () {
@@ -48,16 +49,22 @@ export default {
 
     this.timer = setInterval(this.next_slide, 6000);
 
-    // const req = await invoke("start_install");
-    // const resp = JSON.parse(req);
+    setTimeout(() => invoke("start_install"), 200);
 
-    // if (resp.result === "Error") {
-    //   this.$router.replace("/error");
-    // }
+    setTimeout(async () => {
+      await listen("progress", (event) => {
+        setTimeout(() => {
+          if (event.payload.status === "Pending") {
+            this.$router.replace("/finish");
+          } else if (event.payload.status === "Error") {
+            console.log(event.payload);
+            this.$router.replace("/error");
+          }
+          console.log(event.payload);
+        }, 200)
+      })
+    }, 200);
 
-    // this.$ipc.call("wait_install").then(() => {
-    //   this.$router.replace("/finish");
-    // });
   },
   beforeUnmount: function () {
     clearInterval(this.timer);

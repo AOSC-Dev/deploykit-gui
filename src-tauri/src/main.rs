@@ -12,6 +12,7 @@ use serde_json::Value;
 use std::io;
 use std::io::ErrorKind;
 use std::process::Command;
+use tauri::Window;
 use tokio::runtime::Runtime;
 use utils::is_efi;
 use utils::Recipe;
@@ -287,6 +288,19 @@ async fn get_memory() -> TauriResult<String> {
     Ok(serde_json::to_string(&res.data)?)
 }
 
+#[tauri::command]
+async fn start_install(window: Window) -> TauriResult<()> {
+    let proxy = PROXY.get().unwrap();
+    Dbus::run(proxy, DbusMethod::StartInstall).await?;
+
+    loop {
+        let progress = Dbus::run(proxy, DbusMethod::GetProgress).await?;
+        let data = progress.data;
+        window.emit("progress", &data).unwrap();
+        println!("emit:{:?}", data);
+    }
+}
+
 #[derive(Debug, Deserialize)]
 enum ProgressStatus {
     Pending,
@@ -324,6 +338,7 @@ fn main() {
             get_recommend_swap_size,
             get_memory,
             get_recipe,
+            start_install,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
