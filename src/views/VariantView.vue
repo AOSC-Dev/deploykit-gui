@@ -7,38 +7,35 @@ import { invoke } from "@tauri-apps/api";
 <script>
 export default {
   inject: ["config"],
-  loading: true,
   data: function () {
     return {
       options: [],
       selected: null,
     };
   },
-  async created() {
-    try {
-      const req = await invoke("get_recipe");
+  created() {
+    invoke("get_recipe").then((req) => {
       const resp = JSON.parse(req);
       let variants = resp.variants;
       for (let i of variants) {
         i.title = i.name;
         i.body = i.description;
       }
+
       this.options = variants.filter((v) => !v.retro && v.name !== "BuildKit");
-    } catch (e) {
+    }).catch((e) => {
       console.error(e);
       this.$router.replace("/error");
-    }
-
-    this.loading = false;
+    });
   }
-};
+}
 </script>
 
 <template>
   <div>
     <h1>{{ $t("variant.title") }}</h1>
     <p>{{ $t("variant.p1") }}</p>
-    <section v-if="!loading">
+    <section>
       <DKListSelect :selected="selected" :options="options" @update:selected="(v) => (selected = v)" />
     </section>
   </div>
