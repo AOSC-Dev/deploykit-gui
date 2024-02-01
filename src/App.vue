@@ -37,7 +37,7 @@ export default {
     },
     install_info: function () {
       const details = this.progress_detail;
-      if (!details.status) return "";
+      if (details.status && (details.status === "Pending" || details.status == "Error")) return "";
       const status = details.status;
       return this.$t("install.status", {
         curr: status.c,
