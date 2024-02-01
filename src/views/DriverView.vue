@@ -36,7 +36,7 @@ export default {
       <template>
         <a @click="open_eula" href="javascript:void(0);">
           {{ $t("driver.p1-1") }}
-          <img src="@/assets/open-fluent-icon.svg" height="14" />
+          <img src="@/../assets/open-fluent-icon.svg" height="14" />
         </a>
       </template>
     </i18n-t>

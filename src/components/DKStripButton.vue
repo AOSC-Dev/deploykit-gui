@@ -16,7 +16,7 @@ export default {
         <span>{{ text }}</span>
       </div>
     </div>
-    <img src="@/assets/open-fluent-icon.svg" height="14" v-if="show_arrow" />
+    <img src="@/../assets/open-fluent-icon.svg" height="14" v-if="show_arrow" />
   </button>
 </template>
 

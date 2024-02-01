@@ -7,7 +7,7 @@ import humanFormat from "human-format";
 
 import messages from "./locales/en.json";
 
-import "./assets/main.css";
+import "./../assets/main.css";
 
 const app = createApp(App);
 

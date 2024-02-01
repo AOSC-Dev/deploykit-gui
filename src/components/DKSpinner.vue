@@ -16,8 +16,8 @@ export default {
   <div class="rcenter">
     <div class="sp">
       <div style="display: block">
-        <img class="c1" height="70" src="@/assets/cog.svg" />
-        <img class="c2" height="35" src="@/assets/cog.svg" />
+        <img class="c1" height="70" src="@/../assets/cog.svg" />
+        <img class="c2" height="35" src="@/../assets/cog.svg" />
       </div>
       <h2 style="text-align: center">{{ title }}</h2>
       <button

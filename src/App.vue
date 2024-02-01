@@ -109,7 +109,7 @@ export default {
   <div style="padding: 0 2rem; margin-bottom: 1rem">
     <button class="quit-button" style="padding-top: 1rem" :aria-label="$t('d.sr-close')" @click="on_abort"
       @keyup.enter="on_abort" :disabled="!can_quit" v-show="lang_selected">
-      <img :alt="$t('d.sr-close-icon')" src="@/assets/window-close-symbolic.svg" width="30" height="30" />
+      <img :alt="$t('d.sr-close-icon')" src="@/../assets/window-close-symbolic.svg" width="30" height="30" />
     </button>
     <header style="width: 90%" :class="lightup_seq(1)">
       <DKLogo />

@@ -59,7 +59,7 @@ button[disabled].button:hover {
 }
 
 .no-limit-height {
-  max-height: 100%;
+  height: 100%;
 }
 
 ::-webkit-scrollbar {

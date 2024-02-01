@@ -17,13 +17,13 @@ import DKStripButton from "@/components/DKStripButton.vue";
       :text="$t('abort.resume')"
       @click="$router.back()"
     >
-      <img src="@/assets/resume.svg" height="36" />
+      <img src="@/../assets/resume.svg" height="36" />
     </DKStripButton>
     <DKStripButton omit_bline="1" :text="$t('abort.save')">
-      <img src="@/assets/document-save.svg" height="36" />
+      <img src="@/../assets/document-save.svg" height="36" />
     </DKStripButton>
     <DKStripButton :text="$t('abort.quit')">
-      <img src="@/assets/exit-run.svg" height="36" />
+      <img src="@/../assets/exit-run.svg" height="36" />
     </DKStripButton>
   </DKBottomActions>
 </template>

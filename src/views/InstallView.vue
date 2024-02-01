@@ -83,10 +83,10 @@ export default {
   </div>
   <DKBottomActions>
     <DKStripButton omit_bline="1" show_arrow="1" :text="$t('install.firefox')" @click="launch_ff">
-      <img src="@/assets/web-browser-symbolic.svg" height="36" />
+      <img src="@/../assets/web-browser-symbolic.svg" height="36" />
     </DKStripButton>
     <DKStripButton :text="$t('install.bgm-off')">
-      <img src="@/assets/audio-volume-muted.svg" height="36" />
+      <img src="@/../assets/audio-volume-muted.svg" height="36" />
     </DKStripButton>
   </DKBottomActions>
 </template>

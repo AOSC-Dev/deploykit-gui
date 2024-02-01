@@ -19,7 +19,7 @@ export default {
       style="align-self: center"
       alt="AOSC logo"
       class="logo"
-      src="@/assets/aosc-logo-core.svg"
+      src="@/../assets/aosc-os.svg"
       width="32"
       height="32"
     />

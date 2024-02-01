@@ -67,7 +67,7 @@ export default {
   </div>
   <DKBottomActions v-if="!loading">
     <DKStripButton :text="$t('mirror.b2')" @click="run_bench">
-      <img src="@/assets/histogram-symbolic.svg" height="36" />
+      <img src="@/../assets/histogram-symbolic.svg" height="36" />
     </DKStripButton>
     <DKStepButtons :trigger="() => (config.mirror = mirrors[selected])" :can_proceed="selected != null" />
   </DKBottomActions>
