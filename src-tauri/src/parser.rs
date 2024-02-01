@@ -63,7 +63,7 @@ pub struct ZoneInfo {
     data: String,
 }
 
-pub fn list_zoneinfo() -> eyre::Result<String> {
+pub fn list_zoneinfo() -> eyre::Result<Vec<ZoneInfo>> {
     let s = fs::read("/usr/share/zoneinfo/zone1970.tab")?;
 
     let mut list = list_zoneinfo_inner(&s)
@@ -90,5 +90,5 @@ pub fn list_zoneinfo() -> eyre::Result<String> {
         },
     );
 
-    Ok(serde_json::to_string(&list)?)
+    Ok(list)
 }

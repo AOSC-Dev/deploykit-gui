@@ -4,6 +4,7 @@
 use eyre::bail;
 use eyre::Result;
 use parser::list_zoneinfo;
+use parser::ZoneInfo;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
@@ -137,21 +138,15 @@ fn gparted() -> TauriResult<()> {
 }
 
 #[tauri::command]
-async fn list_devices(state: State<'_, DkState<'_>>) -> TauriResult<String> {
+async fn list_devices(state: State<'_, DkState<'_>>) -> TauriResult<Value> {
     let proxy = &state.proxy;
     let res = Dbus::run(proxy, DbusMethod::ListDevice).await?;
 
-    Ok(serde_json::to_string(&res.data)?)
-}
-
-#[derive(Debug, Serialize)]
-pub struct ZoneInfoResult {
-    pub result: String,
-    pub data: Value,
+    Ok(res.data)
 }
 
 #[tauri::command]
-fn list_timezone() -> TauriResult<String> {
+fn list_timezone() -> TauriResult<Vec<ZoneInfo>> {
     Ok(list_zoneinfo()?)
 }
 
@@ -249,42 +244,40 @@ async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<
 }
 
 #[tauri::command]
-async fn get_recipe(state: State<'_, DkState<'_>>) -> TauriResult<String> {
+async fn get_recipe(state: State<'_, DkState<'_>>) -> TauriResult<Recipe> {
     let mut lock = state.recipe.lock().await;
 
-    let recipe = match &*lock {
-        Some(r) => r.to_owned(),
+    match &*lock {
+        Some(r) => Ok(r.to_owned()),
         None => {
             let recipe = utils::get_recpie().await?;
             *lock = Some(recipe.clone());
-            recipe
+            Ok(recipe)
         }
-    };
-
-    Ok(serde_json::to_string(&recipe)?)
+    }
 }
 
 #[tauri::command]
-async fn list_partitions(state: State<'_, DkState<'_>>, dev: &str) -> TauriResult<String> {
+async fn list_partitions(state: State<'_, DkState<'_>>, dev: &str) -> TauriResult<Value> {
     let res = Dbus::run(&state.proxy, DbusMethod::ListPpartitions(dev)).await?;
 
-    Ok(serde_json::to_string(&res.data)?)
+    Ok(res.data)
 }
 
 #[tauri::command]
-async fn get_recommend_swap_size(state: State<'_, DkState<'_>>) -> TauriResult<String> {
+async fn get_recommend_swap_size(state: State<'_, DkState<'_>>) -> TauriResult<Value> {
     let proxy = &state.proxy;
     let res = Dbus::run(proxy, DbusMethod::GetRecommendSwapSize).await?;
 
-    Ok(serde_json::to_string(&res.data)?)
+    Ok(res.data)
 }
 
 #[tauri::command]
-async fn get_memory(state: State<'_, DkState<'_>>) -> TauriResult<String> {
+async fn get_memory(state: State<'_, DkState<'_>>) -> TauriResult<Value> {
     let proxy = &state.proxy;
     let res = Dbus::run(proxy, DbusMethod::GetMemory).await?;
 
-    Ok(serde_json::to_string(&res.data)?)
+    Ok(res.data)
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -349,7 +342,9 @@ fn main() {
         let conn = Connection::system()
             .await
             .expect("Failed to connect to system bus");
-        DeploykitProxy::new(&conn).await.expect("Failed to create Deploykit dbus proxy")
+        DeploykitProxy::new(&conn)
+            .await
+            .expect("Failed to create Deploykit dbus proxy")
     });
 
     tauri::Builder::default()
