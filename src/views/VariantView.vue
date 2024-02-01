@@ -15,8 +15,7 @@ export default {
   },
   created() {
     invoke("get_recipe").then((req) => {
-      const resp = JSON.parse(req);
-      let variants = resp.variants;
+      let variants = req.variants;
       for (let i of variants) {
         i.title = i.name;
         i.body = i.description;

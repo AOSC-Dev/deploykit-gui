@@ -31,11 +31,8 @@ export default {
       const req_ram_size = await invoke("get_memory");
       const req_rec_swap_size = await invoke("get_recommend_swap_size");
 
-      const resp_ram_size = JSON.parse(req_ram_size);
-      const resp_rec_swap_size = JSON.parse(req_rec_swap_size);
-
-      this.ram_size = resp_ram_size;
-      this.rec_size = resp_rec_swap_size;
+      this.ram_size = req_ram_size;
+      this.rec_size = req_rec_swap_size;
       this.size = rec_size_gb(this.rec_size);
     } catch (e) {
       console.error(e);

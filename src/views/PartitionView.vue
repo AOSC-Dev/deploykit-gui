@@ -55,7 +55,7 @@ export default {
       this.gparted = this.loading = true;
       try {
         const partition = await invoke("list_partitions", { dev: this.config.device.path });
-        this.partitions = JSON.parse(partition);
+        this.partitions = partition;
       } catch (e) {
         console.error(e);
         this.$router.replace("/error");
@@ -68,7 +68,7 @@ export default {
     const device = this.config.device.path;
     try {
       const req = await invoke("list_partitions", { dev: device });
-      const resp = JSON.parse(req);
+      const resp = req;
       this.partitions = resp;
     } catch (e) {
       console.error(e);

@@ -19,7 +19,7 @@ export default {
   async created() {
     try {
       const devices = await invoke("list_devices");
-      this.devices = JSON.parse(devices);
+      this.devices = devices;
     } catch (e) {
       this.$router.replace("/error");
       console.error(e);

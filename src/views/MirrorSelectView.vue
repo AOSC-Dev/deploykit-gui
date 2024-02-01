@@ -36,7 +36,7 @@ export default {
   async created () {
     try {
       const data = await invoke("get_recipe");
-      this.mirrors = JSON.parse(data).mirrors;
+      this.mirrors = data.mirrors;
     } catch (e) {
       this.$router.replace("/error");
       console.error(e);

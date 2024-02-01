@@ -30,7 +30,7 @@ export default {
     try {
       const data = await invoke("list_timezone");
       console.log(data);
-      this.timezones = JSON.parse(data);
+      this.timezones = data;
     } catch (e) {
       this.$router.replace("/error");
       console.error(e);
