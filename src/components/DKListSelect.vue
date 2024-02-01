@@ -15,7 +15,7 @@ export default {
 </script>
 
 <template>
-  <div class="list-container" :class="{ 'limit-height': is_limit_height }">
+  <div class="list-container" :class="{ 'limit-height': is_limit_height, 'no-limit-height': !is_limit_height }">
     <button v-for="(option, index) in options" v-bind:key="option.title"
       :class="(index === selected ? 'selected ' : ' ') + 'button'" :disabled="option.disabled" @click="select(index)"
       @keyup.enter="select(index)" @keyup.space="select(index)">
@@ -58,18 +58,23 @@ button[disabled].button:hover {
   max-height: 45vh;
 }
 
-.list-container::-webkit-scrollbar {
+.no-limit-height {
+  max-height: 100%;
+}
+
+::-webkit-scrollbar {
   display: flex;
 }
 
-.list-container::-webkit-scrollbar {
+/* ref: https://www.jianshu.com/p/c2addb233acd*/
+::-webkit-scrollbar {
   /*滚动条整体样式*/
   width: 10px;
   /*高宽分别对应横竖滚动条的尺寸*/
   height: 1px;
 }
 
-.list-container::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   /*滚动条里面小方块*/
   border-radius: 10px;
   background-color: skyblue;
@@ -83,7 +88,7 @@ button[disabled].button:hover {
       transparent);
 }
 
-.list-container::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   /*滚动条里面轨道*/
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
   background: #ededed;
