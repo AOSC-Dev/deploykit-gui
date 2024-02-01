@@ -55,8 +55,6 @@ export default {
         <template #item="option">
           <div>
             <span><b>{{ option.name }}</b></span>
-            &nbsp;
-            <span>({{ option.region }})</span>
           </div>
         </template>
       </DKListSelect>
