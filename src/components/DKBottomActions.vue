@@ -6,9 +6,11 @@
 
 <style scoped>
 .bottom-bar {
-  position: absolute;
+  /* position: absolute; */
   bottom: 0;
   margin-bottom: 1rem;
+  margin-top: 1rem;
   width: 100%;
+
 }
 </style>
