@@ -36,7 +36,7 @@ export default {
   async created() {
     try {
       const data = await invoke("get_recipe");
-      this.mirrors = data.mirrors.sort((a, b) => a > b ? -1 : 1);
+      this.mirrors = data.mirrors.sort((a, b) => a.name > b.name ? 1 : -1);
       this.loading = false;
     } catch (e) {
       this.$router.replace("/error");
