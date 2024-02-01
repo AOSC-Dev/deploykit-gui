@@ -22,8 +22,8 @@ export default {
         i.title = i.name;
         i.body = i.description;
       }
-
-      this.options = variants.filter((v) => !v.retro && v.name !== "BuildKit");
+  
+      this.options = variants.filter((v) => !v.retro && v.name !== "BuildKit").sort((a, b) => a.name > b.name ? 1 : -1);
       this.loading = false;
     }).catch((e) => {
       console.error(e);
