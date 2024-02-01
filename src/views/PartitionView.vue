@@ -85,7 +85,7 @@ export default {
     <section v-if="!new_disk">
       <p>{{ $t("part.p1") }}</p>
       <section>
-        <DKListSelect :no_margin="true" v-model:selected="selected" :options="partitions">
+        <DKListSelect :no_margin="true" v-model:selected="selected" :options="partitions" :is_limit_height="true">
           <template #item="option">
             <div style="width: 100%">
               <span class="column-85">{{ option.path }}</span>

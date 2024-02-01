@@ -4,6 +4,7 @@ export default {
     options: Array,
     selected: Number,
     no_margin: Boolean,
+    is_limit_height: Boolean,
   },
   methods: {
     select: function (index) {
@@ -14,25 +15,16 @@ export default {
 </script>
 
 <template>
-  <div class="list-container">
-    <button
-      v-for="(option, index) in options"
-      v-bind:key="option.title"
-      :class="(index === selected ? 'selected ' : ' ') + 'button'"
-      :disabled="option.disabled"
-      @click="select(index)"
-      @keyup.enter="select(index)"
-      @keyup.space="select(index)"
-    >
+  <div class="list-container" :class="{ 'limit-height': is_limit_height }">
+    <button v-for="(option, index) in options" v-bind:key="option.title"
+      :class="(index === selected ? 'selected ' : ' ') + 'button'" :disabled="option.disabled" @click="select(index)"
+      @keyup.enter="select(index)" @keyup.space="select(index)">
       <div :class="'button-box' + (no_margin ? '' : ' use-margin')">
         <slot name="item" v-bind="option">
           <h2 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem">
             {{ option.title }}
           </h2>
-          <p
-            style="font-size: 0.88rem; line-height: 1.2"
-            :class="option.hl ? 'hl-msg' : ''"
-          >
+          <p style="font-size: 0.88rem; line-height: 1.2" :class="option.hl ? 'hl-msg' : ''">
             {{ option.body }}
           </p>
         </slot>
@@ -56,6 +48,46 @@ button.button.selected .hl-msg {
 
 button[disabled].button:hover {
   background: transparent;
+}
+
+.list-container {
+  overflow-y: auto;
+}
+
+.limit-height {
+  max-height: 45vh;
+}
+
+.list-container::-webkit-scrollbar {
+  display: flex;
+}
+
+.list-container::-webkit-scrollbar {
+  /*滚动条整体样式*/
+  width: 10px;
+  /*高宽分别对应横竖滚动条的尺寸*/
+  height: 1px;
+}
+
+.list-container::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  border-radius: 10px;
+  background-color: skyblue;
+  background-image: -webkit-linear-gradient(45deg,
+      rgba(255, 255, 255, 0.2) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.2) 75%,
+      transparent 75%,
+      transparent);
+}
+
+.list-container::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #ededed;
+  border-radius: 10px;
 }
 
 .list-container button {

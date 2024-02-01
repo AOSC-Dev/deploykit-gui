@@ -50,8 +50,8 @@ export default {
   <div v-if="!loading">
     <h1>{{ $t("mirror.title") }}</h1>
     <p>{{ $t("mirror.p2") }}</p>
-    <section style="max-height: 50vh; overflow-y: scroll">
-      <DKListSelect :no_margin="true" :options="mirrors" v-model:selected="selected">
+    <section class="mirror-select">
+      <DKListSelect :no_margin="true" :options="mirrors" v-model:selected="selected" :is_limit_height=true>
         <template #item="option">
           <div>
             <span><b>{{ option.name }}</b></span>
@@ -77,4 +77,5 @@ export default {
 span b {
   font-weight: 600;
 }
+
 </style>

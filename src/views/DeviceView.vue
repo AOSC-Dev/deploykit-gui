@@ -34,7 +34,7 @@ export default {
   <div v-if="!loading">
     <p>{{ $t("part.p1") }}</p>
     <section>
-      <DKListSelect :no_margin="true" v-model:selected="selected" :options="devices">
+      <DKListSelect :no_margin="true" v-model:selected="selected" :is_limit_height="true" :options="devices">
         <template #item="option">
           <div style="width: 100%">
             <span class="column-85">{{ option.path }}</span>

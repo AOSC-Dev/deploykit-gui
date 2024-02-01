@@ -38,7 +38,7 @@ export default {
     <h1>{{ $t("variant.title") }}</h1>
     <p>{{ $t("variant.p1") }}</p>
     <section>
-      <DKListSelect :selected="selected" :options="options" @update:selected="(v) => (selected = v)" />
+      <DKListSelect :selected="selected" :options="options" :is_limit_height=true @update:selected="(v) => (selected = v)" />
     </section>
   </div>
   <div class="loading" v-else>
