@@ -735,6 +735,7 @@ name = "deploykit-gui"
 version = "0.0.0"
 dependencies = [
  "eyre",
+ "libc",
  "nom",
  "reqwest",
  "serde",

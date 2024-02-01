@@ -38,7 +38,7 @@ export default {
       }, 200);
     },
     launch_ff: function () {
-      this.$ipc.call("exec_nowait", ["firefox"]);
+      invoke("firefox").catch((e) => console.error(e));
     },
   },
   mounted: async function () {

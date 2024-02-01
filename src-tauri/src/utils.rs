@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::{io, path::Path, process::{Command, Stdio}};
 
 use eyre::{eyre, Result};
 use reqwest::Client;
@@ -147,4 +147,40 @@ pub(crate) fn get_arch_name() -> Option<&'static str> {
 pub fn is_efi() -> bool {
     let efi_path = "/sys/firmware/efi";
     Path::new(efi_path).exists()
+}
+
+pub trait CommandExt {
+    fn spawn_detached(&mut self) -> io::Result<()>;
+}
+
+impl CommandExt for Command {
+    fn spawn_detached(&mut self) -> io::Result<()> {
+        // This is pretty much lifted from the implementation in Alacritty:
+        // https://github.com/alacritty/alacritty/blob/b9c886872d1202fc9302f68a0bedbb17daa35335/alacritty/src/daemon.rs
+
+        self.stdin(Stdio::null())
+            .stdout(Stdio::null())
+            .stderr(Stdio::null());
+
+        #[cfg(unix)]
+        unsafe {
+            use std::os::unix::process::CommandExt as _;
+
+            self.pre_exec(move || {
+                match libc::fork() {
+                    -1 => return Err(io::Error::last_os_error()),
+                    0 => (),
+                    _ => libc::_exit(0),
+                }
+
+                if libc::setsid() == -1 {
+                    return Err(io::Error::last_os_error());
+                }
+
+                Ok(())
+            });
+        }
+
+        self.spawn().map(|_| ())
+    }
 }

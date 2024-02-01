@@ -24,6 +24,7 @@ use zbus::Result as zResult;
 
 use crate::utils::get_download_info;
 use crate::utils::handle_serde_config;
+use crate::utils::CommandExt;
 
 mod parser;
 mod utils;
@@ -119,6 +120,8 @@ enum DeploykitGuiError {
     Eyre(#[from] eyre::Error),
     #[error(transparent)]
     SerdeJson(#[from] serde_json::Error),
+    #[error(transparent)]
+    Join(#[from] tokio::task::JoinError),
 }
 
 impl Serialize for DeploykitGuiError {
@@ -280,6 +283,15 @@ async fn get_memory(state: State<'_, DkState<'_>>) -> TauriResult<Value> {
     Ok(res.data)
 }
 
+#[tauri::command]
+async fn firefox() -> TauriResult<()> {
+    tokio::task::spawn_blocking(|| {
+        Command::new("firefox").spawn_detached()
+    }).await??;
+
+    Ok(())
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "status")]
 enum ProgressStatus {
@@ -362,6 +374,7 @@ fn main() {
             get_memory,
             get_recipe,
             start_install,
+            firefox,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
