@@ -11,7 +11,8 @@
     },
     "variant": {
         "title": "Variants",
-        "p1": "Please select from below your desired distribution."
+        "p1": "Please select from below your desired distribution.",
+        "l1": "Fetching mirrors metadata..."
     },
     "error": {
         "title": "Error",

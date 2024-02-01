@@ -33,16 +33,15 @@ export default {
       });
     },
   },
-  async created () {
+  async created() {
     try {
       const data = await invoke("get_recipe");
       this.mirrors = data.mirrors;
+      this.loading = false;
     } catch (e) {
       this.$router.replace("/error");
       console.error(e);
     }
-
-    this.loading = false;
   }
 };
 </script>
@@ -50,8 +49,8 @@ export default {
 <template>
   <div v-if="!loading">
     <h1>{{ $t("mirror.title") }}</h1>
-      <p>{{ $t("mirror.p2") }}</p>
-      <section style="max-height: 50vh; overflow-y: scroll">
+    <p>{{ $t("mirror.p2") }}</p>
+    <section style="max-height: 50vh; overflow-y: scroll">
       <DKListSelect :no_margin="true" :options="mirrors" v-model:selected="selected">
         <template #item="option">
           <div>
@@ -72,9 +71,7 @@ export default {
     <DKStripButton :text="$t('mirror.b2')" @click="run_bench">
       <img src="@/assets/histogram-symbolic.svg" height="36" />
     </DKStripButton>
-    <DKStepButtons
-      :trigger="() => (config.mirror = mirrors[selected])"
-      :can_proceed="selected != null"/>
+    <DKStepButtons :trigger="() => (config.mirror = mirrors[selected])" :can_proceed="selected != null" />
   </DKBottomActions>
 </template>
 
