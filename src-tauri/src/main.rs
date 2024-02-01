@@ -3,8 +3,6 @@
 
 use eyre::bail;
 use eyre::Result;
-use once_cell::sync::Lazy;
-use once_cell::sync::OnceCell;
 use parser::list_zoneinfo;
 use serde::Deserialize;
 use serde::Serialize;
@@ -14,8 +12,9 @@ use std::io::ErrorKind;
 use std::process::Command;
 use std::thread;
 use std::time::Duration;
+use tauri::State;
 use tauri::Window;
-use tokio::runtime::Runtime;
+use tokio::sync::Mutex;
 use utils::is_efi;
 use utils::Recipe;
 use zbus::dbus_proxy;
@@ -107,16 +106,6 @@ impl Dbus {
     }
 }
 
-static TOKIO: Lazy<Runtime> = Lazy::new(|| {
-    tokio::runtime::Builder::new_multi_thread()
-        .enable_all()
-        .build()
-        .unwrap()
-});
-
-static PROXY: OnceCell<DeploykitProxy> = OnceCell::new();
-static RECIPE: OnceCell<Recipe> = OnceCell::new();
-
 type TauriResult<T> = std::result::Result<T, DeploykitGuiError>;
 
 #[derive(Debug, thiserror::Error)]
@@ -148,8 +137,8 @@ fn gparted() -> TauriResult<()> {
 }
 
 #[tauri::command]
-async fn list_devices() -> TauriResult<String> {
-    let proxy = PROXY.get().unwrap();
+async fn list_devices(state: State<'_, DkState<'_>>) -> TauriResult<String> {
+    let proxy = &state.proxy;
     let res = Dbus::run(proxy, DbusMethod::ListDevice).await?;
 
     Ok(serde_json::to_string(&res.data)?)
@@ -167,8 +156,8 @@ fn list_timezone() -> TauriResult<String> {
 }
 
 #[tauri::command]
-async fn set_config(config: &str) -> TauriResult<()> {
-    let proxy = PROXY.get().unwrap();
+async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<()> {
+    let proxy = &state.proxy;
     let config = handle_serde_config(config)?;
 
     let (url, sha256sum) = get_download_info(&config)?;
@@ -186,13 +175,13 @@ async fn set_config(config: &str) -> TauriResult<()> {
     )
     .await?;
     Dbus::run(
-        proxy,
+        &proxy,
         DbusMethod::SetConfig("locale", &config.locale.locale),
     )
     .await?;
 
     Dbus::run(
-        proxy,
+        &proxy,
         DbusMethod::SetConfig(
             "user",
             &serde_json::json! {{
@@ -205,14 +194,14 @@ async fn set_config(config: &str) -> TauriResult<()> {
     .await?;
 
     Dbus::run(
-        proxy,
+        &proxy,
         DbusMethod::SetConfig("timezone", &config.timezone.data),
     )
     .await?;
 
-    Dbus::run(proxy, DbusMethod::SetConfig("hostname", &config.hostname)).await?;
+    Dbus::run(&proxy, DbusMethod::SetConfig("hostname", &config.hostname)).await?;
     Dbus::run(
-        proxy,
+        &proxy,
         DbusMethod::SetConfig("rtc_as_localtime", &(!config.rtc_utc).to_string()),
     )
     .await?;
@@ -225,19 +214,19 @@ async fn set_config(config: &str) -> TauriResult<()> {
         .to_string(),
     };
 
-    Dbus::run(proxy, DbusMethod::SetConfig("swapfile", &swap_config)).await?;
+    Dbus::run(&proxy, DbusMethod::SetConfig("swapfile", &swap_config)).await?;
 
     let part_config = serde_json::to_string(&config.partition)?;
 
     Dbus::run(
-        proxy,
+        &proxy,
         DbusMethod::SetConfig("target_partition", &part_config),
     )
     .await?;
 
     if let Some(efi) = config.efi_partition {
         let part_config = serde_json::to_string(&efi)?;
-        Dbus::run(proxy, DbusMethod::SetConfig("efi_partition", &part_config)).await?;
+        Dbus::run(&proxy, DbusMethod::SetConfig("efi_partition", &part_config)).await?;
     } else if is_efi() {
         let parent_path = config.partition.parent_path;
 
@@ -248,10 +237,10 @@ async fn set_config(config: &str) -> TauriResult<()> {
             )));
         }
         let efi_part =
-            Dbus::run(proxy, DbusMethod::FindEspPartition(&parent_path.unwrap())).await?;
+            Dbus::run(&proxy, DbusMethod::FindEspPartition(&parent_path.unwrap())).await?;
 
         let part_config = serde_json::to_string(&efi_part.data)?;
-        Dbus::run(proxy, DbusMethod::SetConfig("efi_partition", &part_config)).await?;
+        Dbus::run(&proxy, DbusMethod::SetConfig("efi_partition", &part_config)).await?;
     }
 
     println!("{:?}", proxy.get_config("").await?);
@@ -260,31 +249,39 @@ async fn set_config(config: &str) -> TauriResult<()> {
 }
 
 #[tauri::command]
-fn get_recipe() -> TauriResult<String> {
-    let recipe = RECIPE.get_or_try_init(|| TOKIO.block_on(utils::get_recpie()))?;
+async fn get_recipe(state: State<'_, DkState<'_>>) -> TauriResult<String> {
+    let mut lock = state.recipe.lock().await;
 
-    Ok(serde_json::to_string(recipe)?)
+    let recipe = match &*lock {
+        Some(r) => r.to_owned(),
+        None => {
+            let recipe = utils::get_recpie().await?;
+            *lock = Some(recipe.clone());
+            recipe
+        }
+    };
+
+    Ok(serde_json::to_string(&recipe)?)
 }
 
 #[tauri::command]
-async fn list_partitions(dev: &str) -> TauriResult<String> {
-    let proxy = PROXY.get().unwrap();
-    let res = Dbus::run(proxy, DbusMethod::ListPpartitions(dev)).await?;
+async fn list_partitions(state: State<'_, DkState<'_>>, dev: &str) -> TauriResult<String> {
+    let res = Dbus::run(&state.proxy, DbusMethod::ListPpartitions(dev)).await?;
 
     Ok(serde_json::to_string(&res.data)?)
 }
 
 #[tauri::command]
-async fn get_recommend_swap_size() -> TauriResult<String> {
-    let proxy = PROXY.get().unwrap();
+async fn get_recommend_swap_size(state: State<'_, DkState<'_>>) -> TauriResult<String> {
+    let proxy = &state.proxy;
     let res = Dbus::run(proxy, DbusMethod::GetRecommendSwapSize).await?;
 
     Ok(serde_json::to_string(&res.data)?)
 }
 
 #[tauri::command]
-async fn get_memory() -> TauriResult<String> {
-    let proxy = PROXY.get().unwrap();
+async fn get_memory(state: State<'_, DkState<'_>>) -> TauriResult<String> {
+    let proxy = &state.proxy;
     let res = Dbus::run(proxy, DbusMethod::GetMemory).await?;
 
     Ok(serde_json::to_string(&res.data)?)
@@ -311,8 +308,8 @@ struct GuiProgressStatus {
 }
 
 #[tauri::command]
-async fn start_install(window: Window) -> TauriResult<()> {
-    let proxy = PROXY.get().unwrap();
+async fn start_install(window: Window, state: State<'_, DkState<'_>>) -> TauriResult<()> {
+    let proxy = &state.proxy;
     Dbus::run(proxy, DbusMethod::StartInstall).await?;
 
     loop {
@@ -337,27 +334,29 @@ async fn start_install(window: Window) -> TauriResult<()> {
     }
 }
 
-fn main() {
-    // init tokio runtime
-    let tokio = &*TOKIO;
+struct DkState<'a> {
+    recipe: Mutex<Option<Recipe>>,
+    proxy: DeploykitProxy<'a>,
+}
 
-    // init dbus proxy
-    PROXY.get_or_init(move || {
-        tokio.block_on(async {
-            let conn = Connection::system()
-                .await
-                .expect("Failed to connect to system bus");
-            DeploykitProxy::new(&conn)
-                .await
-                .expect("Failed to create dbus proxy for io.aosc.Deploykit1")
-        })
+fn main() {
+    let tokio = tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()
+        .unwrap();
+
+    let proxy = tokio.block_on(async {
+        let conn = Connection::system()
+            .await
+            .expect("Failed to connect to system bus");
+        DeploykitProxy::new(&conn).await.expect("Failed to create Deploykit dbus proxy")
     });
 
-    let proxy = &*PROXY.get().unwrap();
-
-    println!("{:?}", TOKIO.block_on(proxy.get_config("")));
-
     tauri::Builder::default()
+        .manage(DkState {
+            recipe: Mutex::new(None),
+            proxy,
+        })
         .invoke_handler(tauri::generate_handler![
             set_config,
             list_devices,
