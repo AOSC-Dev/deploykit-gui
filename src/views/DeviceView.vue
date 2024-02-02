@@ -38,7 +38,7 @@ export default {
       <DKListSelect :no_margin="true" v-model:selected="selected" :is_limit_height="true" :options="devices">
         <template #item="option">
           <div style="width: 100%">
-            <span class="column-80">{{ option.path }}</span>
+            <span class="column-80">{{ option.model }} ({{ option.path }})</span>
             <span class="column-20">{{  humanSize(option.size) }}</span>
           </div>
         </template>
