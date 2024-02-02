@@ -54,7 +54,7 @@ export default {
     setTimeout(async () => {
       await listen("progress", (event) => {
         setTimeout(() => {
-          if (event.payload.status === "Pending") {
+          if (event.payload.status === "Finish") {
             this.$router.replace("/finish");
           } else if (event.payload.status === "Error") {
             console.log(event.payload);

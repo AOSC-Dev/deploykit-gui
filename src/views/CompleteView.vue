@@ -1,24 +1,40 @@
 <script setup>
 import DKBottomActions from "@/components/DKBottomActions.vue";
 import DKBottomRightButtons from "@/components/DKBottomRightButtons.vue";
+import DKSpinner from "@/components/DKSpinner.vue";
 </script>
 
 <script>
+import { invoke } from "@tauri-apps/api";
 export default {
+  data: function () {
+    return {
+      exiting: false,
+    }
+  },
   methods: {
-    finish: function () {
-      this.$ipc.call("finish").then(window.close);
+    finish: async function () {
+      this.exiting = true;
+      try {
+        await invoke("cancel_install_and_exit", { resetConfig: true });
+      } catch (e) {
+        console.error(e);
+      }
     },
   },
 };
 </script>
 
 <template>
-  <div>
+  <div v-if="!exiting">
     <h1>{{ $t("finish.title") }}</h1>
     <p>{{ $t("finish.p1") }}</p>
     <p>{{ $t("finish.p2") }}</p>
     <p>{{ $t("finish.p3") }}</p>
+  </div>
+  <div class="loading" v-else>
+    <h1>{{ $t("exiting.t1") }}</h1>
+    <DKSpinner :title="$t('exiting.l1')" />
   </div>
   <DKBottomActions>
     <DKBottomRightButtons>

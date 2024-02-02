@@ -8,8 +8,10 @@ use parser::ZoneInfo;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
+use tokio::time::sleep;
 use std::io;
 use std::io::ErrorKind;
+use std::process;
 use std::process::Command;
 use std::thread;
 use std::time::Duration;
@@ -47,6 +49,7 @@ trait Deploykit {
     async fn get_recommend_swap_size(&self) -> zResult<String>;
     async fn get_memory(&self) -> zResult<String>;
     async fn find_esp_partition(&self, dev: &str) -> zResult<String>;
+    async fn cancel_install(&self) -> zResult<String>;
 }
 
 #[derive(Debug, Deserialize)]
@@ -67,6 +70,8 @@ enum DbusMethod<'a> {
     ListDevice,
     GetRecommendSwapSize,
     GetMemory,
+    CancelInstall,
+    ResetConfig,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Eq)]
@@ -101,6 +106,8 @@ impl Dbus {
             DbusMethod::ListDevice => proxy.get_list_devices().await?,
             DbusMethod::GetRecommendSwapSize => proxy.get_recommend_swap_size().await?,
             DbusMethod::GetMemory => proxy.get_memory().await?,
+            DbusMethod::CancelInstall => proxy.cancel_install().await?,
+            DbusMethod::ResetConfig => proxy.reset_config().await?,
         };
 
         let res = Self::try_from(s)?;
@@ -285,11 +292,30 @@ async fn get_memory(state: State<'_, DkState<'_>>) -> TauriResult<Value> {
 
 #[tauri::command]
 async fn firefox() -> TauriResult<()> {
-    tokio::task::spawn_blocking(|| {
-        Command::new("firefox").spawn_detached()
-    }).await??;
+    tokio::task::spawn_blocking(|| Command::new("firefox").spawn_detached()).await??;
 
     Ok(())
+}
+
+#[tauri::command(async)]
+async fn cancel_install_and_exit(
+    state: State<'_, DkState<'_>>,
+    reset_config: bool,
+) -> TauriResult<()> {
+    let progress = Dbus::run(&state.proxy, DbusMethod::GetProgress).await?;
+    let progress = serde_json::from_value::<ProgressStatus>(progress.data)?;
+
+    sleep(Duration::from_millis(50)).await;
+
+    if let ProgressStatus::Working { .. } = progress {
+        Dbus::run(&state.proxy, DbusMethod::CancelInstall).await?;
+    }
+
+    if reset_config {
+        Dbus::run(&state.proxy, DbusMethod::ResetConfig).await?;
+    }
+
+    process::exit(0);
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -298,6 +324,7 @@ enum ProgressStatus {
     Pending,
     Working { step: u8, progress: f64, v: usize },
     Error(Value),
+    Finish,
 }
 
 #[derive(Debug, Serialize)]
@@ -375,6 +402,7 @@ fn main() {
             get_recipe,
             start_install,
             firefox,
+            cancel_install_and_exit,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

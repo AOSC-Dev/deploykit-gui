@@ -1,4 +1,8 @@
-use std::{io, path::Path, process::{Command, Stdio}};
+use std::{
+    io,
+    path::Path,
+    process::{Command, Stdio},
+};
 
 use eyre::{eyre, Result};
 use reqwest::Client;

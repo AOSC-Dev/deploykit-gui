@@ -172,6 +172,10 @@
         "t7": "You Ready",
         "p7": "At AOSC, we pride ourselves with friendly and ready support for our users. Warranty and merchantability notwithstanding, we believe that our users should be respected of their time and energy spent on adapting to a new work environment.\nAt Telegram, Discord, IRC, or Matrix, our maintainers, contributors, and friends are ready to offer help. We wish you much joy at our community and great success with AOSC OS.\nEnjoy!"
     },
+    "exiting": {
+        "t1": "Exiting...",
+        "l1": "Exiting..."
+    },
     "logo-p1": "AOSC OS",
     "logo-p2": "Installation",
     "loading": "Loading...",
