@@ -98,5 +98,6 @@ export default {
 
 .slide-show {
   transition: all 200ms cubic-bezier(0.075, 0.82, 0.165, 1);
+  height: 60vh;
 }
 </style>
