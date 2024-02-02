@@ -75,6 +75,10 @@
         "bad1": "Installer has detected insufficient space on your storage device. RescueKit requires 5GiB of additional space in your system partition to install.",
         "bad2": "Installer has detected a non-GPT partition scheme on your storage device. RescueKit is only available for devices with a GPT partition scheme."
     },
+    "device": {
+        "title": "Select Hard Disk",
+        "p1": "Pelease select a Disk as AOSC OS system disk."
+    },
     "part": {
         "title": "Partitioning",
         "k0": "Unknown/Unformatted",

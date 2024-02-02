@@ -32,13 +32,14 @@ export default {
 
 <template>
   <div v-if="!loading">
-    <p>{{ $t("part.p1") }}</p>
+    <h1>{{ $t("device.title") }}</h1>
+    <p>{{ $t("device.p1") }}</p>
     <section>
       <DKListSelect :no_margin="true" v-model:selected="selected" :is_limit_height="true" :options="devices">
         <template #item="option">
           <div style="width: 100%">
-            <span class="column-85">{{ option.path }}</span>
-            <span class="column-15">{{  humanSize(option.size) }}</span>
+            <span class="column-80">{{ option.path }}</span>
+            <span class="column-20">{{  humanSize(option.size) }}</span>
           </div>
         </template>
       </DKListSelect>
@@ -48,14 +49,14 @@ export default {
 </template>
 
 <style scoped>
-.column-85 {
+.column-80 {
   font-weight: 600;
-  width: 85%;
+  width: 80%;
   display: inline-block;
 }
 
-.column-15 {
-  width: 15%;
+.column-20 {
+  width: 20%;
   display: inline-block;
 }
 
