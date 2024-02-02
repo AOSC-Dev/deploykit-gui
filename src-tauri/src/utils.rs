@@ -58,7 +58,7 @@ pub struct Variant {
     pub squashfs: Vec<Squashfs>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Serialize)]
 pub struct Squashfs {
     arch: String,
     date: String,
@@ -90,22 +90,32 @@ pub struct Timezone {
 }
 
 pub fn get_download_info(config: &InstallConfig) -> Result<(String, String)> {
-    let mut sqfs = config
+    let sqfs = config
         .variant
         .squashfs
-        .iter()
+        .clone()
+        .into_iter()
         .filter(|x| get_arch_name().map(|arch| arch == x.arch).unwrap_or(false))
         .collect::<Vec<_>>();
 
-    sqfs.sort_by(|a, b| b.date.cmp(&a.date));
-    let candidate = sqfs
-        .first()
-        .ok_or_else(|| eyre!("Variant squashfs is empty"))?;
-
-    let mirror = &config.mirror.url;
-    let url = format!("{}{}", mirror, candidate.path);
+    let (candidate, url) = candidate_sqfs(sqfs, &config.mirror.url)?;
 
     Ok((url, candidate.sha256sum.to_owned()))
+}
+
+pub fn candidate_sqfs(mut sqfs: Vec<Squashfs>, url: &str) -> Result<(Squashfs, String), eyre::Error> {
+    sqfs.sort_by(|a, b| b.date.cmp(&a.date));
+
+    let candidate = sqfs
+        .first()
+        .ok_or_else(|| eyre!("Variant squashfs is empty"))?
+        .to_owned()
+        .to_owned();
+
+    // let mirror = &config.mirror.url;
+    let url = format!("{}{}", url, candidate.path);
+
+    Ok((candidate, url))
 }
 
 pub fn handle_serde_config(s: &str) -> Result<InstallConfig> {

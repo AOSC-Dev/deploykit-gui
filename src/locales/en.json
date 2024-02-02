@@ -93,7 +93,8 @@
         "p3": "If you would like to partition the storage device yourself, please press the \"Manage partitions with GParted\" button below.",
         "b1": "Manage partitions with GParted",
         "l1": "Create a {0} EFI System Partition.",
-        "l2": "Create a {0} AOSC OS System Partition."
+        "l2": "Create a {0} AOSC OS System Partition.",
+        "e1": "Select partition too small, Could not Install AOSC OS in this partition!"
     },
     "mirror": {
         "title": "Download Source",

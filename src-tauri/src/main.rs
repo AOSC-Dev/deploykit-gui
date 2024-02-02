@@ -8,7 +8,6 @@ use parser::ZoneInfo;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
-use tokio::time::sleep;
 use std::io;
 use std::io::ErrorKind;
 use std::process;
@@ -18,8 +17,12 @@ use std::time::Duration;
 use tauri::State;
 use tauri::Window;
 use tokio::sync::Mutex;
+use tokio::time::sleep;
+use utils::candidate_sqfs;
 use utils::is_efi;
 use utils::Recipe;
+use utils::Squashfs;
+use utils::Variant;
 use zbus::dbus_proxy;
 use zbus::Connection;
 use zbus::Result as zResult;
@@ -268,6 +271,13 @@ async fn get_recipe(state: State<'_, DkState<'_>>) -> TauriResult<Recipe> {
 }
 
 #[tauri::command]
+fn get_squashfs_info(v: Variant, url: &str) -> TauriResult<Squashfs> {
+    let c = candidate_sqfs(v.squashfs, url)?;
+
+    Ok(c.0)
+}
+
+#[tauri::command]
 async fn list_partitions(state: State<'_, DkState<'_>>, dev: &str) -> TauriResult<Value> {
     let res = Dbus::run(&state.proxy, DbusMethod::ListPpartitions(dev)).await?;
 
@@ -403,6 +413,7 @@ fn main() {
             start_install,
             firefox,
             cancel_install_and_exit,
+            get_squashfs_info,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

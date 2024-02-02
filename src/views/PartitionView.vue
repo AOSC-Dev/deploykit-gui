@@ -1,9 +1,9 @@
 <script setup>
 import DKStripButton from "@/components/DKStripButton.vue";
 import DKBottomActions from "@/components/DKBottomActions.vue";
-import DKStepButtons from "@/components/DKStepButtons.vue";
 import DKListSelect from "@/components/DKListSelect.vue";
 import DKSpinner from "@/components/DKSpinner.vue";
+import DKBottomSteps from "@/components/DKBottomSteps.vue";
 </script>
 
 <script>
@@ -17,6 +17,8 @@ export default {
       gparted: false,
       partitions: [],
       loading: true,
+      error_msg: "",
+      sqfs_size: null,
     };
   },
   computed: {
@@ -63,6 +65,16 @@ export default {
 
       this.gparted = this.loading = false;
     },
+    validate: function () {
+      const size = this.partitions[this.selected].size;
+
+      if (size < this.sqfs_size) {
+        this.error_msg = this.$t("part.e1");
+        return false;
+      }
+
+      return true;
+    }
   },
   async created() {
     const device = this.config.device.path;
@@ -70,6 +82,10 @@ export default {
       const req = await invoke("list_partitions", { dev: device });
       const resp = req;
       this.partitions = resp;
+
+      const v = this.config.variant;
+      const sqfs_info = await invoke("get_squashfs_info", { v, url: this.config.mirror.url });
+      this.sqfs_size = sqfs_info.downloadSize + sqfs_info.instSize;
     } catch (e) {
       console.error(e);
       this.$router.replace("/error");
@@ -119,11 +135,13 @@ export default {
     <h1>{{ $t("part.title") }}</h1>
     <DKSpinner :title="$t('part.r1')" />
   </div>
+  <p class="error-msg">{{ error_msg }}</p>
   <DKBottomActions v-if="!gparted && !loading">
     <DKStripButton @click="launch_gparted" :text="$t('part.b1')">
       <img src="@/../assets/drive-harddisk-root-symbolic.svg" height="18" />
     </DKStripButton>
-    <DKStepButtons :trigger="() => (config.partition = partitions[selected])" :can_proceed="valid" />
+    <DKBottomSteps :trigger="() => (config.partition = partitions[selected])" :guard="validate" :can_proceed="valid">
+    </DKBottomSteps>
   </DKBottomActions>
 </template>
 
