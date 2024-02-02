@@ -38,8 +38,11 @@ export default {
       <DKListSelect :no_margin="true" v-model:selected="selected" :is_limit_height="true" :options="devices">
         <template #item="option">
           <div style="width: 100%">
-            <span class="column-80">{{ option.model }} ({{ option.path }})</span>
-            <span class="column-20">{{  humanSize(option.size) }}</span>
+            <span class="column-80">{{ option.model }}</span>
+            <span class="column-20">{{ humanSize(option.size) }}</span>
+            <p class="secondary">
+              <span>{{ option.path }}</span>
+            </p>
           </div>
         </template>
       </DKListSelect>
@@ -60,11 +63,11 @@ export default {
   display: inline-block;
 }
 
-/* p.secondary span {
+p.secondary span {
   color: var(--dk-gray);
-} */
+}
 
-/* p.secondary {
+p.secondary {
   margin: 0;
-} */
+}
 </style>
