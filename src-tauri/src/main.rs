@@ -186,13 +186,13 @@ async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<
     )
     .await?;
     Dbus::run(
-        &proxy,
+        proxy,
         DbusMethod::SetConfig("locale", &config.locale.locale),
     )
     .await?;
 
     Dbus::run(
-        &proxy,
+        proxy,
         DbusMethod::SetConfig(
             "user",
             &serde_json::json! {{
@@ -205,14 +205,14 @@ async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<
     .await?;
 
     Dbus::run(
-        &proxy,
+        proxy,
         DbusMethod::SetConfig("timezone", &config.timezone.data),
     )
     .await?;
 
-    Dbus::run(&proxy, DbusMethod::SetConfig("hostname", &config.hostname)).await?;
+    Dbus::run(proxy, DbusMethod::SetConfig("hostname", &config.hostname)).await?;
     Dbus::run(
-        &proxy,
+        proxy,
         DbusMethod::SetConfig("rtc_as_localtime", &(!config.rtc_utc).to_string()),
     )
     .await?;
@@ -225,19 +225,19 @@ async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<
         .to_string(),
     };
 
-    Dbus::run(&proxy, DbusMethod::SetConfig("swapfile", &swap_config)).await?;
+    Dbus::run(proxy, DbusMethod::SetConfig("swapfile", &swap_config)).await?;
 
     let part_config = serde_json::to_string(&config.partition)?;
 
     Dbus::run(
-        &proxy,
+        proxy,
         DbusMethod::SetConfig("target_partition", &part_config),
     )
     .await?;
 
     if let Some(efi) = config.efi_partition {
         let part_config = serde_json::to_string(&efi)?;
-        Dbus::run(&proxy, DbusMethod::SetConfig("efi_partition", &part_config)).await?;
+        Dbus::run(proxy, DbusMethod::SetConfig("efi_partition", &part_config)).await?;
     } else if is_efi() {
         let parent_path = config.partition.parent_path;
 
@@ -248,10 +248,10 @@ async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<
             )));
         }
         let efi_part =
-            Dbus::run(&proxy, DbusMethod::FindEspPartition(&parent_path.unwrap())).await?;
+            Dbus::run(proxy, DbusMethod::FindEspPartition(&parent_path.unwrap())).await?;
 
         let part_config = serde_json::to_string(&efi_part.data)?;
-        Dbus::run(&proxy, DbusMethod::SetConfig("efi_partition", &part_config)).await?;
+        Dbus::run(proxy, DbusMethod::SetConfig("efi_partition", &part_config)).await?;
     }
 
     println!("{:?}", proxy.get_config("").await?);
