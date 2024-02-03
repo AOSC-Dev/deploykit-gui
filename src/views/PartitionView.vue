@@ -86,6 +86,8 @@ export default {
       const v = this.config.variant;
       const sqfs_info = await invoke("get_squashfs_info", { v, url: this.config.mirror.url });
       this.sqfs_size = sqfs_info.downloadSize + sqfs_info.instSize;
+
+      await invoke("disk_is_right_combo", { disk: device });
     } catch (e) {
       console.error(e);
       this.$router.replace("/error");
