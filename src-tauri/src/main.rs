@@ -53,6 +53,7 @@ trait Deploykit {
     async fn get_memory(&self) -> zResult<String>;
     async fn find_esp_partition(&self, dev: &str) -> zResult<String>;
     async fn cancel_install(&self) -> zResult<String>;
+    async fn disk_is_right_combo(&self, dev: &str) -> zResult<String>;
 }
 
 #[derive(Debug, Deserialize)]
@@ -75,6 +76,7 @@ enum DbusMethod<'a> {
     GetMemory,
     CancelInstall,
     ResetConfig,
+    DiskIsRightCombo(&'a str),
 }
 
 #[derive(Debug, Deserialize, PartialEq, Eq)]
@@ -111,6 +113,7 @@ impl Dbus {
             DbusMethod::GetMemory => proxy.get_memory().await?,
             DbusMethod::CancelInstall => proxy.cancel_install().await?,
             DbusMethod::ResetConfig => proxy.reset_config().await?,
+            DbusMethod::DiskIsRightCombo(dev) => proxy.disk_is_right_combo(dev).await?,
         };
 
         let res = Self::try_from(s)?;
@@ -307,6 +310,14 @@ async fn firefox() -> TauriResult<()> {
     Ok(())
 }
 
+#[tauri::command]
+async fn disk_is_right_combo(state: State<'_, DkState<'_>>, disk: &str) -> TauriResult<()> {
+    let proxy = &state.proxy;
+    Dbus::run(proxy, DbusMethod::DiskIsRightCombo(disk)).await?;
+
+    Ok(())
+}
+
 #[tauri::command(async)]
 async fn cancel_install_and_exit(
     state: State<'_, DkState<'_>>,
@@ -414,6 +425,7 @@ fn main() {
             firefox,
             cancel_install_and_exit,
             get_squashfs_info,
+            disk_is_right_combo,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

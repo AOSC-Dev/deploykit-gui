@@ -22,7 +22,7 @@ export default {
         i.title = i.name;
         i.body = i.description;
       }
-  
+
       this.options = variants.filter((v) => !v.retro && v.name !== "BuildKit").sort((a, b) => a.name > b.name ? 1 : -1);
       this.loading = false;
     }).catch((e) => {
@@ -38,7 +38,8 @@ export default {
     <h1>{{ $t("variant.title") }}</h1>
     <p>{{ $t("variant.p1") }}</p>
     <section>
-      <DKListSelect :selected="selected" :options="options" :is_limit_height=true @update:selected="(v) => (selected = v)" />
+      <DKListSelect :selected="selected" :options="options" :is_limit_height=true
+        @update:selected="(v) => (selected = v)" />
     </section>
   </div>
   <div class="loading" v-else>
