@@ -54,6 +54,7 @@ trait Deploykit {
     async fn find_esp_partition(&self, dev: &str) -> zResult<String>;
     async fn cancel_install(&self) -> zResult<String>;
     async fn disk_is_right_combo(&self, dev: &str) -> zResult<String>;
+    async fn ping(&self) -> zResult<String>;
 }
 
 #[derive(Debug, Deserialize)]
@@ -77,6 +78,7 @@ enum DbusMethod<'a> {
     CancelInstall,
     ResetConfig,
     DiskIsRightCombo(&'a str),
+    Ping,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Eq)]
@@ -114,6 +116,7 @@ impl Dbus {
             DbusMethod::CancelInstall => proxy.cancel_install().await?,
             DbusMethod::ResetConfig => proxy.reset_config().await?,
             DbusMethod::DiskIsRightCombo(dev) => proxy.disk_is_right_combo(dev).await?,
+            DbusMethod::Ping => proxy.ping().await?,
         };
 
         let res = Self::try_from(s)?;
@@ -406,6 +409,10 @@ fn main() {
             .await
             .expect("Failed to create Deploykit dbus proxy")
     });
+
+    tokio
+        .block_on(Dbus::run(&proxy, DbusMethod::Ping))
+        .expect("Failed to connect D-Bus");
 
     tauri::Builder::default()
         .manage(DkState {
