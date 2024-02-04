@@ -321,6 +321,11 @@ async fn disk_is_right_combo(state: State<'_, DkState<'_>>, disk: &str) -> Tauri
     Ok(())
 }
 
+#[tauri::command]
+fn is_efi_api() -> TauriResult<bool> {
+    Ok(is_efi())
+}
+
 #[tauri::command(async)]
 async fn cancel_install_and_exit(
     state: State<'_, DkState<'_>>,
@@ -433,6 +438,7 @@ fn main() {
             cancel_install_and_exit,
             get_squashfs_info,
             disk_is_right_combo,
+            is_efi_api,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

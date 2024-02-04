@@ -69,7 +69,7 @@ export default {
       const size = this.partitions[this.selected].size;
 
       if (size < this.sqfs_size) {
-        this.error_msg = this.$t("part.e1");
+        this.error_msg = this.$t("part.e1", { size: Math.ceil(this.sqfs_size / 1024 / 1024 / 1024) });
         return false;
       }
 

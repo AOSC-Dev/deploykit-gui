@@ -1,6 +1,6 @@
 <script setup>
 import DKListSelect from "@/components/DKListSelect.vue";
-import DKStepButtons from "@/components/DKStepButtons.vue";
+import DKBottomSteps from "../components/DKBottomSteps.vue";
 </script>
 
 <script>
@@ -13,13 +13,34 @@ export default {
       devices: [],
       selected: null,
       loading: true,
+      req_size: null,
+      err_msg: "",
     }
   },
-  methods: {},
+  methods: {
+    validate: function () {
+      if (this.req_size > this.devices[this.selected].size) {
+        this.err_msg = this.$t("device.e1", { size: Math.ceil(this.req_size / 1024 / 1024 / 1024) });
+        return false;
+      }
+
+      return true;
+    }
+  },
   async created() {
     try {
       const devices = await invoke("list_devices");
       this.devices = devices;
+
+      const v = this.config.variant;
+      const sqfs_info = await invoke("get_squashfs_info", { v, url: this.config.mirror.url });
+      let req_size = sqfs_info.downloadSize + sqfs_info.instSize;
+
+      const is_efi = await invoke("is_efi_api");
+
+      if (is_efi) {
+        req_size = req_size + 512 * 1024 * 1024;
+      }
     } catch (e) {
       this.$router.replace("/error");
       console.error(e);
@@ -46,7 +67,7 @@ export default {
           </div>
         </template>
       </DKListSelect>
-      <DKStepButtons :trigger="() => (config.device = devices[selected])" :can_proceed="selected != null" />
+      <DKBottomSteps :trigger="() => (config.device = devices[selected])" :can_proceed="selected != null" :guard="validate" />
     </section>
   </div>
 </template>
