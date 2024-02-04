@@ -81,6 +81,14 @@ enum DbusMethod<'a> {
     Ping,
 }
 
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(tag = "status")]
+enum AutoPartitionProgress {
+    Pending,
+    Working,
+    Finish { res: Result<Value, Value> },
+}
+
 #[derive(Debug, Deserialize, PartialEq, Eq)]
 enum DbusResult {
     Ok,
@@ -138,6 +146,8 @@ enum DeploykitGuiError {
     SerdeJson(#[from] serde_json::Error),
     #[error(transparent)]
     Join(#[from] tokio::task::JoinError),
+    #[error("Failed to auto partition: {path}, err: {err}")]
+    AutoPartitionFailed { path: String, err: Value },
 }
 
 impl Serialize for DeploykitGuiError {
@@ -395,6 +405,41 @@ async fn start_install(window: Window, state: State<'_, DkState<'_>>) -> TauriRe
     }
 }
 
+#[tauri::command]
+async fn auto_partition(
+    window: Window,
+    state: State<'_, DkState<'_>>,
+    dev: &str,
+) -> TauriResult<()> {
+    let proxy = &state.proxy;
+    Dbus::run(proxy, DbusMethod::AutoPartition(dev)).await?;
+
+    loop {
+        let progress = Dbus::run(proxy, DbusMethod::GetAutoPartitionProgress).await?;
+        dbg!(&progress);
+        let data: AutoPartitionProgress = serde_json::from_value(progress.data)?;
+
+        match data {
+            AutoPartitionProgress::Finish { ref res } => match res {
+                Err(v) => {
+                    return Err(DeploykitGuiError::AutoPartitionFailed {
+                        path: dev.to_string(),
+                        err: v.to_owned(),
+                    })
+                }
+                Ok(_) => {
+                    window.emit("auto_partition_progress", &data).unwrap();
+                    return Ok(());
+                }
+            },
+            _ => {
+                window.emit("auto_partition_progress", &data).unwrap();
+            }
+        }
+        thread::sleep(Duration::from_millis(100));
+    }
+}
+
 struct DkState<'a> {
     recipe: Mutex<Option<Recipe>>,
     proxy: DeploykitProxy<'a>,
@@ -439,6 +484,7 @@ fn main() {
             get_squashfs_info,
             disk_is_right_combo,
             is_efi_api,
+            auto_partition
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

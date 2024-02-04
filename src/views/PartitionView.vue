@@ -8,6 +8,7 @@ import DKBottomSteps from "@/components/DKBottomSteps.vue";
 
 <script>
 import { invoke } from "@tauri-apps/api";
+import { listen } from "@tauri-apps/api/event";
 
 export default {
   inject: ["config", "humanSize"],
@@ -19,12 +20,12 @@ export default {
       loading: true,
       error_msg: "",
       sqfs_size: null,
+      new_partition_size: null,
+      is_efi: false,
+      new_disk: !this.partitions || this.partitions.length < 1,
     };
   },
   computed: {
-    new_disk: function () {
-      return !this.partitions || this.partitions.length < 1;
-    },
     valid: function () {
       return !this.gparted && (this.new_disk || this.selected != null);
     },
@@ -66,6 +67,14 @@ export default {
       this.gparted = this.loading = false;
     },
     validate: function () {
+      if (this.new_disk) {
+        return true;
+      }
+
+      if (this.partitions.length === 0) {
+        return false;
+      }
+
       const size = this.partitions[this.selected].size;
 
       if (size < this.sqfs_size) {
@@ -76,6 +85,10 @@ export default {
       return true;
     },
     select: function () {
+      if (this.partitions.length === 0) {
+        return false;
+      }
+
       const size = this.partitions[this.selected].size;
 
       if (size < this.sqfs_size) {
@@ -83,12 +96,57 @@ export default {
       } else {
         this.error_msg = "";
       }
+    },
+    next: async function () {
+      if (!this.new_disk) {
+        this.config.partition = this.partitions[this.selected];
+      } else {
+        try {
+          invoke("auto_partition", { dev: this.config.device.path });
+
+          setTimeout(async () => {
+            try {
+              await listen("auto_partition_progress", (event) => {
+                setTimeout(() => {
+                  // console.log(event.payload);
+
+                  if (event.payload.status === "Finish") {
+                    console.log(event.payload.res);
+                    const parts = event.payload.res.Ok;
+                    console.log(parts);
+                    if (parts.length == 2) {
+                      this.config.partition = parts[1];
+                      this.config.efi_partition = parts[0];
+                    } else {
+                      this.config.partition = parts[0];
+                    }
+                    this.loading = false;
+                  } else {
+                    this.loading = true;
+                  }
+                }, 200)
+              })
+            } catch (e) {
+              this.$router.replace("/error");
+              console.error(e);
+            }
+          }, 200);
+        } catch (e) {
+          this.$router.replace("/error");
+          console.error(e);
+        }
+      }
     }
   },
   async created() {
-    const device = this.config.device.path;
+    const device = this.config.device;
+    // const device = {
+    //   path: "/dev/loop30",
+    //   model: "loop",
+    //   size: 50 * 1024 * 1024 * 1024,
+    // };
     try {
-      const req = await invoke("list_partitions", { dev: device });
+      const req = await invoke("list_partitions", { dev: device.path });
       const resp = req;
       this.partitions = resp;
 
@@ -96,11 +154,25 @@ export default {
       const sqfs_info = await invoke("get_squashfs_info", { v, url: this.config.mirror.url });
       this.sqfs_size = sqfs_info.downloadSize + sqfs_info.instSize;
 
-      await invoke("disk_is_right_combo", { disk: device });
+      if (this.partitions.length != 0) {
+        this.new_disk = false;
+        await invoke("disk_is_right_combo", { disk: device.path });
+      } else {
+        this.new_disk = true;
+        const is_efi = await invoke("is_efi_api");
+        this.is_efi = is_efi;
+
+        if (is_efi) {
+          this.new_partition_size = Math.round((device.size - 512 * 1024 * 1024) / 1024 / 1024 / 1024);
+        } else {
+          this.new_partition_size = Math.round((device.size) / 1024 / 1024 / 1024);
+        }
+      }
     } catch (e) {
       console.error(e);
       this.$router.replace("/error");
     }
+
     this.loading = false;
   }
 };
@@ -112,7 +184,8 @@ export default {
     <section v-if="!new_disk">
       <p>{{ $t("part.p1") }}</p>
       <section>
-        <DKListSelect :no_margin="true" v-model:selected="selected" :options="partitions" :is_limit_height="true" :click_fn="select">
+        <DKListSelect :no_margin="true" v-model:selected="selected" :options="partitions" :is_limit_height="true"
+          :click_fn="select">
           <template #item="option">
             <div style="width: 100%">
               <span class="column-85">{{ option.path }}</span>
@@ -129,11 +202,11 @@ export default {
     <section v-if="new_disk">
       <p>{{ $t("part.p2") }}</p>
       <ul>
-        <i18n-t keypath="part.l1" tag="li">
-          <strong>128MiB</strong>
+        <i18n-t v-if="is_efi" keypath="part.l1" tag="li">
+          <strong>512MiB</strong>
         </i18n-t>
         <i18n-t keypath="part.l2" tag="li">
-          <strong>20GiB</strong>
+          <strong>{{ new_partition_size }}GiB</strong>
         </i18n-t>
       </ul>
       <p>
@@ -151,7 +224,7 @@ export default {
     <DKStripButton @click="launch_gparted" :text="$t('part.b1')">
       <img src="@/../assets/drive-harddisk-root-symbolic.svg" height="18" />
     </DKStripButton>
-    <DKBottomSteps :trigger="() => (config.partition = partitions[selected])" :guard="validate" :can_proceed="valid">
+    <DKBottomSteps :trigger="next" :guard="validate" :can_proceed="valid">
     </DKBottomSteps>
   </DKBottomActions>
 </template>
