@@ -74,6 +74,15 @@ export default {
       }
 
       return true;
+    },
+    select: function () {
+      const size = this.partitions[this.selected].size;
+
+      if (size < this.sqfs_size) {
+        this.error_msg = this.$t("part.e1", { size: Math.ceil(this.sqfs_size / 1024 / 1024 / 1024) });
+      } else {
+        this.error_msg = "";
+      }
     }
   },
   async created() {
@@ -103,7 +112,7 @@ export default {
     <section v-if="!new_disk">
       <p>{{ $t("part.p1") }}</p>
       <section>
-        <DKListSelect :no_margin="true" v-model:selected="selected" :options="partitions" :is_limit_height="true">
+        <DKListSelect :no_margin="true" v-model:selected="selected" :options="partitions" :is_limit_height="true" :click_fn="select">
           <template #item="option">
             <div style="width: 100%">
               <span class="column-85">{{ option.path }}</span>

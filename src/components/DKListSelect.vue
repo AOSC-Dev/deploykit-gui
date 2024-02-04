@@ -5,10 +5,14 @@ export default {
     selected: Number,
     no_margin: Boolean,
     is_limit_height: Boolean,
+    click_fn: Function,
   },
   methods: {
     select: function (index) {
       this.$emit("update:selected", index);
+      if (this.click_fn) {
+        this.click_fn(this);
+      }
     },
   },
 };
