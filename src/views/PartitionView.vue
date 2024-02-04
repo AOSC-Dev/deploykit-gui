@@ -188,8 +188,8 @@ export default {
           :click_fn="select">
           <template #item="option">
             <div style="width: 100%">
-              <span class="column-85">{{ option.path }}</span>
-              <span class="column-15">{{ humanSize(option.size) }}</span>
+              <span class="column-80">{{ option.path }}</span>
+              <span class="column-20">{{ humanSize(option.size) }}</span>
               <p class="secondary">
                 <span>{{ option.fs_type || $t("part.k0") }}</span>
               </p>
@@ -219,7 +219,9 @@ export default {
     <h1>{{ $t("part.title") }}</h1>
     <DKSpinner :title="$t('part.r1')" />
   </div>
-  <p class="error-msg">{{ error_msg }}</p>
+  <div class="error-msg">
+    <p>{{ error_msg }}</p>
+  </div>
   <DKBottomActions v-if="!gparted && !loading">
     <DKStripButton @click="launch_gparted" :text="$t('part.b1')">
       <img src="@/../assets/drive-harddisk-root-symbolic.svg" height="18" />
@@ -230,20 +232,24 @@ export default {
 </template>
 
 <style scoped>
-.column-85 {
+.column-80 {
   font-weight: 600;
-  width: 85%;
+  width: 80%;
   display: inline-block;
 }
 
-.column-15 {
-  width: 15%;
+.column-20 {
+  width: 20%;
   display: inline-block;
 }
 
 /* p.secondary span {
   color: var(--dk-gray);
 } */
+
+.error-msg {
+  margin: 1rem;
+}
 
 p.secondary {
   margin: 0;
