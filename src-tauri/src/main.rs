@@ -19,7 +19,9 @@ use tauri::Window;
 use tokio::sync::Mutex;
 use tokio::time::sleep;
 use utils::candidate_sqfs;
+use utils::get_mirror_speed_score;
 use utils::is_efi;
+use utils::Mirror;
 use utils::Recipe;
 use utils::Squashfs;
 use utils::Variant;
@@ -70,7 +72,7 @@ enum DbusMethod<'a> {
     StartInstall,
     GetAutoPartitionProgress,
     FindEspPartition(&'a str),
-    ListPpartitions(&'a str),
+    ListPartitions(&'a str),
     ListDevice,
     GetRecommendSwapSize,
     GetMemory,
@@ -116,7 +118,7 @@ impl Dbus {
             DbusMethod::StartInstall => proxy.start_install().await?,
             DbusMethod::GetAutoPartitionProgress => proxy.get_auto_partition_progress().await?,
             DbusMethod::FindEspPartition(dev) => proxy.find_esp_partition(dev).await?,
-            DbusMethod::ListPpartitions(dev) => proxy.get_list_partitions(dev).await?,
+            DbusMethod::ListPartitions(dev) => proxy.get_list_partitions(dev).await?,
             DbusMethod::ListDevice => proxy.get_list_devices().await?,
             DbusMethod::GetRecommendSwapSize => proxy.get_recommend_swap_size().await?,
             DbusMethod::GetMemory => proxy.get_memory().await?,
@@ -294,7 +296,7 @@ fn get_squashfs_info(v: Variant, url: &str) -> TauriResult<Squashfs> {
 
 #[tauri::command]
 async fn list_partitions(state: State<'_, DkState<'_>>, dev: &str) -> TauriResult<Value> {
-    let res = Dbus::run(&state.proxy, DbusMethod::ListPpartitions(dev)).await?;
+    let res = Dbus::run(&state.proxy, DbusMethod::ListPartitions(dev)).await?;
 
     Ok(res.data)
 }
@@ -347,6 +349,36 @@ async fn cancel_install_and_exit(
     }
 
     process::exit(0);
+}
+
+#[tauri::command]
+async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> Vec<Mirror> {
+    let mut speedtest_mirror = vec![];
+
+    let client = reqwest::Client::builder()
+        .user_agent("deploykit")
+        .timeout(Duration::from_secs(10))
+        .build()
+        .unwrap();
+
+    let mut task = vec![];
+    for mirror in &mirrors {
+        task.push(get_mirror_speed_score(&mirror.url, &client))
+    }
+    let results = futures::future::join_all(task).await;
+    for (index, result) in results.into_iter().enumerate() {
+        if let Ok(score) = result {
+            speedtest_mirror.push((mirrors[index].loc_tr.to_owned(), score));
+        }
+    }
+    speedtest_mirror.sort_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap());
+    let mut new_mirrors = vec![];
+    for (name, _) in speedtest_mirror {
+        let index = mirrors.iter().position(|x| x.loc_tr == name).unwrap();
+        new_mirrors.push(mirrors[index].to_owned());
+    }
+
+    new_mirrors
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -475,7 +507,8 @@ fn main() {
             get_squashfs_info,
             disk_is_right_combo,
             is_efi_api,
-            auto_partition
+            auto_partition,
+            mirrors_speedtest,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

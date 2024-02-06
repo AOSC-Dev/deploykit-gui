@@ -140,6 +140,7 @@ export default {
   },
   async created() {
     const device = this.config.device;
+    console.log(device);
     // const device = {
     //   path: "/dev/loop30",
     //   model: "loop",

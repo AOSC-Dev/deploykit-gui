@@ -8,6 +8,13 @@ use eyre::{eyre, Result};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use sha2::Digest;
+use std::io::Write;
+use std::time::Instant;
+use url::Url;
+
+const SPEEDTEST_FILE_CHECKSUM: &str =
+    "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58";
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Recipe {
@@ -71,9 +78,15 @@ pub struct Squashfs {
     pub sha256sum: String,
 }
 
-#[derive(Deserialize)]
-struct Mirror {
-    url: String,
+#[derive(Deserialize, Clone, Serialize)]
+pub struct Mirror {
+    pub name: String,
+    #[serde(rename = "name-tr")]
+    pub name_tr: String,
+    pub loc: String,
+    #[serde(rename = "loc-tr")]
+    pub loc_tr: String,
+    pub url: String,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -103,7 +116,10 @@ pub fn get_download_info(config: &InstallConfig) -> Result<(String, String)> {
     Ok((url, candidate.sha256sum.to_owned()))
 }
 
-pub fn candidate_sqfs(mut sqfs: Vec<Squashfs>, url: &str) -> Result<(Squashfs, String), eyre::Error> {
+pub fn candidate_sqfs(
+    mut sqfs: Vec<Squashfs>,
+    url: &str,
+) -> Result<(Squashfs, String), eyre::Error> {
     sqfs.sort_by(|a, b| b.date.cmp(&a.date));
 
     let candidate = sqfs
@@ -120,6 +136,24 @@ pub fn candidate_sqfs(mut sqfs: Vec<Squashfs>, url: &str) -> Result<(Squashfs, S
 
 pub fn handle_serde_config(s: &str) -> Result<InstallConfig> {
     Ok(serde_json::from_str(s)?)
+}
+
+pub async fn get_mirror_speed_score(mirror_url: &str, client: &Client) -> Result<f32, eyre::Error> {
+    let download_url = Url::parse(mirror_url)?.join("../.repotest")?;
+    let timer = Instant::now();
+    let file = client.get(download_url).send().await?.bytes().await?;
+    let mut hasher = sha2::Sha256::new();
+    hasher.write_all(&file)?;
+
+    if hex::encode(hasher.finalize()) == SPEEDTEST_FILE_CHECKSUM {
+        let result_time = timer.elapsed().as_secs_f32();
+        return Ok(result_time);
+    }
+
+    Err(eyre!(
+        "Installer failed benchmark {}, please check your network connection!",
+        mirror_url
+    ))
 }
 
 // AOSC OS specific architecture mapping for ppc64

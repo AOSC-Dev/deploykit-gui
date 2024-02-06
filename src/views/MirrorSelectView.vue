@@ -24,13 +24,16 @@ export default {
     },
   },
   methods: {
-    run_bench: function () {
+    run_bench: async function () {
       this.loading = true;
-      this.$ipc.call("bench", []).then((data) => {
-        this.mirrors = data;
-        this.loading = true;
-        this.selected = 0;
-      });
+      try {
+        const mirrors = await invoke("mirrors_speedtest", { mirrors: this.mirrors });
+        this.mirrors = mirrors;
+        this.loading = false;
+      } catch (e) {
+        this.$router.replace("/error");
+        console.error(e);
+      }
     },
   },
   async created() {
