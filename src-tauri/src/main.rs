@@ -29,7 +29,6 @@ use zbus::Result as zResult;
 
 use crate::utils::get_download_info;
 use crate::utils::handle_serde_config;
-use crate::utils::CommandExt;
 
 mod parser;
 mod utils;
@@ -317,13 +316,6 @@ async fn get_memory(state: State<'_, DkState<'_>>) -> TauriResult<Value> {
 }
 
 #[tauri::command]
-async fn firefox() -> TauriResult<()> {
-    tokio::task::spawn_blocking(|| Command::new("firefox").spawn_detached()).await??;
-
-    Ok(())
-}
-
-#[tauri::command]
 async fn disk_is_right_combo(state: State<'_, DkState<'_>>, disk: &str) -> TauriResult<()> {
     let proxy = &state.proxy;
     Dbus::run(proxy, DbusMethod::DiskIsRightCombo(disk)).await?;
@@ -479,7 +471,6 @@ fn main() {
             get_memory,
             get_recipe,
             start_install,
-            firefox,
             cancel_install_and_exit,
             get_squashfs_info,
             disk_is_right_combo,
