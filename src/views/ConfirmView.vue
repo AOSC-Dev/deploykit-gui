@@ -21,8 +21,7 @@ export default {
         await invoke("set_config", { config: JSON.stringify(this.config) })
       }
       catch (e) {
-        this.$router.replace("/error")
-        console.error(e);
+        this.$router.replace(`/error/${encodeURIComponent(e)}`);
       }
     }
   }

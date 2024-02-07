@@ -18,7 +18,7 @@ export default {
         this.exiting = true;
         await invoke("cancel_install_and_exit", { resetConfig: reset_config });
       } catch (e) {
-        console.error(e);
+        this.$router.replace(`/error/${encodeURIComponent(e)}`);
       }
     }
   }

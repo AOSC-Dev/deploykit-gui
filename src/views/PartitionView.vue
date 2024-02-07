@@ -61,7 +61,7 @@ export default {
         this.partitions = partition;
       } catch (e) {
         console.error(e);
-        this.$router.replace("/error");
+        this.$router.replace(`/error/${encodeURIComponent(e)}`);
       }
 
       this.gparted = this.loading = false;
@@ -102,7 +102,9 @@ export default {
         this.config.partition = this.partitions[this.selected];
       } else {
         try {
-          invoke("auto_partition", { dev: this.config.device.path });
+          invoke("auto_partition", { dev: this.config.device.path }).catch((e) => {
+            this.$router.replace(`/error/${encodeURIComponent(e)}`);
+          });
 
           setTimeout(async () => {
             try {
@@ -127,20 +129,17 @@ export default {
                 }, 200)
               })
             } catch (e) {
-              this.$router.replace("/error");
-              console.error(e);
+              this.$router.replace(`/error/${encodeURIComponent(e)}`);
             }
           }, 200);
         } catch (e) {
-          this.$router.replace("/error");
-          console.error(e);
+          this.$router.replace(`/error/${encodeURIComponent(e)}`);
         }
       }
     }
   },
   async created() {
     const device = this.config.device;
-    console.log(device);
     // const device = {
     //   path: "/dev/loop30",
     //   model: "loop",
@@ -170,8 +169,7 @@ export default {
         }
       }
     } catch (e) {
-      console.error(e);
-      this.$router.replace("/error");
+      this.$router.replace(`/error/${encodeURIComponent(e)}`);
     }
 
     this.loading = false;

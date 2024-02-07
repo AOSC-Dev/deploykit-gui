@@ -31,7 +31,7 @@ export default {
         this.mirrors = mirrors;
         this.loading = false;
       } catch (e) {
-        this.$router.replace("/error");
+        this.$router.replace(`/error/${encodeURIComponent(e)}`);
         console.error(e);
       }
     },
@@ -42,8 +42,7 @@ export default {
       this.mirrors = data.mirrors.sort((a, b) => a.name > b.name ? 1 : -1);
       this.loading = false;
     } catch (e) {
-      this.$router.replace("/error");
-      console.error(e);
+      this.$router.replace(`/error/${encodeURIComponent(e)}`);
     }
   }
 };

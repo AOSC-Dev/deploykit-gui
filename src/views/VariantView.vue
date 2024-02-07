@@ -26,8 +26,7 @@ export default {
       this.options = variants.filter((v) => !v.retro && v.name !== "BuildKit").sort((a, b) => a.name > b.name ? 1 : -1);
       this.loading = false;
     }).catch((e) => {
-      console.error(e);
-      this.$router.replace("/error");
+      this.$router.replace(`/error/${encodeURIComponent(e)}`);
     });
   }
 }

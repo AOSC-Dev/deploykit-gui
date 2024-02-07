@@ -32,8 +32,7 @@ export default {
       console.log(data);
       this.timezones = data;
     } catch (e) {
-      this.$router.replace("/error");
-      console.error(e);
+      this.$router.replace(`/error/${encodeURIComponent(e)}`);
     }
 
     this.loading = false;

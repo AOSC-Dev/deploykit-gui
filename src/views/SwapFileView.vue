@@ -35,8 +35,7 @@ export default {
       this.rec_size = req_rec_swap_size;
       this.size = rec_size_gb(this.rec_size);
     } catch (e) {
-      console.error(e);
-      this.$router.replace("/error")
+      this.$router.replace(`/error/${encodeURIComponent(e)}`);
     }
 
     this.loading = false;

@@ -44,7 +44,7 @@ const router = createRouter({
       meta: { steps: 4 },
     },
     {
-      path: "/error",
+      path: "/error/:message",
       name: "error",
       props: true,
       component: ErrorView,

@@ -50,8 +50,7 @@ export default {
         req_size = req_size + 512 * 1024 * 1024;
       }
     } catch (e) {
-      this.$router.replace("/error");
-      console.error(e);
+      this.$router.replace(`/error/${encodeURIComponent(e)}`);
     }
 
     this.loading = false;

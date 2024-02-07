@@ -14,7 +14,7 @@ export default {
   <div>
     <h1>{{ $t("error.title") }}</h1>
     <p>{{ $t("error.p1") }}</p>
-    <p class="error-msg">{{ message }}</p>
+    <p class="error-msg">{{ decodeURIComponent(message) }}</p>
   </div>
   <DKBottomActions>
     <DKBottomRightButtons>
