@@ -1,6 +1,7 @@
 <script>
 import DKBottomSteps from "@/components/DKBottomSteps.vue";
 import { invoke } from "@tauri-apps/api";
+import DKSpinner from "@/components/DKSpinner.vue";
 
 function rec_size_gb(rec_size) {
   return Math.floor(rec_size / 1073741824);
@@ -16,7 +17,7 @@ export default {
       return Math.floor(this.rec_size / 1073741824);
     },
   },
-  components: { DKBottomSteps },
+  components: { DKBottomSteps, DKSpinner },
   data: function () {
     return {
       type: 0,
@@ -94,6 +95,10 @@ export default {
         <i>{{ $t("swap.w1") }}</i>
       </p>
     </form>
+  </div>
+  <!-- loading screen -->
+  <div class="loading" v-else>
+    <DKSpinner :title="$t('swap.lo1')" />
   </div>
   <DKBottomSteps :trigger="() => (config.swapfile = { size: Number(size) })" />
 </template>

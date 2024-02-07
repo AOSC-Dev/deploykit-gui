@@ -63,7 +63,8 @@
         "w1": "Running AOSC OS without a swapfile may cause instability at high memory load, resulting in possible application crashes and data loss!",
         "l1": "Your system has {size} of RAM.",
         "l2": "Installer will create a swapfile of {size} on your AOSC OS system partition.",
-        "l3": "Installer recommends that you create a swapfile of {size} in size."
+        "l3": "Installer recommends that you create a swapfile of {size} in size.",
+        "lo1": "Getting necessary infomation..."
     },
     "rescue": {
         "title": "RescueKit",
