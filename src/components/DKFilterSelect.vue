@@ -16,14 +16,15 @@ export default {
   },
   computed: {
     filtered_options: function () {
-      // const current_input = this.user_input.trim().toLowerCase();
-      // if (!current_input) return this.options;
-      // return this.options.filter(
-      //   (v) =>
-      //     v.text.toLowerCase().includes(current_input) ||
-      //     v.data.toLowerCase().includes(current_input)
-      // );
-      return this.options;
+      const current_input = this.user_input.trim().toLowerCase();
+      if (!current_input || this.options.filter(x => x.text.toLowerCase() === current_input).length !== 0)
+        return this.options;
+    
+      return this.options.filter(
+        (v) =>
+          v.text.toLowerCase().includes(current_input) ||
+          v.data.toLowerCase().includes(current_input)
+      );
     },
   },
   methods: {
