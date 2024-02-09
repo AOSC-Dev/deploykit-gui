@@ -96,7 +96,9 @@
         "b1": "Manage partitions with GParted",
         "l1": "Create a {0} EFI System Partition.",
         "l2": "Create a {0} AOSC OS System Partition.",
-        "e1": "Select partition too small. require {0} GiB size."
+        "e1": "Select partition too small. require {0} GiB size.",
+        "e2": "Deploykit does not support this partition format, use the ext4/xfs partition format."
+
     },
     "mirror": {
         "title": "Download Source",

@@ -82,20 +82,27 @@ export default {
         return false;
       }
 
-      return true;
-    },
-    select: function () {
-      if (this.partitions.length === 0) {
+      if (!["ext4", "xfs"].includes(this.partitions[this.selected].fs_type)) {
+        this.error_msg = this.$t("part.e2");
         return false;
       }
 
+      return true;
+    },
+    select: function () {
       const size = this.partitions[this.selected].size;
 
       if (size < this.sqfs_size) {
         this.error_msg = this.$t("part.e1", { size: Math.ceil(this.sqfs_size / 1024 / 1024 / 1024) });
-      } else {
-        this.error_msg = "";
+        return;
       }
+
+      if (!["ext4", "xfs"].includes(this.partitions[this.selected].fs_type)) {
+        this.error_msg = this.$t("part.e2");
+        return;
+      }
+
+      this.error_msg = "";
     },
     next: async function () {
       if (!this.new_disk) {
@@ -110,12 +117,9 @@ export default {
             try {
               await listen("auto_partition_progress", (event) => {
                 setTimeout(() => {
-                  // console.log(event.payload);
-
                   if (event.payload.status === "Finish") {
-                    console.log(event.payload.res);
                     const parts = event.payload.res.Ok;
-                    console.log(parts);
+
                     if (parts.length == 2) {
                       this.config.partition = parts[1];
                       this.config.efi_partition = parts[0];
