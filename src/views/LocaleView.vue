@@ -87,4 +87,10 @@ select {
   margin-bottom: 0.5em;
   width: 100%;
 }
+
+select {
+  text-align-last: center;
+  border-radius: unset;
+} 
+
 </style>
