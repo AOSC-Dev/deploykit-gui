@@ -54,8 +54,7 @@ export default {
           if (event.payload.status === "Finish") {
             this.$router.replace("/finish");
           } else if (event.payload.status === "Error") {
-            console.log(event.payload);
-            this.$router.replace(`/error/${encodeURIComponent(e)}`);
+            this.$router.replace(`/error/${encodeURIComponent(JSON.stringify(event.payload))}`);
           }
         }, 200)
       })

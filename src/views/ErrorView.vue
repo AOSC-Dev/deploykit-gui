@@ -1,12 +1,22 @@
 <script>
 import DKBottomActions from "@/components/DKBottomActions.vue";
 import DKBottomRightButtons from "@/components/DKBottomRightButtons.vue";
+import { invoke } from "@tauri-apps/api";
 
 export default {
   props: {
     message: String,
   },
   components: { DKBottomActions, DKBottomRightButtons },
+  methods: {
+    proceed: async function () {
+      try {
+        await invoke("cancel_install_and_exit", { resetConfig: false });
+      } catch (e) {
+        this.$router.replace(`/error/${encodeURIComponent(e)}`);
+      }
+    }
+  }
 };
 </script>
 

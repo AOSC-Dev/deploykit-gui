@@ -8,7 +8,7 @@ use eyre::{eyre, Result};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use sha2::Digest;
+use sha2::{Digest, Sha256};
 use std::io::Write;
 use std::time::Instant;
 use url::Url;
@@ -142,7 +142,7 @@ pub async fn get_mirror_speed_score(mirror_url: &str, client: &Client) -> Result
     let download_url = Url::parse(mirror_url)?.join("../.repotest")?;
     let timer = Instant::now();
     let file = client.get(download_url).send().await?.bytes().await?;
-    let mut hasher = sha2::Sha256::new();
+    let mut hasher = Sha256::new();
     hasher.write_all(&file)?;
 
     if hex::encode(hasher.finalize()) == SPEEDTEST_FILE_CHECKSUM {

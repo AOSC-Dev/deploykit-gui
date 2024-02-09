@@ -422,7 +422,11 @@ async fn start_install(window: Window, state: State<'_, DkState<'_>>) -> TauriRe
                 window.emit("progress", &data).unwrap();
                 println!("emit:{:?}", data);
             }
-            _ => window.emit("progress", &data).unwrap(),
+            ProgressStatus::Finish | ProgressStatus::Error(_) => {
+                window.emit("progress", &data).unwrap();
+                return Ok(());
+            }
+            ProgressStatus::Pending => window.emit("progress", &data).unwrap(),
         }
 
         thread::sleep(Duration::from_millis(100));
