@@ -2,7 +2,6 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import { createI18n } from "vue-i18n";
-import ipc from "./ipc";
 import humanFormat from "human-format";
 
 import messages from "./locales/en.json";
@@ -30,7 +29,6 @@ app.provide("humanSize", humanFormat.bytes);
 
 app.use(router);
 app.use(i18n);
-app.use(ipc);
 
 // load default translations
 i18n.global.setLocaleMessage("en", messages);

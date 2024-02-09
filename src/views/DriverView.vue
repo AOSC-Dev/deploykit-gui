@@ -22,9 +22,7 @@ export default {
     };
   },
   methods: {
-    open_eula: function () {
-      this.$ipc.notify("open", this.$t("driver.eula_link"));
-    },
+    open_eula: function () {},
   },
 };
 </script>
