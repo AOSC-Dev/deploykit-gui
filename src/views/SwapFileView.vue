@@ -121,6 +121,11 @@ select {
   width: 100%;
 }
 
+select {
+  text-align-last: center;
+  border-radius: unset;
+}
+
 .dk-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
