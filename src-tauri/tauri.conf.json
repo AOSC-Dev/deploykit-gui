@@ -20,6 +20,11 @@
         "all": true,
         "request": true,
         "scope": ["https://releases.aosc.io/*"]
+      },
+      "dialog": {
+        "all": true, 
+        "confirm": true, 
+        "message": true
       }
     },
     "bundle": {

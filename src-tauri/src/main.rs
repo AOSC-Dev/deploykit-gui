@@ -14,6 +14,7 @@ use std::process;
 use std::process::Command;
 use std::thread;
 use std::time::Duration;
+use tauri::api::dialog;
 use tauri::State;
 use tauri::Window;
 use tokio::sync::Mutex;
@@ -473,47 +474,64 @@ struct DkState<'a> {
     proxy: DeploykitProxy<'a>,
 }
 
+async fn init() -> Result<DeploykitProxy<'static>> {
+    let conn = Connection::system().await?;
+    let proxy = DeploykitProxy::new(&conn).await?;
+
+    Dbus::run(&proxy, DbusMethod::Ping).await?;
+
+    Ok(proxy)
+}
+
 fn main() {
-    let tokio = tokio::runtime::Builder::new_multi_thread()
+    let tokio = match tokio::runtime::Builder::new_multi_thread()
         .enable_all()
         .build()
-        .unwrap();
+    {
+        Ok(t) => t,
+        Err(e) => {
+            dialog::blocking::message(
+                None::<Window>.as_ref(),
+                "Error",
+                format!("Failed to create async runtime: {e}"),
+            );
+            return;
+        }
+    };
 
-    let proxy = tokio.block_on(async {
-        let conn = Connection::system()
-            .await
-            .expect("Failed to connect to system bus");
-        DeploykitProxy::new(&conn)
-            .await
-            .expect("Failed to create Deploykit dbus proxy")
-    });
+    let proxy = tokio.block_on(init());
 
-    tokio
-        .block_on(Dbus::run(&proxy, DbusMethod::Ping))
-        .expect("Failed to connect D-Bus");
-
-    tauri::Builder::default()
-        .manage(DkState {
-            recipe: Mutex::new(None),
-            proxy,
-        })
-        .invoke_handler(tauri::generate_handler![
-            set_config,
-            list_devices,
-            list_partitions,
-            gparted,
-            list_timezone,
-            get_recommend_swap_size,
-            get_memory,
-            get_recipe,
-            start_install,
-            cancel_install_and_exit,
-            get_squashfs_info,
-            disk_is_right_combo,
-            is_efi_api,
-            auto_partition,
-            mirrors_speedtest,
-        ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+    match proxy {
+        Ok(p) => {
+            tauri::Builder::default()
+                .manage(DkState {
+                    recipe: Mutex::new(None),
+                    proxy: p,
+                })
+                .invoke_handler(tauri::generate_handler![
+                    set_config,
+                    list_devices,
+                    list_partitions,
+                    gparted,
+                    list_timezone,
+                    get_recommend_swap_size,
+                    get_memory,
+                    get_recipe,
+                    start_install,
+                    cancel_install_and_exit,
+                    get_squashfs_info,
+                    disk_is_right_combo,
+                    is_efi_api,
+                    auto_partition,
+                    mirrors_speedtest,
+                ])
+                .run(tauri::generate_context!())
+                .expect("error while running tauri application");
+        }
+        Err(e) => dialog::blocking::message(
+            None::<Window>.as_ref(),
+            "Error",
+            format!("Failed to connect D-Bus: {e}"),
+        ),
+    }
 }

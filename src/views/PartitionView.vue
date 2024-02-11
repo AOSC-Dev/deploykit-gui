@@ -60,7 +60,6 @@ export default {
         const partition = await invoke("list_partitions", { dev: this.config.device.path });
         this.partitions = partition;
       } catch (e) {
-        console.error(e);
         this.$router.replace(`/error/${encodeURIComponent(e)}`);
       }
 

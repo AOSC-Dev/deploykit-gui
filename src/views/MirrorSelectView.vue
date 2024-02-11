@@ -32,7 +32,6 @@ export default {
         this.loading = false;
       } catch (e) {
         this.$router.replace(`/error/${encodeURIComponent(e)}`);
-        console.error(e);
       }
     },
   },
