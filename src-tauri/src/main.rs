@@ -26,7 +26,7 @@ use utils::Mirror;
 use utils::Recipe;
 use utils::Squashfs;
 use utils::Variant;
-use zbus::dbus_proxy;
+use zbus::proxy;
 use zbus::Connection;
 use zbus::Result as zResult;
 
@@ -36,7 +36,7 @@ use crate::utils::handle_serde_config;
 mod parser;
 mod utils;
 
-#[dbus_proxy(
+#[proxy(
     interface = "io.aosc.Deploykit1",
     default_service = "io.aosc.Deploykit",
     default_path = "/io/aosc/Deploykit"
