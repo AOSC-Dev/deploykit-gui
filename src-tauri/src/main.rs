@@ -15,6 +15,7 @@ use std::process::Command;
 use std::thread;
 use std::time::Duration;
 use tauri::api::dialog;
+use tauri::Manager;
 use tauri::State;
 use tauri::Window;
 use tokio::sync::Mutex;
@@ -404,34 +405,11 @@ struct GuiProgressStatus {
 }
 
 #[tauri::command]
-async fn start_install(window: Window, state: State<'_, DkState<'_>>) -> TauriResult<()> {
+async fn start_install(state: State<'_, DkState<'_>>) -> TauriResult<()> {
     let proxy = &state.proxy;
     Dbus::run(proxy, DbusMethod::StartInstall).await?;
 
-    loop {
-        let progress = Dbus::run(proxy, DbusMethod::GetProgress).await?;
-        let data: ProgressStatus = serde_json::from_value(progress.data)?;
-        match data {
-            ProgressStatus::Working { step, progress, .. } => {
-                let data = GuiProgress {
-                    status: GuiProgressStatus {
-                        c: step,
-                        t: 8,
-                        p: progress,
-                    },
-                };
-                window.emit("progress", &data).unwrap();
-                println!("emit:{:?}", data);
-            }
-            ProgressStatus::Finish | ProgressStatus::Error(_) => {
-                window.emit("progress", &data).unwrap();
-                return Ok(());
-            }
-            ProgressStatus::Pending => window.emit("progress", &data).unwrap(),
-        }
-
-        thread::sleep(Duration::from_millis(100));
-    }
+    Ok(())
 }
 
 #[tauri::command]
@@ -503,7 +481,14 @@ fn main() {
 
     match proxy {
         Ok(p) => {
+            let pc = p.clone();
             tauri::Builder::default()
+                .setup(move |app| {
+                    let pc = pc.clone();
+                    let window = app.get_window("main").unwrap();
+                    tauri::async_runtime::spawn(async move { progress_event(window, pc).await });
+                    Ok(())
+                })
                 .manage(DkState {
                     recipe: Mutex::new(None),
                     proxy: p,
@@ -533,5 +518,32 @@ fn main() {
             "Error",
             format!("Failed to connect D-Bus: {e}"),
         ),
+    }
+}
+
+async fn progress_event(window: Window, p: DeploykitProxy<'_>) -> TauriResult<()> {
+    loop {
+        let progress = Dbus::run(&p, DbusMethod::GetProgress).await?;
+        let data: ProgressStatus = serde_json::from_value(progress.data)?;
+        match data {
+            ProgressStatus::Working { step, progress, .. } => {
+                let data = GuiProgress {
+                    status: GuiProgressStatus {
+                        c: step,
+                        t: 8,
+                        p: progress,
+                    },
+                };
+                window.emit("progress", &data).unwrap();
+                println!("emit:{:?}", data);
+            }
+            ProgressStatus::Finish | ProgressStatus::Error(_) => {
+                window.emit("progress", &data).unwrap();
+                return Ok(());
+            }
+            ProgressStatus::Pending => window.emit("progress", &data).unwrap(),
+        }
+
+        thread::sleep(Duration::from_millis(100));
     }
 }

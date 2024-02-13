@@ -94,15 +94,31 @@ export default {
       this.progress = this.page_number * 25;
     });
 
-    setTimeout(async () => {
-      await listen("progress", (event) => this.progress_detail = event.payload, 200);
-    }, 200);
+    setTimeout(async () => await listen("progress", (event) => {
+      this.progress_detail = event.payload;
+    }), 200);
   },
   provide: function () {
     return {
       config: {},
     };
   },
+  created: function () {
+    listen("progress", (event) => {
+      this.progress_detail = event.payload;
+    });
+
+    setTimeout(() => {
+      const details = this.progress_detail;
+      if (Object.keys(details).length === 0 || !Object.keys(details).includes("status")) {
+        return;
+      }
+      if (details.status && (details.status === "Pending" || details.status == "Error" || details.status == "Finish")) {
+        return;
+      }
+      this.$router.replace("/install");
+    }, 200);
+  }
 };
 </script>
 
