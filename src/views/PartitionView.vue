@@ -57,8 +57,29 @@ export default {
       invoke("gparted");
       this.gparted = this.loading = true;
       try {
-        const partition = await invoke("list_partitions", { dev: this.config.device.path });
-        this.partitions = partition;
+        const device = this.config.device;
+        const req = await invoke("list_partitions", { dev: device.path });
+        const resp = req;
+        this.partitions = resp;
+
+        const v = this.config.variant;
+        const sqfs_info = await invoke("get_squashfs_info", { v, url: this.config.mirror.url });
+        this.sqfs_size = sqfs_info.downloadSize + sqfs_info.instSize;
+
+        if (this.partitions.length != 0) {
+          this.new_disk = false;
+          await invoke("disk_is_right_combo", { disk: device.path });
+        } else {
+          this.new_disk = true;
+          const is_efi = await invoke("is_efi_api");
+          this.is_efi = is_efi;
+
+          if (is_efi) {
+            this.new_partition_size = Math.round((device.size - 512 * 1024 * 1024) / 1024 / 1024 / 1024);
+          } else {
+            this.new_partition_size = Math.round((device.size) / 1024 / 1024 / 1024);
+          }
+        }
       } catch (e) {
         this.$router.replace(`/error/${encodeURIComponent(e)}`);
       }
