@@ -5,36 +5,38 @@ export default {
     id: String,
     options: Array,
   },
-  data: function () {
+  data() {
     return {
-      user_input: "",
+      user_input: '',
       show_dropdown: false,
     };
   },
-  mounted: function () {
+  mounted() {
     if (this.default != null) this.lock_selection(this.default);
   },
   computed: {
-    filtered_options: function () {
-      const current_input = this.user_input.trim().toLowerCase();
-      if (!current_input || this.options.filter(x => x.text.toLowerCase() === current_input).length !== 0)
-        return this.options;
-    
+    filtered_options() {
+      const currentInput = this.user_input.trim().toLowerCase();
+      if (
+        !currentInput
+        || this.options.filter((x) => x.text.toLowerCase() === currentInput)
+          .length !== 0
+      ) return this.options;
+
       return this.options.filter(
-        (v) =>
-          v.text.toLowerCase().includes(current_input) ||
-          v.data.toLowerCase().includes(current_input)
+        (v) => v.text.toLowerCase().includes(currentInput)
+          || v.data.toLowerCase().includes(currentInput),
       );
     },
   },
   methods: {
-    lock_selection: function (index) {
+    lock_selection(index) {
       const selected = this.filtered_options[index];
       this.show_dropdown = false;
       this.user_input = selected.text;
-      this.$emit("update:selected", index);
+      this.$emit('update:selected', index);
     },
-    edit_selection: function () {
+    edit_selection() {
       this.show_dropdown = true;
     },
   },

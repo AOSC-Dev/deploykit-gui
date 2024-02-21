@@ -1,17 +1,16 @@
 <script setup>
-import DKBottomActions from "@/components/DKBottomActions.vue";
-import DKStepButtons from "@/components/DKStepButtons.vue";
-import DKStripButton from "@/components/DKStripButton.vue";
-import DKListSelect from "@/components/DKListSelect.vue";
-import DKSpinner from "@/components/DKSpinner.vue";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from '@tauri-apps/api';
+import DKBottomActions from '@/components/DKBottomActions.vue';
+import DKStepButtons from '@/components/DKStepButtons.vue';
+import DKStripButton from '@/components/DKStripButton.vue';
+import DKListSelect from '@/components/DKListSelect.vue';
+import DKSpinner from '@/components/DKSpinner.vue';
 </script>
 
 <script>
-
 export default {
-  inject: ["config"],
-  data: function () {
+  inject: ['config'],
+  data() {
     return {
       mirrors: [],
       loading: false,
@@ -20,14 +19,16 @@ export default {
   },
   watch: {
     loading(newValue) {
-      this.$emit("update:can_quit", !newValue);
+      this.$emit('update:can_quit', !newValue);
     },
   },
   methods: {
-    run_bench: async function () {
+    async run_bench() {
       this.loading = true;
       try {
-        const mirrors = await invoke("mirrors_speedtest", { mirrors: this.mirrors });
+        const mirrors = await invoke('mirrors_speedtest', {
+          mirrors: this.mirrors,
+        });
         this.mirrors = mirrors;
         this.loading = false;
       } catch (e) {
@@ -37,13 +38,13 @@ export default {
   },
   async created() {
     try {
-      const data = await invoke("get_recipe");
-      this.mirrors = data.mirrors.sort((a, b) => a.name > b.name ? 1 : -1);
+      const data = await invoke('get_recipe');
+      this.mirrors = data.mirrors.sort((a, b) => (a.name > b.name ? 1 : -1));
       this.loading = false;
     } catch (e) {
       this.$router.replace(`/error/${encodeURIComponent(e)}`);
     }
-  }
+  },
 };
 </script>
 
@@ -52,10 +53,17 @@ export default {
     <h1>{{ $t("mirror.title") }}</h1>
     <p>{{ $t("mirror.p2") }}</p>
     <section class="mirror-select">
-      <DKListSelect :no_margin="true" :options="mirrors" v-model:selected="selected" :is_limit_height=true>
+      <DKListSelect
+        :no_margin="true"
+        :options="mirrors"
+        v-model:selected="selected"
+        :is_limit_height="true"
+      >
         <template #item="option">
           <div>
-            <span><b>{{ option.name }}</b></span>
+            <span
+              ><b>{{ option.name }}</b></span
+            >
           </div>
         </template>
       </DKListSelect>
@@ -70,7 +78,10 @@ export default {
     <DKStripButton :text="$t('mirror.b2')" @click="run_bench">
       <img src="@/../assets/histogram-symbolic.svg" height="36" />
     </DKStripButton>
-    <DKStepButtons :trigger="() => (config.mirror = mirrors[selected])" :can_proceed="selected != null" />
+    <DKStepButtons
+      :trigger="() => (config.mirror = mirrors[selected])"
+      :can_proceed="selected != null"
+    />
   </DKBottomActions>
 </template>
 
@@ -78,5 +89,4 @@ export default {
 span b {
   font-weight: 600;
 }
-
 </style>

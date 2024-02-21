@@ -1,6 +1,6 @@
 <script setup>
-import DKStepButtons from "./DKStepButtons.vue";
-import DKBottomActions from "@/components/DKBottomActions.vue";
+import DKBottomActions from '@/components/DKBottomActions.vue';
+import DKStepButtons from './DKStepButtons.vue';
 </script>
 
 <script>

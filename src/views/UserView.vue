@@ -1,76 +1,78 @@
 <script setup>
-import DKBottomSteps from "@/components/DKBottomSteps.vue";
+import DKBottomSteps from '@/components/DKBottomSteps.vue';
 </script>
 
 <script>
 export default {
-  inject: ["config"],
-  data: function () {
+  inject: ['config'],
+  data() {
     return {
-      user: this.config.user || "",
-      pwd: "",
-      pwd2: "",
-      error_msg: "",
+      user: this.config.user || '',
+      pwd: '',
+      pwd2: '',
+      error_msg: '',
       name_error: false,
       pwd_error: false,
     };
   },
   computed: {
-    name_style: function () {
-      return this.name_error ? "error-msg" : "";
+    name_style() {
+      return this.name_error ? 'error-msg' : '';
     },
-    pwd_style: function () {
-      return this.pwd_error ? "error-msg" : "";
+    pwd_style() {
+      return this.pwd_error ? 'error-msg' : '';
     },
   },
   methods: {
-    validate_user: function () {
+    validate_user() {
       const username = this.user.trimEnd();
       if (!username) {
-        this.error_msg = this.$t("user.bad1");
+        this.error_msg = this.$t('user.bad1');
         this.name_error = true;
         return false;
       }
       if (!/^[a-z][a-z0-9-]*$/.test(username)) {
-        this.error_msg = this.$t("user.bad4");
+        this.error_msg = this.$t('user.bad4');
         this.name_error = true;
         return false;
       }
       this.name_error = false;
-      this.error_msg = "";
+      this.error_msg = '';
       return true;
     },
-    validate_cpassword: function () {
+    validateCpassword() {
       if (this.pwd2.length >= this.pwd.length) {
         if (this.pwd !== this.pwd2) {
-          this.error_msg = this.$t("user.bad3");
+          this.error_msg = this.$t('user.bad3');
           this.pwd_error = true;
           return false;
         }
-        this.error_msg = "";
+        this.error_msg = '';
         this.pwd_error = false;
         return true;
       }
+
+      return true;
     },
-    validate: function () {
+    validate() {
       if (!this.validate_user()) return false;
 
       if (this.pwd.length < 1 || this.pwd2.length < 1) {
-        this.error_msg = this.$t("user.bad2");
+        this.error_msg = this.$t('user.bad2');
         this.name_error = true;
         return false;
       }
       this.name_error = false;
       if (this.pwd !== this.pwd2) {
-        this.error_msg = this.$t("user.bad3");
+        this.error_msg = this.$t('user.bad3');
         this.pwd_error = true;
         return false;
       }
       this.pwd_error = false;
-      this.error_msg = "";
+      this.error_msg = '';
       return true;
     },
-    save_config: function () {
+    save_config() {
       this.config.user = this.user;
       this.config.pwd = this.pwd;
     },
@@ -109,7 +111,7 @@ export default {
         v-model="pwd2"
         :class="pwd_style"
         :disabled="!pwd"
-        @input="validate_cpassword"
+        @input="validateCpassword"
       />
     </form>
     <p class="error-msg">{{ error_msg }}</p>

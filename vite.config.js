@@ -1,18 +1,18 @@
-import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
-import vueI18n from "@intlify/vite-plugin-vue-i18n";
-import path from "path";
-import { fileURLToPath, URL } from "url";
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import vueI18n from '@intlify/vite-plugin-vue-i18n';
+import path from 'path';
+import { fileURLToPath, URL } from 'url';
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
   plugins: [
     vue(),
-    vueI18n({ include: path.resolve(__dirname, "./src/locales/**") }),
+    vueI18n({ include: path.resolve(__dirname, './src/locales/**') }),
   ],
   resolve: {
     alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
 
@@ -26,7 +26,7 @@ export default defineConfig(async () => ({
     strictPort: true,
     watch: {
       // 3. tell vite to ignore watching `src-tauri`
-      ignored: ["**/src-tauri/**"],
+      ignored: ['**/src-tauri/**'],
     },
   },
 }));

@@ -1,41 +1,44 @@
 <script setup>
-import DKFilterSelect from "@/components/DKFilterSelect.vue";
-import DKBottomSteps from "@/components/DKBottomSteps.vue";
+import { invoke } from '@tauri-apps/api';
+import DKFilterSelect from '@/components/DKFilterSelect.vue';
+import DKBottomSteps from '@/components/DKBottomSteps.vue';
 </script>
 
 <script>
-import lang_data from "../lang_select.json";
-import { invoke } from "@tauri-apps/api";
+import langData from '../lang_select.json';
+
 export default {
   props: {},
-  inject: ["config"],
-  data: function () {
+  inject: ['config'],
+  data() {
     return {
       loading: true,
-      locales: lang_data,
+      locales: langData,
       timezones: [],
-      selected_locale: lang_data.findIndex((v) => v.locale === this.config.locale.locale),
-      rtc_tz: `${!(this.config.rtc_utc || true) | 0}`,
+      selected_locale: langData.findIndex(
+        (v) => v.locale === this.config.locale.locale,
+      ),
+      rtc_tz: `${!(this.config.rtc_utc || true) || 0}`,
       timezone: 0,
     };
   },
   methods: {
-    save_config: function () {
-      this.config.rtc_utc = this.rtc_tz == "0";
+    save_config() {
+      this.config.rtc_utc = this.rtc_tz === '0';
       this.config.timezone = this.timezones[this.timezone];
-      this.config.locale = lang_data[this.selected_locale];
+      this.config.locale = langData[this.selected_locale];
     },
   },
   async created() {
     try {
-      const data = await invoke("list_timezone");
+      const data = await invoke('list_timezone');
       this.timezones = data;
     } catch (e) {
       this.$router.replace(`/error/${encodeURIComponent(e)}`);
     }
 
     this.loading = false;
-  }
+  },
 };
 </script>
 
@@ -91,6 +94,5 @@ select {
 select {
   text-align-last: center;
   border-radius: unset;
-} 
-
+}
 </style>

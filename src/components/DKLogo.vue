@@ -1,13 +1,13 @@
 <script>
-const CJK_LANG = ["zh-CN", "zh-TW", "ja"];
-const INV_LANG = [""];
+const CJK_LANG = ['zh-CN', 'zh-TW', 'ja'];
+const INV_LANG = [''];
 export default {
   computed: {
-    is_inverted: function () {
+    is_inverted() {
       return INV_LANG.includes(this.$i18n.locale);
     },
-    cjk_quirk: function () {
-      return CJK_LANG.includes(this.$i18n.locale) ? "cjk" : "";
+    cjk_quirk() {
+      return CJK_LANG.includes(this.$i18n.locale) ? 'cjk' : '';
     },
   },
 };

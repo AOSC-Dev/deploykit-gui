@@ -1,63 +1,64 @@
 <script setup>
-import DKListSelect from "@/components/DKListSelect.vue";
-import DKBottomSteps from "@/components/DKBottomSteps.vue";
+import DKListSelect from '@/components/DKListSelect.vue';
+import DKBottomSteps from '@/components/DKBottomSteps.vue';
 </script>
 
 <script>
 export default {
-  inject: ["config"],
+  inject: ['config'],
   methods: {
-    load_default: function () {
+    load_default() {
       if (this.config.rescue == null) {
         if (this.options[0].disabled) return 1;
         return null;
       }
-      return !this.config.rescue | 0;
+      return !this.config.rescue || 0;
     },
-    rescuekit_options: function () {
-      const no_option = {
-        title: this.$t("rescue.no"),
-        body: this.$t("rescue.w1"),
+    rescuekit_options() {
+      const noOption = {
+        title: this.$t('rescue.no'),
+        body: this.$t('rescue.w1'),
         hl: true,
       };
       switch (this.config.rescue_avail || 1) {
         case 0:
           return [
             {
-              title: this.$t("rescue.yes"),
-              body: this.$t("rescue.l1"),
+              title: this.$t('rescue.yes'),
+              body: this.$t('rescue.l1'),
             },
-            no_option,
+            noOption,
           ];
         case 1:
           return [
             {
-              title: this.$t("rescue.yes"),
-              body: this.$t("rescue.bad1"),
+              title: this.$t('rescue.yes'),
+              body: this.$t('rescue.bad1'),
               disabled: true,
             },
-            no_option,
+            noOption,
           ];
         case 2:
           return [
             {
-              title: this.$t("rescue.yes"),
-              body: this.$t("rescue.bad2"),
+              title: this.$t('rescue.yes'),
+              body: this.$t('rescue.bad2'),
               disabled: true,
             },
-            no_option,
+            noOption,
           ];
+        default:
+          throw new Error(`Unknown RescueKit status ${this.config.rescue_avail}`);
       }
-      throw new Error(`Unknown RescueKit status ${this.config.rescue_avail}`);
     },
   },
-  data: function () {
+  data() {
     return {
       options: this.rescuekit_options(),
       selected: null,
     };
   },
-  mounted: function () {
+  mounted() {
     this.selected = this.load_default();
   },
 };

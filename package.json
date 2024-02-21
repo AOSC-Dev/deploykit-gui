@@ -10,16 +10,21 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@tauri-apps/api": "^1.5.2",
+    "human-format": "^1.2.0",
     "vue": "^3.3.4",
     "vue-i18n": "^9.8.0",
-    "vue-router": "^4.2.5",
-    "human-format": "^1.2.0",
-    "@tauri-apps/api": "^1.5.2"
+    "vue-router": "^4.2.5"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.2.3",
-    "vite": "^5.0.0",
+    "@intlify/vite-plugin-vue-i18n": "^6.0.1",
     "@tauri-apps/cli": "^1.5.8",
-    "@intlify/vite-plugin-vue-i18n": "^6.0.1"
+    "@vitejs/plugin-vue": "^4.2.3",
+    "eslint": "^7.32.0 || ^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-vue": "^9.21.1",
+    "vite": "^5.0.0"
   }
 }

@@ -1,16 +1,15 @@
 <script setup>
-import { RouterView } from "vue-router";
-import DKLogo from "@/components/DKLogo.vue";
-import LangSelect from "@/views/LangSelect.vue";
-import DKLayout from "@/components/DKLayout.vue";
+import { RouterView } from 'vue-router';
+import { listen } from '@tauri-apps/api/event';
+import DKLogo from '@/components/DKLogo.vue';
+import LangSelect from '@/views/LangSelect.vue';
+import DKLayout from '@/components/DKLayout.vue';
 </script>
 
 <script>
-import { listen } from "@tauri-apps/api/event";
-
 export default {
-  inject: ["switchLocale"],
-  data: function () {
+  inject: ['switchLocale'],
+  data() {
     return {
       page_number: 0,
       progress: 0,
@@ -23,24 +22,33 @@ export default {
     };
   },
   computed: {
-    eta_value: function () {
+    eta_value() {
       const details = this.progress_detail;
       if (details.eta_lo > 0) {
-        return this.$t("d.eta-0", {
+        return this.$t('d.eta-0', {
           time_lo: details.eta_lo,
           time_hi: details.eta_hi,
         });
-      } else if (details.eta_hi > 5) {
-        return this.$tc("d.eta-1", details.eta_hi, { time: details.eta_hi });
       }
-      return this.$t("d.eta-2");
+      if (details.eta_hi > 5) {
+        return this.$tc('d.eta-1', details.eta_hi, { time: details.eta_hi });
+      }
+      return this.$t('d.eta-2');
     },
-    install_info: function () {
+    install_info() {
       const details = this.progress_detail;
-      if (Object.keys(details).length === 0 || !Object.keys(details).includes("status")) return "";
-      if (details.status && (details.status === "Pending" || details.status == "Error" || details.status == "Finish")) return "";
-      const status = details.status;
-      return this.$t("install.status", {
+      if (
+        Object.keys(details).length === 0
+        || !Object.keys(details).includes('status')
+      ) return '';
+      if (
+        details.status
+        && (details.status === 'Pending'
+          || details.status === 'Error'
+          || details.status === 'Finish')
+      ) return '';
+      const { status } = details;
+      return this.$t('install.status', {
         curr: status.c,
         total: status.t,
         msg: this.$t(`install.i${status.c}`),
@@ -49,23 +57,23 @@ export default {
     },
   },
   methods: {
-    on_abort: function () {
-      this.$router.push("/abort");
+    on_abort() {
+      this.$router.push('/abort');
     },
-    nav_menu_bold: function (step) {
-      return this.page_number >= step ? "active" : "";
+    nav_menu_bold(step) {
+      return this.page_number >= step ? 'active' : '';
     },
-    lightup_seq: function (step) {
-      return this.lightup >= step ? "" : "hidden";
+    lightup_seq(step) {
+      return this.lightup >= step ? '' : 'hidden';
     },
-    execute_lightup: function () {
+    execute_lightup() {
       const timer = setInterval(() => {
-        if (++this.lightup >= 4) clearInterval(timer);
+        if (this.lightup + 1 >= 4) clearInterval(timer);
       }, 210);
     },
-    on_lang_selected: function (id) {
+    on_lang_selected(id) {
       console.info(`Language: ${id}`);
-      if (id == "en") {
+      if (id === 'en') {
         // default locale is always loaded before-hand
         this.lang_selected = true;
         this.execute_lightup();
@@ -83,50 +91,73 @@ export default {
           this.execute_lightup();
         });
     },
-    on_progress_update: function (progress) {
+    on_progress_update(progress) {
       this.progress_detail = progress;
     },
   },
-  mounted: function () {
+  mounted() {
     this.$router.beforeEach((to) => {
-      if (to.name == "error" || to.name == "abort") return null;
+      if (to.name === 'error' || to.name === 'abort') return;
       this.page_number = to.meta.steps;
       this.progress = this.page_number * 25;
     });
 
-    setTimeout(async () => await listen("progress", (event) => {
-      this.progress_detail = event.payload;
-    }), 200);
+    setTimeout(
+      () => listen('progress', (event) => {
+        this.progress_detail = event.payload;
+      }),
+      200,
+    );
   },
-  provide: function () {
+  provide() {
     return {
       config: {},
     };
   },
-  created: function () {
-    listen("progress", (event) => {
+  created() {
+    listen('progress', (event) => {
       this.progress_detail = event.payload;
     });
 
     setTimeout(() => {
       const details = this.progress_detail;
-      if (Object.keys(details).length === 0 || !Object.keys(details).includes("status")) {
+      if (
+        Object.keys(details).length === 0
+        || !Object.keys(details).includes('status')
+      ) {
         return;
       }
-      if (details.status && (details.status === "Pending" || details.status == "Error" || details.status == "Finish")) {
+      if (
+        details.status
+        && (details.status === 'Pending'
+          || details.status === 'Error'
+          || details.status === 'Finish')
+      ) {
         return;
       }
-      this.$router.replace("/install");
+      this.$router.replace('/install');
     }, 200);
-  }
+  },
 };
 </script>
 
 <template>
   <div style="padding: 0 2rem; margin-bottom: 1rem">
-    <button class="quit-button" style="padding-top: 1rem" :aria-label="$t('d.sr-close')" @click="on_abort"
-      @keyup.enter="on_abort" :disabled="!can_quit" v-show="lang_selected">
-      <img :alt="$t('d.sr-close-icon')" src="@/../assets/window-close-symbolic.svg" width="30" height="30" />
+    <button
+      class="quit-button"
+      style="padding-top: 1rem"
+      :aria-label="$t('d.sr-close')"
+      @click="on_abort"
+      @keyup.enter="on_abort"
+      :disabled="!can_quit"
+      v-show="lang_selected"
+    >
+      <img
+        :alt="$t('d.sr-close-icon')"
+        src="@/../assets/window-close-symbolic.svg"
+        width="30"
+        height="30"
+      />
     </button>
     <header style="width: 90%" :class="lightup_seq(1)">
       <DKLogo />
@@ -148,8 +179,13 @@ export default {
   </DKLayout>
   <!-- status bar -->
   <div class="status-bar" v-if="lang_selected" :class="lightup_seq(4)">
-    <progress id="progressbar" :aria-label="$t('d.sr-progress')" :value="progress" max="100"
-      class="progress-bar"></progress>
+    <progress
+      id="progressbar"
+      :aria-label="$t('d.sr-progress')"
+      :value="progress"
+      max="100"
+      class="progress-bar"
+    ></progress>
     <span class="info-box" v-if="page_number > 1 && page_number < 4">{{
       install_info
     }}</span>

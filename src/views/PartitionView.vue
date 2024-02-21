@@ -1,24 +1,23 @@
 <script setup>
-import DKStripButton from "@/components/DKStripButton.vue";
-import DKBottomActions from "@/components/DKBottomActions.vue";
-import DKListSelect from "@/components/DKListSelect.vue";
-import DKSpinner from "@/components/DKSpinner.vue";
-import DKBottomSteps from "@/components/DKBottomSteps.vue";
+import { invoke } from '@tauri-apps/api';
+import { listen } from '@tauri-apps/api/event';
+import DKStripButton from '@/components/DKStripButton.vue';
+import DKBottomActions from '@/components/DKBottomActions.vue';
+import DKListSelect from '@/components/DKListSelect.vue';
+import DKSpinner from '@/components/DKSpinner.vue';
+import DKBottomSteps from '@/components/DKBottomSteps.vue';
 </script>
 
 <script>
-import { invoke } from "@tauri-apps/api";
-import { listen } from "@tauri-apps/api/event";
-
 export default {
-  inject: ["config", "humanSize"],
-  data: function () {
+  inject: ['config', 'humanSize'],
+  data() {
     return {
       selected: null,
       gparted: false,
       partitions: [],
       loading: true,
-      error_msg: "",
+      error_msg: '',
       sqfs_size: null,
       new_partition_size: null,
       is_efi: false,
@@ -26,67 +25,77 @@ export default {
     };
   },
   computed: {
-    valid: function () {
+    valid() {
       return !this.gparted && (this.new_disk || this.selected != null);
     },
   },
   watch: {
     loading(newValue) {
-      this.$emit("update:can_quit", !newValue && !this.gparted);
+      this.$emit('update:can_quit', !newValue && !this.gparted);
     },
     gparted(newValue) {
-      this.$emit("update:can_quit", !newValue && !this.loading);
+      this.$emit('update:can_quit', !newValue && !this.loading);
     },
   },
   methods: {
-    comment: function (comment) {
+    comment(comment) {
       switch (comment) {
-        case "esp":
-          return this.$t("part.k1");
-        case "mbr":
-          return this.$t("part.k3");
-        case "winre":
-          return this.$t("part.k2");
+        case 'esp':
+          return this.$t('part.k1');
+        case 'mbr':
+          return this.$t('part.k3');
+        case 'winre':
+          return this.$t('part.k2');
+        default: { /* empty */ }
       }
       if (comment.length > 20) {
-        return this.$t("part.k5", { other_os: comment.substring(0, 20) });
+        return this.$t('part.k5', { other_os: comment.substring(0, 20) });
       }
-      return this.$t("part.k4", { other_os: comment });
+      return this.$t('part.k4', { other_os: comment });
     },
-    launch_gparted: async function () {
-      invoke("gparted");
-      this.gparted = this.loading = true;
+    async launch_gparted() {
+      invoke('gparted');
+      this.gparted = true;
+      this.loading = true;
       try {
-        const device = this.config.device;
-        const req = await invoke("list_partitions", { dev: device.path });
+        const { device } = this.config;
+        const req = await invoke('list_partitions', { dev: device.path });
         const resp = req;
         this.partitions = resp;
 
         const v = this.config.variant;
-        const sqfs_info = await invoke("get_squashfs_info", { v, url: this.config.mirror.url });
-        this.sqfs_size = sqfs_info.downloadSize + sqfs_info.instSize;
+        const squashfsInfo = await invoke('get_squashfs_info', {
+          v,
+          url: this.config.mirror.url,
+        });
+        this.sqfs_size = squashfsInfo.downloadSize + squashfsInfo.instSize;
 
-        if (this.partitions.length != 0) {
+        if (this.partitions.length !== 0) {
           this.new_disk = false;
-          await invoke("disk_is_right_combo", { disk: device.path });
+          await invoke('disk_is_right_combo', { disk: device.path });
         } else {
           this.new_disk = true;
-          const is_efi = await invoke("is_efi_api");
-          this.is_efi = is_efi;
+          const isEFI = await invoke('is_efi_api');
+          this.is_efi = isEFI;
 
-          if (is_efi) {
-            this.new_partition_size = Math.round((device.size - 512 * 1024 * 1024) / 1024 / 1024 / 1024);
+          if (isEFI) {
+            this.new_partition_size = Math.round(
+              (device.size - 512 * 1024 * 1024) / 1024 / 1024 / 1024,
+            );
           } else {
-            this.new_partition_size = Math.round((device.size) / 1024 / 1024 / 1024);
+            this.new_partition_size = Math.round(
+              device.size / 1024 / 1024 / 1024,
+            );
           }
         }
       } catch (e) {
         this.$router.replace(`/error/${encodeURIComponent(e)}`);
       }
 
-      this.gparted = this.loading = false;
+      this.gparted = false;
+      this.loading = false;
     },
-    validate: function () {
+    validate() {
       if (this.new_disk) {
         return true;
       }
@@ -95,63 +104,72 @@ export default {
         return false;
       }
 
-      const size = this.partitions[this.selected].size;
+      const { size } = this.partitions[this.selected];
 
       if (size < this.sqfs_size) {
-        this.error_msg = this.$t("part.e1", { size: Math.ceil(this.sqfs_size / 1024 / 1024 / 1024) });
+        this.error_msg = this.$t('part.e1', {
+          size: Math.ceil(this.sqfs_size / 1024 / 1024 / 1024),
+        });
         return false;
       }
 
-      if (!["ext4", "xfs"].includes(this.partitions[this.selected].fs_type)) {
-        this.error_msg = this.$t("part.e2");
+      if (!['ext4', 'xfs'].includes(this.partitions[this.selected].fs_type)) {
+        this.error_msg = this.$t('part.e2');
         return false;
       }
 
       return true;
     },
-    select: function () {
-      const size = this.partitions[this.selected].size;
+    select() {
+      const { size } = this.partitions[this.selected];
 
       if (size < this.sqfs_size) {
-        this.error_msg = this.$t("part.e1", { size: Math.ceil(this.sqfs_size / 1024 / 1024 / 1024) });
+        this.error_msg = this.$t('part.e1', {
+          size: Math.ceil(this.sqfs_size / 1024 / 1024 / 1024),
+        });
         return;
       }
 
-      if (!["ext4", "xfs"].includes(this.partitions[this.selected].fs_type)) {
-        this.error_msg = this.$t("part.e2");
+      if (!['ext4', 'xfs'].includes(this.partitions[this.selected].fs_type)) {
+        this.error_msg = this.$t('part.e2');
         return;
       }
 
-      this.error_msg = "";
+      this.error_msg = '';
     },
-    next: async function () {
+    async next() {
       if (!this.new_disk) {
         this.config.partition = this.partitions[this.selected];
       } else {
         try {
-          invoke("auto_partition", { dev: this.config.device.path }).catch((e) => {
-            this.$router.replace(`/error/${encodeURIComponent(e)}`);
-          });
+          invoke('auto_partition', { dev: this.config.device.path }).catch(
+            (e) => {
+              this.$router.replace(`/error/${encodeURIComponent(e)}`);
+            },
+          );
 
           setTimeout(async () => {
             try {
-              await listen("auto_partition_progress", (event) => {
+              await listen('auto_partition_progress', (event) => {
                 setTimeout(() => {
-                  if (event.payload.status === "Finish") {
+                  if (event.payload.status === 'Finish') {
                     const parts = event.payload.res.Ok;
 
-                    if (parts.length == 2) {
-                      this.config.partition = parts[1];
-                      this.config.efi_partition = parts[0];
+                    if (parts.length === 2) {
+                      const sysPart = parts[1];
+                      const efiPart = parts[0];
+                      this.config.partition = sysPart;
+                      this.config.efi_partition = efiPart;
                     } else {
-                      this.config.partition = parts[0];
+                      const sysPart = parts[0];
+                      this.config.partition = sysPart;
                     }
                     this.loading = false;
                   } else {
                     this.loading = true;
                   }
-                }, 200)
-              })
+                }, 200);
+              });
             } catch (e) {
               this.$router.replace(`/error/${encodeURIComponent(e)}`);
             }
@@ -160,44 +178,56 @@ export default {
           this.$router.replace(`/error/${encodeURIComponent(e)}`);
         }
       }
-    }
+    },
   },
   async created() {
-    const device = this.config.device;
+    const { device } = this.config;
     // const device = {
     //   path: "/dev/loop30",
     //   model: "loop",
     //   size: 50 * 1024 * 1024 * 1024,
     // };
     try {
-      const req = await invoke("list_partitions", { dev: device.path });
+      const req = await invoke('list_partitions', { dev: device.path });
       const resp = req;
       this.partitions = resp;
 
       const v = this.config.variant;
-      const sqfs_info = await invoke("get_squashfs_info", { v, url: this.config.mirror.url });
-      this.sqfs_size = sqfs_info.downloadSize + sqfs_info.instSize;
+      const squashfsInfo = await invoke('get_squashfs_info', {
+        v,
+        url: this.config.mirror.url,
+      });
+      this.sqfs_size = squashfsInfo.downloadSize + squashfsInfo.instSize;
 
       if (this.partitions.length !== 0) {
         this.new_disk = false;
-        await invoke("disk_is_right_combo", { disk: device.path });
-        const esp_parts = await invoke("find_all_esp_parts");
-        if (esp_parts.length === 0) {
-          this.$router.replace(`/error/${encodeURIComponent("Has no EFI Partition!")}`);
-        } else if (esp_parts.length === 1) {
-          this.config.efi_partition = esp_parts[0];
+        await invoke('disk_is_right_combo', { disk: device.path });
+        const espParts = await invoke('find_all_esp_parts');
+        if (espParts.length === 0) {
+          this.$router.replace(
+            `/error/${encodeURIComponent('Has no EFI Partition!')}`,
+          );
+        } else if (espParts.length === 1) {
+          const selectEFIPart = espParts[0];
+          this.config.efi_partition = selectEFIPart;
         } else if (!this.config.efi_partition) {
-          this.$router.push(`/esp/${encodeURIComponent(JSON.stringify(esp_parts))}`);
+          this.$router.push(
+            `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
+          );
         }
       } else {
         this.new_disk = true;
-        const is_efi = await invoke("is_efi_api");
-        this.is_efi = is_efi;
+        const isEFI = await invoke('is_efi_api');
+        this.is_efi = isEFI;
 
-        if (is_efi) {
-          this.new_partition_size = Math.round((device.size - 512 * 1024 * 1024) / 1024 / 1024 / 1024);
+        if (isEFI) {
+          this.new_partition_size = Math.round(
+            (device.size - 512 * 1024 * 1024) / 1024 / 1024 / 1024,
+          );
         } else {
-          this.new_partition_size = Math.round((device.size) / 1024 / 1024 / 1024);
+          this.new_partition_size = Math.round(
+            device.size / 1024 / 1024 / 1024,
+          );
         }
       }
     } catch (e) {
@@ -205,7 +235,7 @@ export default {
     }
 
     this.loading = false;
-  }
+  },
 };
 </script>
 
@@ -215,8 +245,13 @@ export default {
     <section v-if="!new_disk">
       <p>{{ $t("part.p1") }}</p>
       <section>
-        <DKListSelect :no_margin="true" v-model:selected="selected" :options="partitions" :is_limit_height="true"
-          :click_fn="select">
+        <DKListSelect
+          :no_margin="true"
+          v-model:selected="selected"
+          :options="partitions"
+          :is_limit_height="true"
+          :click_fn="select"
+        >
           <template #item="option">
             <div style="width: 100%">
               <span class="column-80">{{ option.path }}</span>

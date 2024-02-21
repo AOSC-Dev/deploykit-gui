@@ -1,67 +1,68 @@
 <script>
-import DKStripButton from "@/components/DKStripButton.vue";
-import DKBottomActions from "@/components/DKBottomActions.vue";
-import { invoke } from "@tauri-apps/api";
-import { listen } from "@tauri-apps/api/event";
+import { invoke } from '@tauri-apps/api';
+import { listen } from '@tauri-apps/api/event';
+import DKStripButton from '@/components/DKStripButton.vue';
+import DKBottomActions from '@/components/DKBottomActions.vue';
 
 export default {
-  data: function () {
+  data() {
     return {
       current_slide: {
-        title: this.$t("loading"),
-        body: "",
+        title: this.$t('loading'),
+        body: '',
       },
       index: 0,
       timer: null,
       slides: [
-        { title: this.$t("slides.t1"), body: this.$t("slides.p1") },
-        { title: this.$t("slides.t2"), body: this.$t("slides.p2") },
-        { title: this.$t("slides.t3"), body: this.$t("slides.p3") },
-        { title: this.$t("slides.t4"), body: this.$t("slides.p4") },
-        { title: this.$t("slides.t5"), body: this.$t("slides.p5") },
-        { title: this.$t("slides.t6"), body: this.$t("slides.p6") },
-        { title: this.$t("slides.t7"), body: this.$t("slides.p7") },
+        { title: this.$t('slides.t1'), body: this.$t('slides.p1') },
+        { title: this.$t('slides.t2'), body: this.$t('slides.p2') },
+        { title: this.$t('slides.t3'), body: this.$t('slides.p3') },
+        { title: this.$t('slides.t4'), body: this.$t('slides.p4') },
+        { title: this.$t('slides.t5'), body: this.$t('slides.p5') },
+        { title: this.$t('slides.t6'), body: this.$t('slides.p6') },
+        { title: this.$t('slides.t7'), body: this.$t('slides.p7') },
       ],
       hide: false,
     };
   },
   methods: {
-    next_slide: function () {
+    next_slide() {
       this.hide = true;
-      const next_slide = this.slides[++this.index % this.slides.length];
+      const newSlide = this.slides[(this.index + 1) % this.slides.length];
       setTimeout(() => {
         this.current_slide = {
-          title: next_slide.title,
-          paras: next_slide.body.split("\n"),
+          title: newSlide.title,
+          paras: newSlide.body.split('\n'),
         };
         this.hide = false;
       }, 200);
     },
   },
-  mounted: async function () {
+  async mounted() {
     this.current_slide = {
       title: this.slides[0].title,
-      paras: this.slides[0].body.split("\n"),
+      paras: this.slides[0].body.split('\n'),
     };
 
     this.timer = setInterval(this.next_slide, 6000);
 
-    setTimeout(() => invoke("start_install"), 200);
+    setTimeout(() => invoke('start_install'), 200);
 
     setTimeout(async () => {
-      await listen("progress", (event) => {
+      await listen('progress', (event) => {
         setTimeout(() => {
-          if (event.payload.status === "Finish") {
-            this.$router.replace("/finish");
-          } else if (event.payload.status === "Error") {
-            this.$router.replace(`/error/${encodeURIComponent(JSON.stringify(event.payload))}`);
+          if (event.payload.status === 'Finish') {
+            this.$router.replace('/finish');
+          } else if (event.payload.status === 'Error') {
+            this.$router.replace(
+              `/error/${encodeURIComponent(JSON.stringify(event.payload))}`,
+            );
           }
-        }, 200)
-      })
+        }, 200);
+      });
     }, 200);
-
   },
-  beforeUnmount: function () {
+  beforeUnmount() {
     clearInterval(this.timer);
   },
   components: { DKStripButton, DKBottomActions },

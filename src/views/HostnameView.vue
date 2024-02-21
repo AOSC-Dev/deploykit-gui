@@ -1,45 +1,44 @@
 <script setup>
-import DKBottomSteps from "@/components/DKBottomSteps.vue";
+import DKBottomSteps from '@/components/DKBottomSteps.vue';
 </script>
 
 <script>
-function generate_hostname() {
-  let output = "aosc-";
+function generateHostname() {
+  let output = 'aosc-';
   const random = new Uint8Array(4);
   window.crypto.getRandomValues(random);
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 4; i += 1) {
     output += random[i].toString(16);
   }
   return output;
 }
 
 export default {
-  inject: ["config"],
-  data: function () {
+  inject: ['config'],
+  data() {
     return {
       name: this.config.hostname,
       generated_name: null,
-      err_msg: "",
+      err_msg: '',
     };
   },
-  mounted: function () {
+  mounted() {
     if (!this.config.hostname) {
-      this.generated_name = generate_hostname();
+      this.generated_name = generateHostname();
       this.name = this.generated_name;
     }
   },
   methods: {
-    validate: function () {
+    validate() {
       if (!/^[a-z0-9-]+$/.test(this.name)) {
-        this.err_msg = this.$t("host.bad");
+        this.err_msg = this.$t('host.bad');
         return false;
       }
-      this.err_msg = "";
+      this.err_msg = '';
       return true;
     },
-    on_focus: function () {
-      if (this.name === this.generated_name)
-        setTimeout(() => document.getElementById("hostname").select(), 150);
+    on_focus() {
+      if (this.name === this.generated_name) setTimeout(() => document.getElementById('hostname').select(), 150);
     },
   },
 };

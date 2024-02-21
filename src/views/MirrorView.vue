@@ -1,5 +1,5 @@
 <script setup>
-import DKBottomSteps from "@/components/DKBottomSteps.vue";
+import DKBottomSteps from '@/components/DKBottomSteps.vue';
 </script>
 
 <template>

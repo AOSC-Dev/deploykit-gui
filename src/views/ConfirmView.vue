@@ -1,8 +1,9 @@
 <script>
-import DKBottomSteps from "@/components/DKBottomSteps.vue";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from '@tauri-apps/api';
+import DKBottomSteps from '@/components/DKBottomSteps.vue';
+
 export default {
-  inject: ["config"],
+  inject: ['config'],
   props: {
     part: String,
     part_fmt: String,
@@ -16,15 +17,14 @@ export default {
   },
   components: { DKBottomSteps },
   methods: {
-    set_config: async function () {
+    async set_config() {
       try {
-        await invoke("set_config", { config: JSON.stringify(this.config) })
-      }
-      catch (e) {
+        await invoke('set_config', { config: JSON.stringify(this.config) });
+      } catch (e) {
         this.$router.replace(`/error/${encodeURIComponent(e)}`);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

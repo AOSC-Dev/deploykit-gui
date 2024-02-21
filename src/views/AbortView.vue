@@ -1,28 +1,28 @@
 <script setup>
-import DKBottomActions from "@/components/DKBottomActions.vue";
-import DKStripButton from "@/components/DKStripButton.vue";
-import DKSpinner from "@/components/DKSpinner.vue";
+import { invoke } from '@tauri-apps/api';
+import DKBottomActions from '@/components/DKBottomActions.vue';
+import DKStripButton from '@/components/DKStripButton.vue';
+import DKSpinner from '@/components/DKSpinner.vue';
 </script>
 
 <script>
-import { invoke } from "@tauri-apps/api";
 export default {
-  data: function () {
+  data() {
     return {
-      exiting: false
+      exiting: false,
     };
   },
   methods: {
-    quit: async function (reset_config) {
+    async quit(resetConfig) {
       try {
         this.exiting = true;
-        await invoke("cancel_install_and_exit", { resetConfig: reset_config });
+        await invoke('cancel_install_and_exit', { resetConfig });
       } catch (e) {
         this.$router.replace(`/error/${encodeURIComponent(e)}`);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <template>

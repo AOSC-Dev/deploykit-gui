@@ -1,28 +1,28 @@
 <script setup>
-import DKListSelect from "@/components/DKListSelect.vue";
-import DKBottomSteps from "@/components/DKBottomSteps.vue";
+import DKListSelect from '@/components/DKListSelect.vue';
+import DKBottomSteps from '@/components/DKBottomSteps.vue';
 </script>
 
 <script>
 export default {
-  inject: ["config"],
-  data: function () {
+  inject: ['config'],
+  data() {
     return {
       options: [
         {
-          title: this.$t("rescue.yes"),
-          body: this.$t("driver.l1"),
+          title: this.$t('rescue.yes'),
+          body: this.$t('driver.l1'),
         },
         {
-          title: this.$t("rescue.no"),
-          body: this.$t("driver.l2"),
+          title: this.$t('rescue.no'),
+          body: this.$t('driver.l2'),
         },
       ],
       selected: 1,
     };
   },
   methods: {
-    open_eula: function () {},
+    open_eula() {},
   },
 };
 </script>

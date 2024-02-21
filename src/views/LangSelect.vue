@@ -1,30 +1,31 @@
 <script setup>
-import DKLayout from "@/components/DKLayout.vue";
-import DKListSelect from "@/components/DKListSelect.vue";
-import DKBottomRightButtons from "@/components/DKBottomRightButtons.vue";
-import DKBottomActions from "@/components/DKBottomActions.vue";
+import DKLayout from '@/components/DKLayout.vue';
+import DKListSelect from '@/components/DKListSelect.vue';
+import DKBottomRightButtons from '@/components/DKBottomRightButtons.vue';
+import DKBottomActions from '@/components/DKBottomActions.vue';
 </script>
 
 <script>
-import lang_data from "../lang_select.json";
+import langData from '../lang_select.json';
+
 export default {
-  inject: ["config"],
-  data: function () {
+  inject: ['config'],
+  data() {
     return {
-      lang_data: lang_data,
-      display_data: lang_data.map((v) => ({ body: v.lang })),
+      lang_data: langData,
+      display_data: langData.map((v) => ({ body: v.lang })),
       selection: 0,
     };
   },
   computed: {
-    is_inverted: function () {
-      return this.lang_data[this.selection].anastrophe;
+    is_inverted() {
+      return this.langData[this.selection].anastrophe;
     },
   },
   methods: {
-    select: function (idx) {
-      this.$emit("update:lang", this.lang_data[idx].id);
-      this.config.locale = this.lang_data[idx];
+    select(idx) {
+      this.$emit('update:lang', this.langData[idx].id);
+      this.config.locale = this.langData[idx];
     },
   },
 };
@@ -41,7 +42,7 @@ export default {
     <DKBottomActions>
       <DKBottomRightButtons>
         <button class="button" @click="select(selection)">
-          {{ lang_data[selection]["next"] }}
+          {{ langData[selection]["next"] }}
         </button>
       </DKBottomRightButtons>
     </DKBottomActions>
@@ -50,18 +51,18 @@ export default {
         <img />
         <div style="line-height: 1" v-if="!is_inverted">
           <h1 style="font-size: 3rem; text-align: right; margin-bottom: 0">
-            {{ lang_data[selection]["aosc"] }}
+            {{ langData[selection]["aosc"] }}
           </h1>
           <h2 style="font-size: 1.25rem; text-align: right">
-            {{ lang_data[selection]["inst"] }}
+            {{ langData[selection]["inst"] }}
           </h2>
         </div>
         <div style="line-height: 1" v-else>
           <h2 style="font-size: 1.25rem; text-align: right">
-            {{ lang_data[selection]["inst"] }}
+            {{ langData[selection]["inst"] }}
           </h2>
           <h1 style="font-size: 3rem; text-align: right">
-            {{ lang_data[selection]["aosc"] }}
+            {{ langData[selection]["aosc"] }}
           </h1>
         </div>
       </div>

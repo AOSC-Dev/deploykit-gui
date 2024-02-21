@@ -1,121 +1,121 @@
-import { createRouter, createWebHistory } from "vue-router";
-import WelcomeView from "@/views/WelcomeView.vue";
-import AbortView from "@/views/AbortView.vue";
-import CompleteView from "@/views/CompleteView.vue";
-import ErrorView from "@/views/ErrorView.vue";
-import HostnameView from "@/views/HostnameView.vue";
-import UserView from "@/views/UserView.vue";
-import ConfirmView from "@/views/ConfirmView.vue";
-import SwapFileView from "@/views/SwapFileView.vue";
-import LocaleView from "@/views/LocaleView.vue";
+import { createRouter, createWebHistory } from 'vue-router';
+import WelcomeView from '@/views/WelcomeView.vue';
+import AbortView from '@/views/AbortView.vue';
+import CompleteView from '@/views/CompleteView.vue';
+import ErrorView from '@/views/ErrorView.vue';
+import HostnameView from '@/views/HostnameView.vue';
+import UserView from '@/views/UserView.vue';
+import ConfirmView from '@/views/ConfirmView.vue';
+import SwapFileView from '@/views/SwapFileView.vue';
+import LocaleView from '@/views/LocaleView.vue';
 // import MirrorView from "@/views/MirrorView.vue";
-import MirrorSelectView from "@/views/MirrorSelectView.vue";
+import MirrorSelectView from '@/views/MirrorSelectView.vue';
 // import RescueKitView from "@/views/RescueKitView.vue";
-import PartitionView from "@/views/PartitionView.vue";
-import VariantView from "@/views/VariantView.vue";
-import InstallView from "@/views/InstallView.vue";
-import DriverView from "@/views/DriverView.vue";
-import DeviceView from "@/views/DeviceView.vue";
-import EspPartitionView from "@/views/EspPartitionView.vue";
+import PartitionView from '@/views/PartitionView.vue';
+import VariantView from '@/views/VariantView.vue';
+import InstallView from '@/views/InstallView.vue';
+import DriverView from '@/views/DriverView.vue';
+import DeviceView from '@/views/DeviceView.vue';
+import EspPartitionView from '@/views/EspPartitionView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/",
-      name: "home",
+      path: '/',
+      name: 'home',
       component: WelcomeView,
-      meta: { steps: 0, next: "/variants" },
+      meta: { steps: 0, next: '/variants' },
     },
     {
-      path: "/users",
-      name: "users",
+      path: '/users',
+      name: 'users',
       component: UserView,
-      meta: { steps: 1, next: "/hostname" },
+      meta: { steps: 1, next: '/hostname' },
     },
     {
-      path: "/abort",
-      name: "abort",
+      path: '/abort',
+      name: 'abort',
       component: AbortView,
     },
     {
-      path: "/finish",
-      name: "complete",
+      path: '/finish',
+      name: 'complete',
       component: CompleteView,
       meta: { steps: 4 },
     },
     {
-      path: "/error/:message",
-      name: "error",
+      path: '/error/:message',
+      name: 'error',
       props: true,
       component: ErrorView,
     },
     {
-      path: "/swapfile",
-      name: "swapfile",
+      path: '/swapfile',
+      name: 'swapfile',
       component: SwapFileView,
-      meta: { steps: 1, next: "/confirm" },
+      meta: { steps: 1, next: '/confirm' },
     },
     {
-      path: "/mirrors-sel",
-      name: "mirrors-sel",
+      path: '/mirrors-sel',
+      name: 'mirrors-sel',
       component: MirrorSelectView,
-      meta: { steps: 0, next: "/device" },
+      meta: { steps: 0, next: '/device' },
     },
     {
-      path: "/device",
-      name: "device",
+      path: '/device',
+      name: 'device',
       component: DeviceView,
-      meta: { steps: 0, next: "/partitions" },
+      meta: { steps: 0, next: '/partitions' },
     },
     {
-      path: "/locales",
-      name: "locales",
+      path: '/locales',
+      name: 'locales',
       component: LocaleView,
-      meta: { steps: 1, next: "/swapfile" },
+      meta: { steps: 1, next: '/swapfile' },
     },
     {
-      path: "/confirm",
-      name: "confirm",
+      path: '/confirm',
+      name: 'confirm',
       component: ConfirmView,
-      meta: { steps: 1, next: "/install" },
+      meta: { steps: 1, next: '/install' },
     },
     {
-      path: "/hostname",
-      name: "hostname",
+      path: '/hostname',
+      name: 'hostname',
       component: HostnameView,
-      meta: { steps: 1, next: "/locales" },
+      meta: { steps: 1, next: '/locales' },
     },
     {
-      path: "/partitions",
-      name: "partitions",
+      path: '/partitions',
+      name: 'partitions',
       component: PartitionView,
-      meta: { steps: 0, next: "/users" },
+      meta: { steps: 0, next: '/users' },
     },
     {
-      path: "/variants",
-      name: "variants",
+      path: '/variants',
+      name: 'variants',
       component: VariantView,
-      meta: { steps: 0, next: "/mirrors-sel" },
+      meta: { steps: 0, next: '/mirrors-sel' },
     },
     {
-      path: "/install",
-      name: "install",
+      path: '/install',
+      name: 'install',
       component: InstallView,
       meta: { steps: 2 },
     },
     {
-      path: "/driver",
-      name: "driver",
+      path: '/driver',
+      name: 'driver',
       component: DriverView,
     },
     {
-      path: "/esp/:esps",
-      name: "esp",
+      path: '/esp/:esps',
+      name: 'esp',
       component: EspPartitionView,
       props: true,
-      meta: { steps: 0, next: "/partitions" },
-    }
+      meta: { steps: 0, next: '/partitions' },
+    },
   ],
 });
 

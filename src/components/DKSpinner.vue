@@ -5,8 +5,8 @@ export default {
     can_cancel: Boolean,
   },
   methods: {
-    on_cancel: function () {
-      this.$emit("cancel");
+    on_cancel() {
+      this.$emit('cancel');
     },
   },
 };

@@ -1,5 +1,5 @@
 <script setup>
-import DKBottomRightButtons from "./DKBottomRightButtons.vue";
+import DKBottomRightButtons from './DKBottomRightButtons.vue';
 </script>
 
 <script>
@@ -11,7 +11,7 @@ export default {
     no_previous: Boolean,
   },
   methods: {
-    proceed: function () {
+    proceed() {
       if (this.guard) {
         if (!this.guard(this)) return;
       }
