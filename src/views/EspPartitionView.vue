@@ -31,7 +31,7 @@ export default {
   <p>{{ $t("esp.p1") }}</p>
   <p>{{ $t("esp.p2") }}</p>
   <section>
-    <DKListSelect :no_margin="true" v-model:selected="selected" :is_limit_height="true" :options="esp_parts">
+    <DKListSelect :no_margin="true" v-model:selected="selected" :is_limit_height="true" :options="esp_parts" :small_vh="true">
       <template #item="option">
         <div style="width: 100%">
           <span class="column-80">{{ option.model }}</span>
