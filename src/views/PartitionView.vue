@@ -178,9 +178,17 @@ export default {
       const sqfs_info = await invoke("get_squashfs_info", { v, url: this.config.mirror.url });
       this.sqfs_size = sqfs_info.downloadSize + sqfs_info.instSize;
 
-      if (this.partitions.length != 0) {
+      if (this.partitions.length !== 0) {
         this.new_disk = false;
         await invoke("disk_is_right_combo", { disk: device.path });
+        const esp_parts = await invoke("find_all_esp_parts");
+        if (esp_parts.length === 0) {
+          this.$router.replace(`/error/${encodeURIComponent("Has no EFI Partition!")}`);
+        } else if (esp_parts.length === 1) {
+          this.config.efi_partition = esp_parts[0];
+        } else if (!this.config.efi_partition) {
+          this.$router.push(`/esp/${encodeURIComponent(JSON.stringify(esp_parts))}`);
+        }
       } else {
         this.new_disk = true;
         const is_efi = await invoke("is_efi_api");

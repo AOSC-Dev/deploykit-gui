@@ -98,7 +98,10 @@
         "l2": "Create a {0} AOSC OS System Partition.",
         "e1": "Select partition too small. require {0} GiB size.",
         "e2": "Deploykit does not support this partition format, use the ext4/xfs partition format."
-
+    },
+    "esp": {
+        "title": "ESP Partition",
+        "tips": "Deploykit detects that you have multiple ESP partitions, select your boot partition."
     },
     "mirror": {
         "title": "Download Source",

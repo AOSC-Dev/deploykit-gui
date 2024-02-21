@@ -58,6 +58,7 @@ trait Deploykit {
     async fn cancel_install(&self) -> zResult<String>;
     async fn disk_is_right_combo(&self, dev: &str) -> zResult<String>;
     async fn ping(&self) -> zResult<String>;
+    async fn get_all_esp_partitions(&self) -> zResult<String>;
 }
 
 #[derive(Debug, Deserialize)]
@@ -82,6 +83,7 @@ enum DbusMethod<'a> {
     ResetConfig,
     DiskIsRightCombo(&'a str),
     Ping,
+    GetAllEspPartitions,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -128,6 +130,7 @@ impl Dbus {
             DbusMethod::ResetConfig => proxy.reset_config().await?,
             DbusMethod::DiskIsRightCombo(dev) => proxy.disk_is_right_combo(dev).await?,
             DbusMethod::Ping => proxy.ping().await?,
+            DbusMethod::GetAllEspPartitions => proxy.get_all_esp_partitions().await?,
         };
 
         let res = Self::try_from(s)?;
@@ -332,6 +335,14 @@ fn is_efi_api() -> TauriResult<bool> {
     Ok(is_efi())
 }
 
+#[tauri::command]
+async fn find_all_esp_parts(state: State<'_, DkState<'_>>) -> TauriResult<Value> {
+    let proxy = &state.proxy;
+    let res = Dbus::run(proxy, DbusMethod::GetAllEspPartitions).await?;
+
+    Ok(res.data)
+}
+
 #[tauri::command(async)]
 async fn cancel_install_and_exit(
     state: State<'_, DkState<'_>>,
@@ -423,7 +434,6 @@ async fn auto_partition(
 
     loop {
         let progress = Dbus::run(proxy, DbusMethod::GetAutoPartitionProgress).await?;
-        dbg!(&progress);
         let data: AutoPartitionProgress = serde_json::from_value(progress.data)?;
 
         match data {
@@ -509,6 +519,7 @@ fn main() {
                     is_efi_api,
                     auto_partition,
                     mirrors_speedtest,
+                    find_all_esp_parts
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");

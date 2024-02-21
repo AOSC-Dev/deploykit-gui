@@ -16,6 +16,7 @@ import VariantView from "@/views/VariantView.vue";
 import InstallView from "@/views/InstallView.vue";
 import DriverView from "@/views/DriverView.vue";
 import DeviceView from "@/views/DeviceView.vue";
+import EspPartitionView from "@/views/EspPartitionView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -108,6 +109,13 @@ const router = createRouter({
       name: "driver",
       component: DriverView,
     },
+    {
+      path: "/esp/:esps",
+      name: "esp",
+      component: EspPartitionView,
+      props: true,
+      meta: { steps: 0, next: "/partitions" },
+    }
   ],
 });
 
