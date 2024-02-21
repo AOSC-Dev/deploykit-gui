@@ -6,6 +6,7 @@ export default {
     no_margin: Boolean,
     is_limit_height: Boolean,
     click_fn: Function,
+    small_vh: Boolean,
   },
   methods: {
     select: function (index) {
@@ -19,7 +20,7 @@ export default {
 </script>
 
 <template>
-  <div class="list-container" :class="{ 'limit-height': is_limit_height, 'no-limit-height': !is_limit_height }">
+  <div class="list-container" :class="[is_limit_height ? 'limit-height' : 'no-limit-height', small_vh ? 'limit-height-35' : '']">
     <button v-for="(option, index) in options" v-bind:key="option.title"
       :class="(index === selected ? 'selected ' : ' ') + 'button'" :disabled="option.disabled" @click="select(index)"
       @keyup.enter="select(index)" @keyup.space="select(index)">
@@ -59,7 +60,11 @@ button[disabled].button:hover {
 }
 
 .limit-height {
-  height: 45vh;
+  height: 40vh;
+}
+
+.limit-height-35 {
+  height: 35vh;
 }
 
 .no-limit-height {
