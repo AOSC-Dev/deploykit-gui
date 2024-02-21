@@ -101,7 +101,8 @@
     },
     "esp": {
         "title": "ESP Partition",
-        "tips": "Deploykit detects that you have multiple ESP partitions, select your boot partition."
+        "p1": "The installer detects that there are multiple EFI System Partitions (ESPs) on your device, which are used to store critical boot data such as the bootloader. Generally, this partition and your AOSC OS system partition should be on the same storage device, and this configuration will help in migrating and backing up your data.",
+        "p2": "If you need to select an EFI system partition on another storage device, think twice: if the drive is subsequently replaced or diverted, you will need to reinstall the AOSC OS bootloader."
     },
     "mirror": {
         "title": "Download Source",

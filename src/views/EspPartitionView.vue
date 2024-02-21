@@ -28,7 +28,8 @@ export default {
 
 <template>
   <h1>{{ $t("esp.title") }}</h1>
-  <p>{{ $t("esp.tips") }}</p>
+  <p>{{ $t("esp.p1") }}</p>
+  <p>{{ $t("esp.p2") }}</p>
   <section>
     <DKListSelect :no_margin="true" v-model:selected="selected" :is_limit_height="true" :options="esp_parts">
       <template #item="option">
