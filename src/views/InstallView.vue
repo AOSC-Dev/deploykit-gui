@@ -29,6 +29,7 @@ export default {
     next_slide() {
       this.hide = true;
       const newSlide = this.slides[(this.index + 1) % this.slides.length];
+      this.index += 1;
       setTimeout(() => {
         this.current_slide = {
           title: newSlide.title,

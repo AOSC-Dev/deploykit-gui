@@ -13,5 +13,5 @@ import DKBottomSteps from '@/components/DKBottomSteps.vue';
     </ul>
     <p>{{ $t("welcome.p2") }}</p>
   </div>
-  <DKBottomSteps no_previous="1" />
+  <DKBottomSteps :no_previous="true" />
 </template>

@@ -12,8 +12,8 @@ export default {
   inject: ['config'],
   data() {
     return {
-      lang_data: langData,
-      display_data: langData.map((v) => ({ body: v.lang })),
+      langData,
+      displayData: langData.map((v) => ({ body: v.lang })),
       selection: 0,
     };
   },
@@ -35,7 +35,7 @@ export default {
   <DKLayout>
     <section style="max-height: 65vh; overflow-y: scroll">
       <DKListSelect
-        :options="display_data"
+        :options="displayData"
         v-model:selected="selection"
       ></DKListSelect>
     </section>

@@ -4,7 +4,7 @@ import humanFormat from 'human-format';
 import App from './App.vue';
 import router from './router';
 
-import messages from './locales/en.json';
+import enMsg from './locales/en.json';
 
 import '../assets/main.css';
 
@@ -17,8 +17,8 @@ const i18n = createI18n({
 });
 
 async function switchLocale(locale) {
-  const message = await import(`./locales/${locale}.json`);
-  i18n.global.setLocaleMessage(locale, message.default);
+  const msg = await import(`./locales/${locale}.json`);
+  i18n.global.setLocaleMessage(locale, msg.default);
   i18n.global.locale.value = locale;
   document.querySelector('html').setAttribute('lang', locale);
 }
@@ -31,7 +31,7 @@ app.use(router);
 app.use(i18n);
 
 // load default translations
-i18n.global.setLocaleMessage('en', messages);
+i18n.global.setLocaleMessage('en', enMsg);
 i18n.global.locale.value = 'en';
 
 app.mount('#app');

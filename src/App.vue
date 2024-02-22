@@ -69,6 +69,7 @@ export default {
     execute_lightup() {
       const timer = setInterval(() => {
         if (this.lightup + 1 >= 4) clearInterval(timer);
+        this.lightup += 1;
       }, 210);
     },
     on_lang_selected(id) {
