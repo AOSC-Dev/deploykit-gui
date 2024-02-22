@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="128"
+   height="128"
+   viewBox="0 0 33.866666 33.866666"
+   version="1.1"
+   id="svg343"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   sodipodi:docname="install.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview345"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.2102413"
+     inkscape:cx="-371.00227"
+     inkscape:cy="561.25984"
+     inkscape:window-width="1920"
+     inkscape:window-height="1100"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs340" />
+  <g
+     inkscape:label="图层 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="color:#232629;fill:#ffffff;fill-opacity:1;stroke-width:2.82221"
+       d="M 11.288928,5.3333333e-5 V 2.8223333 11.288973 h 2.82217 V 2.8223333 h 5.64447 v 8.4666397 h 2.82217 V 2.8223333 5.3333333e-5 Z M 4.7978483,11.288973 l -1.97555,1.97557 9.3132397,9.31325 4.79785,4.79775 4.79774,-4.79775 9.31325,-9.31325 -1.97556,-1.97557 -9.31325,9.31326 -2.82218,2.82228 -2.82229,-2.82228 z M -1.6666667e-6,28.222253 v 5.64436 H 2.8222983 33.866668 v -2.82218 -2.82218 h -2.82229 v 2.82218 H 2.8222983 v -2.82218 z"
+       class="ColorScheme-Text"
+       id="path2733-6" />
+    <path
+       style="color:#232629;fill:#ffffff;fill-opacity:1;stroke-width:2.82221"
+       d="M 11.288928,5.3333333e-5 V 2.8223333 11.288973 h 2.82217 V 2.8223333 h 5.64447 v 8.4666397 h 2.82217 V 2.8223333 5.3333333e-5 Z M 4.7978483,11.288973 l -1.97555,1.97557 9.3132397,9.31325 4.79785,4.79775 4.79774,-4.79775 9.31325,-9.31325 -1.97556,-1.97557 -9.31325,9.31326 -2.82218,2.82228 -2.82229,-2.82228 z M -1.6666667e-6,28.222253 v 5.64436 H 2.8222983 33.866668 v -2.82218 -2.82218 h -2.82229 v 2.82218 H 2.8222983 v -2.82218 z"
+       class="ColorScheme-Text"
+       id="path477" />
+  </g>
+</svg>

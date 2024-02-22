@@ -24,39 +24,48 @@ export default {
       <h1>{{ $t("desktop-or-install.title") }}</h1>
       <div class="list-container">
         <button @click="goInstall">
-          <div class="button-box">
-            <h2
-              style="font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem"
-            >
-              {{ $t("desktop-or-install.install-system-title") }}
-            </h2>
-            <p style="font-size: 0.88rem; line-height: 1.2">
-              {{ $t("desktop-or-install.install-system-p1") }}
-            </p>
+          <div class="entry-box">
+            <img src="@/../assets/install.svg" :height="30" :width="30" />
+            <div class="button-box">
+              <h2
+                style="font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem"
+              >
+                {{ $t("desktop-or-install.install-system-title") }}
+              </h2>
+              <p style="font-size: 0.88rem; line-height: 1.2">
+                {{ $t("desktop-or-install.install-system-p1") }}
+              </p>
+            </div>
           </div>
         </button>
         <button @click="exit">
-          <div class="button-box">
-            <h2
-              style="font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem"
-            >
-              {{ $t("desktop-or-install.rescue-and-recovery") }}
-            </h2>
-            <p style="font-size: 0.88rem; line-height: 1.2">
-              {{ $t("desktop-or-install.rescue-and-recovery-p1") }}
-            </p>
+          <div class="entry-box">
+            <img src="@/../assets/rescue.svg" :height="30" :width="30" />
+            <div class="button-box">
+              <h2
+                style="font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem"
+              >
+                {{ $t("desktop-or-install.rescue-and-recovery") }}
+              </h2>
+              <p style="font-size: 0.88rem; line-height: 1.2">
+                {{ $t("desktop-or-install.rescue-and-recovery-p1") }}
+              </p>
+            </div>
           </div>
         </button>
         <button @click="reboot">
-          <div class="button-box">
-            <h2
-              style="font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem"
-            >
-              {{ $t("desktop-or-install.reboot-title") }}
-            </h2>
-            <p style="font-size: 0.88rem; line-height: 1.2">
-              {{ $t("desktop-or-install.reboot-p1") }}
-            </p>
+          <div class="entry-box">
+            <img src="@/../assets/reboot.svg" :height="30" :width="30" />
+            <div class="button-box">
+              <h2
+                style="font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem"
+              >
+                {{ $t("desktop-or-install.reboot-title") }}
+              </h2>
+              <p style="font-size: 0.88rem; line-height: 1.2">
+                {{ $t("desktop-or-install.reboot-p1") }}
+              </p>
+            </div>
           </div>
         </button>
       </div>
@@ -93,7 +102,8 @@ export default {
 .button-box {
   text-align: left;
   width: 100%;
-  margin: 0.5rem 0.5rem 0 0.5rem;
+  margin: 1.2rem;
+  margin-bottom: 0;
 }
 
 .list-container button {
@@ -108,5 +118,16 @@ export default {
 
 .list-container button:hover {
   background: #dddddd56;
+}
+
+.entry-box {
+  display: flex;
+  align-content: flex-start;
+}
+
+.entry-box img {
+  margin: 1rem;
+  margin-top: 1.5rem;
+  margin-right: 0.3rem;
 }
 </style>
