@@ -9,6 +9,14 @@
         "p2": "The installation process should only take a few minutes, but will require more time on slower hardware.",
         "sr-help": "Please note that Installer may use external programs that does not come with screen reader support, such as GParted, which is used for partitioning. You may want to seek assistance at those steps. Installer will notify you by announcing \"Please seek help before doing so.\""
     },
+    "desktop-or-install": {
+        "install-system-title": "Install AOSC OS",
+        "install-system-p1": "Install and setup AOSC OS on your device",
+        "rescue-and-recovery": "Resue and Recover",
+        "rescue-and-recovery-p1": "Launch the rescue and recovery workspace",
+        "reboot-title": "Reboot",
+        "reboot-p1": "Exit LiveKit and restart your device"
+    },
     "variant": {
         "title": "Variants",
         "p1": "Please select from below your desired distribution.",

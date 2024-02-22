@@ -4,6 +4,7 @@ import { listen } from '@tauri-apps/api/event';
 import DKLogo from '@/components/DKLogo.vue';
 import LangSelect from '@/views/LangSelect.vue';
 import DKLayout from '@/components/DKLayout.vue';
+import DesktopOrInstall from '@/views/DesktopOrInstallView.vue';
 </script>
 
 <script>
@@ -19,6 +20,7 @@ export default {
       timer: null,
       progress_detail: {},
       can_quit: true,
+      isInstall: false,
     };
   },
   computed: {
@@ -92,6 +94,9 @@ export default {
           this.execute_lightup();
         });
     },
+    onInstallDk() {
+      this.isInstall = true;
+    },
     on_progress_update(progress) {
       this.progress_detail = progress;
     },
@@ -151,7 +156,7 @@ export default {
       @click="on_abort"
       @keyup.enter="on_abort"
       :disabled="!can_quit"
-      v-show="lang_selected"
+      v-show="lang_selected && isInstall"
     >
       <img
         :alt="$t('d.sr-close-icon')"
@@ -160,17 +165,18 @@ export default {
         height="30"
       />
     </button>
-    <header style="width: 90%" :class="lightup_seq(1)">
+    <header style="width: 90%" v-if="lang_selected && isInstall">
       <DKLogo />
     </header>
   </div>
   <!-- language select overlay -->
   <LangSelect v-if="!lang_selected" @update:lang="on_lang_selected" />
+  <DesktopOrInstall v-if="lang_selected && !isInstall" @update:install="onInstallDk"/>
   <!-- main content -->
-  <DKLayout :main_class="lightup_seq(3)" v-if="lang_selected">
+  <DKLayout :main_class="lightup_seq(1)" v-if="lang_selected && isInstall">
     <RouterView @update:can_quit="(v) => (can_quit = v)" />
     <template #left>
-      <div class="wrapper" :class="lightup_seq(2)">
+      <div class="wrapper" :class="lightup_seq(3)">
         <nav :class="nav_menu_bold(0)">{{ $t("d.nav-0") }}</nav>
         <nav :class="nav_menu_bold(1)">{{ $t("d.nav-1") }}</nav>
         <nav :class="nav_menu_bold(2)">{{ $t("d.nav-2") }}</nav>
@@ -179,7 +185,7 @@ export default {
     </template>
   </DKLayout>
   <!-- status bar -->
-  <div class="status-bar" v-if="lang_selected" :class="lightup_seq(4)">
+  <div class="status-bar" v-if="lang_selected && isInstall" :class="lightup_seq(4)">
     <progress
       id="progressbar"
       :aria-label="$t('d.sr-progress')"
