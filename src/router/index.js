@@ -47,7 +47,7 @@ const router = createRouter({
     {
       path: '/error/:message',
       name: 'error',
-      props: true,
+      props: (route) => ({ ...route.query, ...route.params }),
       component: ErrorView,
     },
     {

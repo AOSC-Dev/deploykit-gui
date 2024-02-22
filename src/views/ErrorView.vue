@@ -6,6 +6,7 @@ import DKBottomRightButtons from '@/components/DKBottomRightButtons.vue';
 export default {
   props: {
     message: String,
+    openGparted: Boolean,
   },
   components: { DKBottomActions, DKBottomRightButtons },
   methods: {
@@ -15,6 +16,9 @@ export default {
       } catch (e) {
         this.$router.replace(`/error/${encodeURIComponent(e)}`);
       }
+    },
+    async launchGparted() {
+      await invoke('gparted');
     },
   },
 };
@@ -28,6 +32,9 @@ export default {
   </div>
   <DKBottomActions>
     <DKBottomRightButtons>
+      <button class="button" v-if="openGparted" @click="launchGparted">
+        {{ $t("part.b1") }}
+      </button>
       <button class="button" @click="$router.replace('/')">
         {{ $t("retry") }}
       </button>

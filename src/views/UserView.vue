@@ -127,13 +127,16 @@ export default {
 .error-msg {
   color: var(--dk-accent);
 }
+
 .form-layout {
   display: grid;
   grid-template-columns: 40% 60%;
 }
+
 input {
   margin-bottom: 0.5em;
 }
+
 [disabled] {
   cursor: not-allowed;
 }
