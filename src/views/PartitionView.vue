@@ -46,7 +46,9 @@ export default {
           return this.$t('part.k3');
         case 'winre':
           return this.$t('part.k2');
-        default: { /* empty */ }
+        default: {
+          /* empty */
+        }
       }
       if (comment.length > 20) {
         return this.$t('part.k5', { other_os: comment.substring(0, 20) });
@@ -89,7 +91,10 @@ export default {
           }
         }
       } catch (e) {
-        this.$router.replace(`/error/${encodeURIComponent(e)}`);
+        this.$router.replace({
+          path: `/error/${encodeURIComponent(e)}`,
+          query: { openGparted: true },
+        });
       }
 
       this.gparted = false;
@@ -171,11 +176,17 @@ export default {
                 }, 200);
               });
             } catch (e) {
-              this.$router.replace(`/error/${encodeURIComponent(e)}`);
+              this.$router.replace({
+                path: `/error/${encodeURIComponent(e)}`,
+                query: { openGparted: true },
+              });
             }
           }, 200);
         } catch (e) {
-          this.$router.replace(`/error/${encodeURIComponent(e)}`);
+          this.$router.replace({
+            path: `/error/${encodeURIComponent(e)}`,
+            query: { openGparted: true },
+          });
         }
       }
     },
@@ -204,9 +215,10 @@ export default {
         await invoke('disk_is_right_combo', { disk: device.path });
         const espParts = await invoke('find_all_esp_parts');
         if (espParts.length === 0) {
-          this.$router.replace(
-            `/error/${encodeURIComponent('Has no EFI Partition!')}`,
-          );
+          this.$router.replace({
+            path: `/error/${encodeURIComponent('Has no EFI Partition!')}`,
+            query: { openGparted: true },
+          });
         } else if (espParts.length === 1) {
           const selectEFIPart = espParts[0];
           this.config.efi_partition = selectEFIPart;
@@ -231,7 +243,10 @@ export default {
         }
       }
     } catch (e) {
-      this.$router.replace(`/error/${encodeURIComponent(e)}`);
+      this.$router.replace({
+        path: `/error/${encodeURIComponent(e)}`,
+        query: { openGparted: true },
+      });
     }
 
     this.loading = false;
