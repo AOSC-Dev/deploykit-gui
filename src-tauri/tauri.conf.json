@@ -46,6 +46,15 @@
         "width": 800,
         "height": 600
       }
-    ]
+    ],
+    "cli": {
+      "description": "Depliykit GUI",
+      "args": [{
+        "name": "skip",
+        "short": "s",
+        "multipleOccurrences": true,
+        "description": "Skip select Desktop or Install view"
+      }]
+    }
   }
 }

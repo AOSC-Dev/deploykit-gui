@@ -1,6 +1,7 @@
 <script setup>
 import { RouterView } from 'vue-router';
 import { listen } from '@tauri-apps/api/event';
+import { invoke } from '@tauri-apps/api';
 import DKLogo from '@/components/DKLogo.vue';
 import LangSelect from '@/views/LangSelect.vue';
 import DKLayout from '@/components/DKLayout.vue';
@@ -120,7 +121,7 @@ export default {
       config: {},
     };
   },
-  created() {
+  async created() {
     listen('progress', (event) => {
       this.progress_detail = event.payload;
     });
@@ -143,6 +144,9 @@ export default {
       }
       this.$router.replace('/install');
     }, 200);
+
+    const isInstall = await invoke('is_skip');
+    this.isInstall = isInstall;
   },
 };
 </script>

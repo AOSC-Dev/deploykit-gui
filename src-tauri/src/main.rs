@@ -12,6 +12,8 @@ use std::io;
 use std::io::ErrorKind;
 use std::process;
 use std::process::Command;
+use std::sync::atomic::AtomicBool;
+use std::sync::atomic::Ordering;
 use std::thread;
 use std::time::Duration;
 use tauri::api::dialog;
@@ -36,6 +38,8 @@ use crate::utils::handle_serde_config;
 
 mod parser;
 mod utils;
+
+static SKIP_DESKTOP_OR_INSTALL: AtomicBool = AtomicBool::new(false);
 
 #[proxy(
     interface = "io.aosc.Deploykit1",
@@ -464,6 +468,11 @@ async fn reboot() -> TauriResult<()> {
     Ok(())
 }
 
+#[tauri::command]
+fn is_skip() -> bool {
+    SKIP_DESKTOP_OR_INSTALL.load(Ordering::SeqCst)
+}
+
 struct DkState<'a> {
     recipe: Mutex<Option<Recipe>>,
     proxy: DeploykitProxy<'a>,
@@ -501,6 +510,24 @@ fn main() {
             let pc = p.clone();
             tauri::Builder::default()
                 .setup(move |app| {
+                    match app.get_cli_matches() {
+                        // `matches` here is a Struct with { args, subcommand }.
+                        // `args` is `HashMap<String, ArgData>` where `ArgData` is a struct with { value, occurrences }.
+                        // `subcommand` is `Option<Box<SubcommandMatches>>` where `SubcommandMatches` is a struct with { name, matches }.
+                        Ok(matches) => {
+                            if matches
+                                .args
+                                .get("skip")
+                                .map(|x| x.occurrences != 0)
+                                .unwrap_or(false)
+                            {
+                                SKIP_DESKTOP_OR_INSTALL.store(true, Ordering::SeqCst);
+                            }
+                        }
+                        Err(e) => {
+                            dbg!(e);
+                        }
+                    }
                     let pc = pc.clone();
                     let window = app.get_window("main").unwrap();
                     tauri::async_runtime::spawn(async move { progress_event(window, pc).await });
@@ -527,7 +554,8 @@ fn main() {
                     auto_partition,
                     mirrors_speedtest,
                     find_all_esp_parts,
-                    reboot
+                    reboot,
+                    is_skip,
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");

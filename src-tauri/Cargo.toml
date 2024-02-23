@@ -13,7 +13,7 @@ edition = "2021"
 tauri-build = { version = "1.5", features = [] }
 
 [dependencies]
-tauri = { version = "1.5", features = [ "shell-open", "http-all", "dialog-all"] }
+tauri = { version = "1.5", features = [ "cli", "shell-open", "http-all", "dialog-all"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 zbus = { version = "4.0", features = ["tokio"] }
