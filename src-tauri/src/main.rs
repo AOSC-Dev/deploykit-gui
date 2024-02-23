@@ -457,6 +457,13 @@ async fn auto_partition(
     }
 }
 
+#[tauri::command]
+async fn reboot() -> TauriResult<()> {
+    Command::new("systemctl").arg("reboot").output()?;
+
+    Ok(())
+}
+
 struct DkState<'a> {
     recipe: Mutex<Option<Recipe>>,
     proxy: DeploykitProxy<'a>,
@@ -519,7 +526,8 @@ fn main() {
                     is_efi_api,
                     auto_partition,
                     mirrors_speedtest,
-                    find_all_esp_parts
+                    find_all_esp_parts,
+                    reboot
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");

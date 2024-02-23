@@ -14,6 +14,9 @@ export default {
     async exit() {
       await invoke('cancel_install_and_exit', { resetConfig: false });
     },
+    async reboot() {
+      await invoke('reboot');
+    },
   },
 };
 </script>
