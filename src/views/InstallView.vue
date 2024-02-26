@@ -47,8 +47,8 @@ export default {
 
     setTimeout(() => invoke('start_install'), 200);
 
-    setTimeout(() => {
-      listen('progress', (event) => {
+    setTimeout(async () => {
+      await listen('progress', (event) => {
         setTimeout(() => {
           if (event.payload.status === 'Finish') {
             this.$router.replace('/finish');

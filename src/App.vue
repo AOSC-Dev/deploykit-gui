@@ -22,6 +22,13 @@ export default {
       progress_detail: {},
       can_quit: true,
       isInstall: false,
+      currentAudioName: '',
+      audioList: [
+        {
+          name: 'audio1',
+          url: '@/../assets/bgm/123.mp3',
+        },
+      ],
     };
   },
   computed: {
@@ -74,6 +81,14 @@ export default {
         if (this.lightup + 1 >= 4) clearInterval(timer);
         this.lightup += 1;
       }, 210);
+    },
+
+    // Something to do before playing
+    handleBeforePlay(next) {
+      // There are a few things you can do here...
+      this.currentAudioName = this.audioList[this.$refs.audioPlayer.currentPlayIndex].name;
+
+      next(); // Start playing
     },
     on_lang_selected(id) {
       console.info(`Language: ${id}`);
@@ -190,9 +205,15 @@ export default {
         <nav :class="nav_menu_bold(3)">{{ $t("d.nav-3") }}</nav>
       </div>
       <div v-if="page_number === 2">
-        <audio controls>
-          <source src="@/../assets/bgm/123.mp3" type="audio/mpeg" />
-        </audio>
+        <div>
+          {{ currentAudioName || audioList[0].name }}
+          <audio-player
+            ref="audioPlayer"
+            :audio-list="audioList.map((elm) => elm.url)"
+            :before-play="handleBeforePlay"
+            theme-color="#ff2929"
+          />
+        </div>
       </div>
     </template>
   </DKLayout>

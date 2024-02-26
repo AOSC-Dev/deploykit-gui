@@ -10,6 +10,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@liripeng/vue-audio-player": "^1.5.3",
     "@tauri-apps/api": "^1.5.2",
     "human-format": "^1.2.0",
     "vue": "^3.3.4",
