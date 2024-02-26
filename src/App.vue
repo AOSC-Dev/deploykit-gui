@@ -175,21 +175,33 @@ export default {
   </div>
   <!-- language select overlay -->
   <LangSelect v-if="!lang_selected" @update:lang="on_lang_selected" />
-  <DesktopOrInstall v-if="lang_selected && !isInstall" @update:install="onInstallDk"/>
+  <DesktopOrInstall
+    v-if="lang_selected && !isInstall"
+    @update:install="onInstallDk"
+  />
   <!-- main content -->
   <DKLayout :main_class="lightup_seq(1)" v-if="lang_selected && isInstall">
     <RouterView @update:can_quit="(v) => (can_quit = v)" />
     <template #left>
-      <div class="wrapper" :class="lightup_seq(3)">
+      <div class="wrapper" :class="lightup_seq(1)">
         <nav :class="nav_menu_bold(0)">{{ $t("d.nav-0") }}</nav>
         <nav :class="nav_menu_bold(1)">{{ $t("d.nav-1") }}</nav>
         <nav :class="nav_menu_bold(2)">{{ $t("d.nav-2") }}</nav>
         <nav :class="nav_menu_bold(3)">{{ $t("d.nav-3") }}</nav>
       </div>
+      <div v-if="page_number === 2">
+        <audio controls>
+          <source src="@/../assets/bgm/123.mp3" type="audio/mpeg" />
+        </audio>
+      </div>
     </template>
   </DKLayout>
   <!-- status bar -->
-  <div class="status-bar" v-if="lang_selected && isInstall" :class="lightup_seq(4)">
+  <div
+    class="status-bar"
+    v-if="lang_selected && isInstall"
+    :class="lightup_seq(4)"
+  >
     <progress
       id="progressbar"
       :aria-label="$t('d.sr-progress')"

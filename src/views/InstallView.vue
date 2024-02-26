@@ -1,8 +1,6 @@
 <script>
 import { invoke } from '@tauri-apps/api';
 import { listen } from '@tauri-apps/api/event';
-import DKStripButton from '@/components/DKStripButton.vue';
-import DKBottomActions from '@/components/DKBottomActions.vue';
 
 export default {
   data() {
@@ -49,8 +47,8 @@ export default {
 
     setTimeout(() => invoke('start_install'), 200);
 
-    setTimeout(async () => {
-      await listen('progress', (event) => {
+    setTimeout(() => {
+      listen('progress', (event) => {
         setTimeout(() => {
           if (event.payload.status === 'Finish') {
             this.$router.replace('/finish');
@@ -66,7 +64,6 @@ export default {
   beforeUnmount() {
     clearInterval(this.timer);
   },
-  components: { DKStripButton, DKBottomActions },
 };
 </script>
 
@@ -79,11 +76,6 @@ export default {
       </p>
     </article>
   </div>
-  <DKBottomActions>
-    <DKStripButton :text="$t('install.bgm-off')">
-      <img src="@/../assets/audio-volume-muted.svg" height="36" />
-    </DKStripButton>
-  </DKBottomActions>
 </template>
 
 <style>
