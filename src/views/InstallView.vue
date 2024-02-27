@@ -45,7 +45,9 @@ export default {
 
     this.timer = setInterval(this.next_slide, 6000);
 
-    setTimeout(() => invoke('start_install'), 200);
+    setTimeout(() => {
+      invoke('start_install');
+    }, 200);
 
     setTimeout(async () => {
       await listen('progress', (event) => {

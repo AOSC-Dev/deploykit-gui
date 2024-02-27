@@ -540,7 +540,24 @@ fn main() {
                         }
                     }
                     let pc = pc.clone();
+                    let pcc = pc.clone();
                     let window = app.get_window("main").unwrap();
+
+                    tauri::async_runtime::spawn(async move {
+                        let progress = Dbus::run(&pcc, DbusMethod::GetProgress).await;
+                        if let Ok(progress) = progress {
+                            let data: Result<ProgressStatus, _> =
+                                serde_json::from_value(progress.data);
+                            if let Ok(data) = data {
+                                match data {
+                                    ProgressStatus::Error(_) | ProgressStatus::Finish => {
+                                        Dbus::run(&pcc, DbusMethod::ResetProgressStatus).await.ok();
+                                    }
+                                    _ => {}
+                                }
+                            }
+                        }
+                    });
                     tauri::async_runtime::spawn(async move { progress_event(window, pc).await });
                     Ok(())
                 })
@@ -604,6 +621,7 @@ async fn progress_event(window: Window, p: DeploykitProxy<'_>) -> TauriResult<()
                     continue;
                 }
                 window.emit("progress", &data).unwrap();
+                println!("emit {:?}", data);
                 is_err = true;
             }
             ProgressStatus::Finish => {
@@ -614,6 +632,7 @@ async fn progress_event(window: Window, p: DeploykitProxy<'_>) -> TauriResult<()
                 if is_err {
                     is_err = false;
                 }
+                println!("emit {:?}", data);
                 window.emit("progress", &data).unwrap()
             }
         }

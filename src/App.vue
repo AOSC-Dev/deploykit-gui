@@ -144,7 +144,7 @@ export default {
       this.progress_detail = event.payload;
     });
 
-    setTimeout(() => {
+    setTimeout(async () => {
       const details = this.progress_detail;
       if (
         Object.keys(details).length === 0
@@ -158,9 +158,6 @@ export default {
           || details.status === 'Finish')
       ) {
         return;
-      }
-      if (details.status && details.status === 'Error') {
-        invoke('reset_progress_status');
       }
       this.$router.replace('/install');
     }, 200);
