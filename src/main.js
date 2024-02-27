@@ -1,9 +1,12 @@
 import { createApp } from 'vue';
 import { createI18n } from 'vue-i18n';
-import AudioPlayer from '@liripeng/vue-audio-player';
+// import AudioPlayer from '@liripeng/vue-audio-player';
 import humanFormat from 'human-format';
+import VuePlyr from 'vue-plyr';
 import App from './App.vue';
 import router from './router';
+
+import '@/../assets/vue-plyr.css';
 
 import enMsg from './locales/en.json';
 
@@ -30,7 +33,9 @@ app.provide('humanSize', humanFormat.bytes);
 
 app.use(router);
 app.use(i18n);
-app.use(AudioPlayer);
+// app.use(AudioPlayer);
+
+app.use(VuePlyr);
 
 // load default translations
 i18n.global.setLocaleMessage('en', enMsg);

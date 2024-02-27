@@ -6,6 +6,7 @@ import DKLogo from '@/components/DKLogo.vue';
 import LangSelect from '@/views/LangSelect.vue';
 import DKLayout from '@/components/DKLayout.vue';
 import DesktopOrInstall from '@/views/DesktopOrInstallView.vue';
+import AudioPlayer from '@/components/AudioPlayer.vue';
 </script>
 
 <script>
@@ -22,13 +23,15 @@ export default {
       progress_detail: {},
       can_quit: true,
       isInstall: false,
-      currentAudioName: '',
-      audioList: [
-        {
-          name: 'audio1',
-          url: '@/../assets/bgm/123.mp3',
-        },
-      ],
+      playList: ['@/../assets/bgm/风中有朵雨做的云.mp3', '@/../assets/bgm/123.mp3'],
+      nowPlaying: null,
+      // currentAudioName: '',
+      // audioList: [
+      //   {
+      //     name: 'audio1',
+      //     url: '@/../assets/bgm/123.mp3',
+      //   },
+      // ],
     };
   },
   computed: {
@@ -84,12 +87,12 @@ export default {
     },
 
     // Something to do before playing
-    handleBeforePlay(next) {
-      // There are a few things you can do here...
-      this.currentAudioName = this.audioList[this.$refs.audioPlayer.currentPlayIndex].name;
+    // handleBeforePlay(next) {
+    //   // There are a few things you can do here...
+    //   this.currentAudioName = this.audioList[this.$refs.audioPlayer.currentPlayIndex].name;
 
-      next(); // Start playing
-    },
+    //   next(); // Start playing
+    // },
     on_lang_selected(id) {
       console.info(`Language: ${id}`);
       if (id === 'en') {
@@ -205,15 +208,7 @@ export default {
         <nav :class="nav_menu_bold(3)">{{ $t("d.nav-3") }}</nav>
       </div>
       <div v-if="page_number === 2">
-        <div>
-          {{ currentAudioName || audioList[0].name }}
-          <audio-player
-            ref="audioPlayer"
-            :audio-list="audioList.map((elm) => elm.url)"
-            :before-play="handleBeforePlay"
-            theme-color="#ff2929"
-          />
-        </div>
+        <AudioPlayer :list="playList"></AudioPlayer>
       </div>
     </template>
   </DKLayout>
