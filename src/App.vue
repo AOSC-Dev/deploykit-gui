@@ -155,10 +155,12 @@ export default {
       if (
         details.status
         && (details.status === 'Pending'
-          || details.status === 'Error'
           || details.status === 'Finish')
       ) {
         return;
+      }
+      if (details.status && details.status === 'Error') {
+        invoke('reset_progress_status');
       }
       this.$router.replace('/install');
     }, 200);

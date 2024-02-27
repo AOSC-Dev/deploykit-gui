@@ -7,6 +7,7 @@ export default {
   props: {
     message: String,
     openGparted: Boolean,
+    isInstalling: Boolean,
   },
   components: { DKBottomActions, DKBottomRightButtons },
   methods: {
@@ -19,6 +20,13 @@ export default {
     },
     async launchGparted() {
       await invoke('gparted');
+    },
+    async retry() {
+      if (this.isInstalling) {
+        await invoke('reset_progress_status');
+      }
+
+      this.$router.replace('/');
     },
   },
 };
@@ -35,7 +43,7 @@ export default {
       <button class="button" v-if="openGparted" @click="launchGparted">
         {{ $t("part.b1") }}
       </button>
-      <button class="button" @click="$router.replace('/')">
+      <button class="button" @click="retry">
         {{ $t("retry") }}
       </button>
       <button class="button" @click="proceed">{{ $t("exit") }}</button>

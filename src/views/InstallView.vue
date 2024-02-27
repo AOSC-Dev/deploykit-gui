@@ -54,7 +54,10 @@ export default {
             this.$router.replace('/finish');
           } else if (event.payload.status === 'Error') {
             this.$router.replace(
-              `/error/${encodeURIComponent(JSON.stringify(event.payload))}`,
+              {
+                path: `/error/${encodeURIComponent(JSON.stringify(event.payload))}`,
+                query: { isInstalling: true },
+              },
             );
           }
         }, 200);

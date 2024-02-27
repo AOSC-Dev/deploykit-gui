@@ -63,6 +63,7 @@ trait Deploykit {
     async fn disk_is_right_combo(&self, dev: &str) -> zResult<String>;
     async fn ping(&self) -> zResult<String>;
     async fn get_all_esp_partitions(&self) -> zResult<String>;
+    async fn reset_progress_status(&self) -> zResult<String>;
 }
 
 #[derive(Debug, Deserialize)]
@@ -88,6 +89,7 @@ enum DbusMethod<'a> {
     DiskIsRightCombo(&'a str),
     Ping,
     GetAllEspPartitions,
+    ResetProgressStatus,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -135,6 +137,7 @@ impl Dbus {
             DbusMethod::DiskIsRightCombo(dev) => proxy.disk_is_right_combo(dev).await?,
             DbusMethod::Ping => proxy.ping().await?,
             DbusMethod::GetAllEspPartitions => proxy.get_all_esp_partitions().await?,
+            DbusMethod::ResetProgressStatus => proxy.reset_progress_status().await?,
         };
 
         let res = Self::try_from(s)?;
@@ -473,6 +476,14 @@ fn is_skip() -> bool {
     SKIP_DESKTOP_OR_INSTALL.load(Ordering::SeqCst)
 }
 
+#[tauri::command]
+async fn reset_progress_status(state: State<'_, DkState<'_>>) -> TauriResult<()> {
+    let proxy = &state.proxy;
+    Dbus::run(proxy, DbusMethod::ResetProgressStatus).await?;
+
+    Ok(())
+}
+
 struct DkState<'a> {
     recipe: Mutex<Option<Recipe>>,
     proxy: DeploykitProxy<'a>,
@@ -556,6 +567,7 @@ fn main() {
                     find_all_esp_parts,
                     reboot,
                     is_skip,
+                    reset_progress_status
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");
@@ -569,9 +581,12 @@ fn main() {
 }
 
 async fn progress_event(window: Window, p: DeploykitProxy<'_>) -> TauriResult<()> {
+    let mut is_err = false;
     loop {
         let progress = Dbus::run(&p, DbusMethod::GetProgress).await?;
         let data: ProgressStatus = serde_json::from_value(progress.data)?;
+        // println!("{:?}", data);
+        // dbg!(is_err);
         match data {
             ProgressStatus::Working { step, progress, .. } => {
                 let data = GuiProgress {
@@ -584,11 +599,23 @@ async fn progress_event(window: Window, p: DeploykitProxy<'_>) -> TauriResult<()
                 window.emit("progress", &data).unwrap();
                 println!("emit:{:?}", data);
             }
-            ProgressStatus::Finish | ProgressStatus::Error(_) => {
+            ProgressStatus::Error(_) => {
+                if is_err {
+                    continue;
+                }
+                window.emit("progress", &data).unwrap();
+                is_err = true;
+            }
+            ProgressStatus::Finish => {
                 window.emit("progress", &data).unwrap();
                 return Ok(());
             }
-            ProgressStatus::Pending => window.emit("progress", &data).unwrap(),
+            ProgressStatus::Pending => {
+                if is_err {
+                    is_err = false;
+                }
+                window.emit("progress", &data).unwrap()
+            }
         }
 
         thread::sleep(Duration::from_millis(100));
