@@ -544,6 +544,7 @@ fn main() {
                     let window = app.get_window("main").unwrap();
 
                     tauri::async_runtime::spawn(async move {
+                        // 重新设置后端状态，若后端状态是已完成安装或安装遇到了错误
                         let progress = Dbus::run(&pcc, DbusMethod::GetProgress).await;
                         if let Ok(progress) = progress {
                             let data: Result<ProgressStatus, _> =
@@ -598,12 +599,9 @@ fn main() {
 }
 
 async fn progress_event(window: Window, p: DeploykitProxy<'_>) -> TauriResult<()> {
-    let mut is_err = false;
     loop {
         let progress = Dbus::run(&p, DbusMethod::GetProgress).await?;
         let data: ProgressStatus = serde_json::from_value(progress.data)?;
-        // println!("{:?}", data);
-        // dbg!(is_err);
         match data {
             ProgressStatus::Working { step, progress, .. } => {
                 let data = GuiProgress {
@@ -617,21 +615,15 @@ async fn progress_event(window: Window, p: DeploykitProxy<'_>) -> TauriResult<()
                 println!("emit:{:?}", data);
             }
             ProgressStatus::Error(_) => {
-                if is_err {
-                    continue;
-                }
                 window.emit("progress", &data).unwrap();
                 println!("emit {:?}", data);
-                is_err = true;
+                Dbus::run(&p, DbusMethod::ResetProgressStatus).await?;
             }
             ProgressStatus::Finish => {
                 window.emit("progress", &data).unwrap();
-                return Ok(());
+                Dbus::run(&p, DbusMethod::ResetProgressStatus).await?;
             }
             ProgressStatus::Pending => {
-                if is_err {
-                    is_err = false;
-                }
                 println!("emit {:?}", data);
                 window.emit("progress", &data).unwrap()
             }

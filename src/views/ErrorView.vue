@@ -23,7 +23,6 @@ export default {
     },
     async retry() {
       if (this.isInstalling) {
-        await invoke('reset_progress_status');
         this.$router.replace('/install');
       } else {
         this.$router.replace('/');
