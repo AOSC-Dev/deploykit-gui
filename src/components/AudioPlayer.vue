@@ -31,7 +31,9 @@ export default {
 
 <template>
   <div class="dkaudio">
-    <p>{{ list[currentIndex].title }}</p>
+    <span id="dkaudio-np">Now Playing</span>
+    <span id="dkaudio-background">♪</span>
+    <span><strong>{{ list[currentIndex].title }}</strong></span>
     <p>{{ list[currentIndex].artist }}</p>
     <vue-plyr ref="plyr" :options="{ controls: ['play', 'mute', 'volume'] }">
       <audio controls crossorigin playsinline autoplay>
@@ -40,6 +42,23 @@ export default {
     </vue-plyr>
   </div>
 </template>
+
+<style scoped>
+#dkaudio-np {
+  position: absolute;
+  top: -25px;
+  right: 75px;
+  color: gray;
+}
+#dkaudio-background {
+  position: absolute;
+  right: 20px;
+  font-size: 100px;
+  bottom: 20px;
+  color: gray;
+  font-family: Noto Serif;
+}
+</style>
 
 <style>
 .dkaudio {
