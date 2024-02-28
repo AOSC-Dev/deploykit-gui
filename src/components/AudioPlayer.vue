@@ -44,7 +44,7 @@ export default {
 <style>
 .dkaudio {
   margin-top: 30vh;
-
+  margin-left: 2rem;
 }
 
 .dkaudio p {
