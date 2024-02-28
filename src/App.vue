@@ -23,15 +23,7 @@ export default {
       progress_detail: {},
       can_quit: true,
       isInstall: false,
-      playList: [{
-        artist: '孟庭苇',
-        title: '风中有朵雨做的云',
-        src: '@/../assets/bgm/风中有朵雨做的云.mp3',
-      }, {
-        artist: 'Ozelot Vanilla',
-        title: 'Meadow We Go',
-        src: '@/../assets/bgm/123.mp3',
-      }],
+      playList: [],
     };
   },
   computed: {
@@ -154,8 +146,7 @@ export default {
       }
       if (
         details.status
-        && (details.status === 'Pending'
-          || details.status === 'Finish')
+        && (details.status === 'Pending' || details.status === 'Finish')
       ) {
         return;
       }
@@ -164,6 +155,16 @@ export default {
 
     const isInstall = await invoke('is_skip');
     this.isInstall = isInstall;
+
+    try {
+      const resp = invoke('get_bgm_list');
+      console.log(resp);
+      const playlist = await resp;
+      console.log(playlist);
+      this.playList = playlist;
+    } catch (e) {
+      this.$router.replace(`/error/${encodeURIComponent(e)}`);
+    }
   },
 };
 </script>

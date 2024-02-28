@@ -5,6 +5,7 @@ use eyre::bail;
 use eyre::Result;
 use parser::list_zoneinfo;
 use parser::ZoneInfo;
+use rand::thread_rng;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
@@ -32,6 +33,7 @@ use utils::Variant;
 use zbus::proxy;
 use zbus::Connection;
 use zbus::Result as zResult;
+use rand::prelude::SliceRandom;
 
 use crate::utils::get_download_info;
 use crate::utils::handle_serde_config;
@@ -40,6 +42,7 @@ mod parser;
 mod utils;
 
 static SKIP_DESKTOP_OR_INSTALL: AtomicBool = AtomicBool::new(false);
+const BGM_LIST: &[u8] = include_bytes!("../../assets/bgm/bgm.json");
 
 #[proxy(
     interface = "io.aosc.Deploykit1",
@@ -401,6 +404,16 @@ async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> Vec<Mirror> {
     new_mirrors
 }
 
+#[tauri::command]
+async fn get_bgm_list() -> TauriResult<Vec<Value>> {
+    let mut bgm_list: Vec<Value> = serde_json::from_slice(BGM_LIST)?;
+    let mut rng = thread_rng();
+
+    bgm_list.shuffle(&mut rng);
+
+    Ok(bgm_list)
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "status")]
 enum ProgressStatus {
@@ -585,7 +598,8 @@ fn main() {
                     find_all_esp_parts,
                     reboot,
                     is_skip,
-                    reset_progress_status
+                    reset_progress_status,
+                    get_bgm_list
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");
@@ -612,7 +626,7 @@ async fn progress_event(window: Window, p: DeploykitProxy<'_>) -> TauriResult<()
                     },
                 };
                 window.emit("progress", &data).unwrap();
-                println!("emit:{:?}", data);
+                // println!("emit:{:?}", data);
             }
             ProgressStatus::Error(_) => {
                 window.emit("progress", &data).unwrap();
@@ -624,7 +638,7 @@ async fn progress_event(window: Window, p: DeploykitProxy<'_>) -> TauriResult<()
                 Dbus::run(&p, DbusMethod::ResetProgressStatus).await?;
             }
             ProgressStatus::Pending => {
-                println!("emit {:?}", data);
+                // println!("emit {:?}", data);
                 window.emit("progress", &data).unwrap()
             }
         }

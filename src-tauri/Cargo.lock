@@ -753,6 +753,7 @@ dependencies = [
  "hex",
  "libc",
  "nom",
+ "rand 0.8.5",
  "reqwest",
  "serde",
  "serde_json",
