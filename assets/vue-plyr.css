@@ -174,6 +174,7 @@
     overflow: visible;
     padding: calc(10px * .7);
     padding: calc(var(--plyr-control-spacing, 10px) * .7);
+    padding-left: unset;
     position: relative;
     transition: all .3s ease
 }
@@ -944,7 +945,8 @@ a.plyr__control::before {
     color: #4a5464;
     color: var(--plyr-audio-control-color, #4a5464);
     padding: 10px;
-    padding: var(--plyr-control-spacing, 10px)
+    padding: var(--plyr-control-spacing, 10px);
+    padding-left: 0;
 }
 
 .plyr--audio .plyr__control.plyr__tab-focus,

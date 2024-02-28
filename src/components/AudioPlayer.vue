@@ -18,7 +18,7 @@ export default {
         type: 'audio',
         sources: [
           {
-            src: this.$props.list[this.currentIndex],
+            src: this.$props.list[this.currentIndex].src,
             type: 'audio/mp3',
           },
         ],
@@ -31,9 +31,11 @@ export default {
 
 <template>
   <div class="dkaudio">
+    <p>{{ list[currentIndex].title }}</p>
+    <p>{{ list[currentIndex].artist }}</p>
     <vue-plyr ref="plyr" :options="{ controls: ['play', 'mute', 'volume'] }">
       <audio controls crossorigin playsinline autoplay>
-        <source :src="list[currentIndex]" type="audio/mp3" />
+        <source :src="list[currentIndex].src" type="audio/mp3" />
       </audio>
     </vue-plyr>
   </div>
@@ -41,7 +43,12 @@ export default {
 
 <style>
 .dkaudio {
-  margin-top: 40vh;
+  margin-top: 30vh;
+
+}
+
+.dkaudio p {
+  margin: unset;
 }
 
 .dkaudio {

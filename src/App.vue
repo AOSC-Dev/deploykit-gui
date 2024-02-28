@@ -23,15 +23,15 @@ export default {
       progress_detail: {},
       can_quit: true,
       isInstall: false,
-      playList: ['@/../assets/bgm/风中有朵雨做的云.mp3', '@/../assets/bgm/123.mp3'],
-      nowPlaying: null,
-      // currentAudioName: '',
-      // audioList: [
-      //   {
-      //     name: 'audio1',
-      //     url: '@/../assets/bgm/123.mp3',
-      //   },
-      // ],
+      playList: [{
+        artist: '孟庭苇',
+        title: '风中有朵雨做的云',
+        src: '@/../assets/bgm/风中有朵雨做的云.mp3',
+      }, {
+        artist: 'Ozelot Vanilla',
+        title: 'Meadow We Go',
+        src: '@/../assets/bgm/123.mp3',
+      }],
     };
   },
   computed: {
