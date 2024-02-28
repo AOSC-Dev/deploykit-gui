@@ -42,7 +42,7 @@ mod parser;
 mod utils;
 
 static SKIP_DESKTOP_OR_INSTALL: AtomicBool = AtomicBool::new(false);
-const BGM_LIST: &[u8] = include_bytes!("../../assets/bgm/bgm.json");
+const BGM_LIST: &[u8] = include_bytes!("../bgm.json");
 
 #[proxy(
     interface = "io.aosc.Deploykit1",
