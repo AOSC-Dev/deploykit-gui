@@ -47,15 +47,15 @@ export default {
 #dkaudio-np {
   position: absolute;
   top: -25px;
-  right: 75px;
-  color: gray;
+  right: 42px;
+  color: #ededed44;
 }
 #dkaudio-background {
   position: absolute;
-  right: 20px;
-  font-size: 100px;
+  right: -5px;
+  font-size: 84px;
   bottom: 20px;
-  color: gray;
+  color: #ededed44;
   font-family: Noto Serif;
 }
 </style>
