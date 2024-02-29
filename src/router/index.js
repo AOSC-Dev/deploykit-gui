@@ -115,7 +115,7 @@ const router = createRouter({
       name: 'esp',
       component: EspPartitionView,
       props: true,
-      meta: { steps: 0, next: '/partitions' },
+      meta: { steps: 0, next: '/partitions', prev: '/device' },
     },
   ],
 });
