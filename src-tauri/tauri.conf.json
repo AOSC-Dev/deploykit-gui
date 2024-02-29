@@ -16,11 +16,6 @@
         "all": false,
         "open": true
       },
-      "http": {
-        "all": true,
-        "request": true,
-        "scope": ["https://releases.aosc.io/*"]
-      },
       "dialog": {
         "all": true, 
         "confirm": true, 
@@ -54,6 +49,13 @@
         "short": "s",
         "multipleOccurrences": true,
         "description": "Skip select Desktop or Install view"
+      }, {
+        "name": "resource-dir",
+        "short": "d",
+        "multipleOccurrences": false,
+        "description": "Resource directory",
+        "takesValue": true,
+        "required": true
       }]
     }
   }

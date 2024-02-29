@@ -1,10 +1,14 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use axum::http::HeaderValue;
+use axum::http::Method;
+use axum::Router;
 use eyre::bail;
 use eyre::Result;
 use parser::list_zoneinfo;
 use parser::ZoneInfo;
+use rand::prelude::SliceRandom;
 use rand::thread_rng;
 use serde::Deserialize;
 use serde::Serialize;
@@ -23,6 +27,8 @@ use tauri::State;
 use tauri::Window;
 use tokio::sync::Mutex;
 use tokio::time::sleep;
+use tower_http::cors::CorsLayer;
+use tower_http::services::ServeDir;
 use utils::candidate_sqfs;
 use utils::get_mirror_speed_score;
 use utils::is_efi;
@@ -33,7 +39,6 @@ use utils::Variant;
 use zbus::proxy;
 use zbus::Connection;
 use zbus::Result as zResult;
-use rand::prelude::SliceRandom;
 
 use crate::utils::get_download_info;
 use crate::utils::handle_serde_config;
@@ -511,30 +516,16 @@ async fn init() -> Result<DeploykitProxy<'static>> {
     Ok(proxy)
 }
 
-fn main() {
-    let tokio = match tokio::runtime::Builder::new_multi_thread()
-        .enable_all()
-        .build()
-    {
-        Ok(t) => t,
-        Err(e) => {
-            dialog::blocking::message(
-                None::<Window>.as_ref(),
-                "Error",
-                format!("Failed to create async runtime: {e}"),
-            );
-            return;
-        }
-    };
-
-    let proxy = tokio.block_on(init());
+#[tokio::main]
+async fn main() {
+    let proxy = init().await;
 
     match proxy {
         Ok(p) => {
             let pc = p.clone();
             tauri::Builder::default()
                 .setup(move |app| {
-                    match app.get_cli_matches() {
+                    let dir = match app.get_cli_matches() {
                         // `matches` here is a Struct with { args, subcommand }.
                         // `args` is `HashMap<String, ArgData>` where `ArgData` is a struct with { value, occurrences }.
                         // `subcommand` is `Option<Box<SubcommandMatches>>` where `SubcommandMatches` is a struct with { name, matches }.
@@ -547,11 +538,34 @@ fn main() {
                             {
                                 SKIP_DESKTOP_OR_INSTALL.store(true, Ordering::SeqCst);
                             }
+
+                            let resources_dir = matches.args.get("resource-dir").unwrap();
+                            let resource_dir = &resources_dir.value.as_str().unwrap();
+
+                            resource_dir.to_string()
                         }
                         Err(e) => {
-                            dbg!(e);
+                            return Err(Box::new(e));
                         }
-                    }
+                    };
+
+                    // FIXME: Workaround https://github.com/tauri-apps/tauri/issues/3725
+                    tokio::spawn(async move {
+                        let serve_dir = ServeDir::new(dir);
+
+                        let axum_app = Router::new().nest_service("/", serve_dir).layer(
+                            CorsLayer::new()
+                                .allow_origin("*".parse::<HeaderValue>().unwrap())
+                                .allow_methods([Method::GET]),
+                        );
+
+                        let listener = tokio::net::TcpListener::bind("127.0.0.1:23333")
+                            .await
+                            .unwrap();
+
+                        axum::serve(listener, axum_app).await.unwrap();
+                    });
+
                     let pc = pc.clone();
                     let pcc = pc.clone();
                     let window = app.get_window("main").unwrap();

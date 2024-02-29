@@ -8,6 +8,11 @@ export default {
       currentIndex: 0,
     };
   },
+  methods: {
+    playUrl(src) {
+      return `http://127.0.0.1:23333${src}`;
+    },
+  },
   mounted() {
     this.$refs.plyr.player.on('ended', () => {
       this.currentIndex += 1;
@@ -18,7 +23,7 @@ export default {
         type: 'audio',
         sources: [
           {
-            src: this.$props.list[this.currentIndex].src,
+            src: `http://127.0.0.1:23333${this.$props.list[this.currentIndex].src}`,
             type: 'audio/mp3',
           },
         ],
@@ -37,7 +42,7 @@ export default {
     <p>{{ list[currentIndex].artist }}</p>
     <vue-plyr ref="plyr" :options="{ controls: ['play', 'mute', 'volume'] }">
       <audio controls crossorigin playsinline autoplay>
-        <source :src="list[currentIndex].src" type="audio/mp3" />
+        <source :src="playUrl(list[currentIndex].src)" type="audio/mp3" />
       </audio>
     </vue-plyr>
   </div>

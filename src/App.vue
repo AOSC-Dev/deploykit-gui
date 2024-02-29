@@ -157,10 +157,7 @@ export default {
     this.isInstall = isInstall;
 
     try {
-      const resp = invoke('get_bgm_list');
-      console.log(resp);
-      const playlist = await resp;
-      console.log(playlist);
+      const playlist = await invoke('get_bgm_list');
       this.playList = playlist;
     } catch (e) {
       this.$router.replace(`/error/${encodeURIComponent(e)}`);
