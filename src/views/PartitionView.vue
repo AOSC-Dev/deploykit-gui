@@ -307,6 +307,9 @@ export default {
     <DKStripButton @click="launch_gparted" :text="$t('part.b1')">
       <img src="@/../assets/drive-harddisk-root-symbolic.svg" height="18" />
     </DKStripButton>
+    <DKStripButton @click="$router.push('/autopart')" :text="$t('part.b2')">
+      <img src="@/../assets/drive-harddisk-root-symbolic.svg" height="18" />
+    </DKStripButton>
     <DKBottomSteps :trigger="next" :guard="validate" :can_proceed="valid">
     </DKBottomSteps>
   </DKBottomActions>

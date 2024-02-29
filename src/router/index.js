@@ -18,6 +18,7 @@ import DeviceView from '@/views/DeviceView.vue';
 import EspPartitionView from '@/views/EspPartitionView.vue';
 // import DesktopOrInstall from '@/views/DesktopOrInstall.vue';
 import WelcomeView from '@/views/WelcomeView.vue';
+import AutoPartView from '@/views/AutoPartView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -91,6 +92,12 @@ const router = createRouter({
       path: '/partitions',
       name: 'partitions',
       component: PartitionView,
+      meta: { steps: 0, next: '/users' },
+    },
+    {
+      path: '/autopart',
+      name: 'autopart',
+      component: AutoPartView,
       meta: { steps: 0, next: '/users' },
     },
     {
