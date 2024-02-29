@@ -18,20 +18,13 @@ export default {
       if (this.trigger) this.trigger(this);
       this.$router.push(this.$router.currentRoute.value.meta.next);
     },
-    back() {
-      if (this.$router.currentRoute.value.meta.prev) {
-        this.$router.replace(this.$router.currentRoute.value.meta.prev);
-      } else {
-        this.$router.back();
-      }
-    },
   },
 };
 </script>
 
 <template>
   <DKBottomRightButtons>
-    <button class="button" @click="back" :disabled="no_previous">
+    <button class="button" @click="$router.back()" :disabled="no_previous">
       {{ $t("previous") }}
     </button>
     <button class="button" @click="proceed" :disabled="!can_proceed">
