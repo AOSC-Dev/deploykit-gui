@@ -441,8 +441,8 @@ enum ProgressStatus {
 #[derive(Debug, Serialize)]
 struct GuiProgress {
     status: GuiProgressStatus,
-    eta_lo: Option<u64>,
-    eta_hi: Option<u64>,
+    eta_lo: Option<u8>,
+    eta_hi: Option<u8>,
 }
 
 #[derive(Debug, Serialize)]
@@ -639,20 +639,39 @@ async fn main() {
 }
 
 async fn progress_event(window: Window, p: DeploykitProxy<'_>) -> TauriResult<()> {
+    let mut all: i8 = -1;
+    let mut now_step = 0;
     loop {
         let progress = Dbus::run(&p, DbusMethod::GetProgress).await?;
         let data: ProgressStatus = serde_json::from_value(progress.data)?;
         match data {
             ProgressStatus::Working { step, progress, .. } => {
-                let (lo, hi) = calc_eta(step, IS_BASE_SQFS.load(Ordering::Relaxed));
+                if now_step == 0 {
+                    all = if IS_BASE_SQFS.load(Ordering::Relaxed) {
+                        24
+                    } else {
+                        31
+                    };
+                }
+
+                if step != now_step {
+                    now_step = step;
+                    let (lo, hi) = calc_eta(step, IS_BASE_SQFS.load(Ordering::Relaxed));
+                    if lo.is_none() {
+                        all = all - hi.unwrap_or(0) as i8;
+                    } else {
+                        all = all - lo.unwrap() as i8;
+                    }
+                }
+
                 let data = GuiProgress {
                     status: GuiProgressStatus {
                         c: step,
                         t: 8,
                         p: progress,
                     },
-                    eta_hi: hi,
-                    eta_lo: lo,
+                    eta_hi: None,
+                    eta_lo: Some(all as u8),
                 };
                 window.emit("progress", &data).unwrap();
                 // println!("emit:{:?}", data);
@@ -676,7 +695,7 @@ async fn progress_event(window: Window, p: DeploykitProxy<'_>) -> TauriResult<()
     }
 }
 
-fn calc_eta(step: u8, is_base: bool) -> (Option<u64>, Option<u64>) {
+fn calc_eta(step: u8, is_base: bool) -> (Option<u8>, Option<u8>) {
     match step {
         1 => (None, Some(1)),
         2 => {

@@ -29,7 +29,6 @@ export default {
   computed: {
     eta_value() {
       const details = this.progress_detail;
-      console.log(details);
       if (details.eta_lo > 0) {
         return this.$t('d.eta-0', {
           time_lo: details.eta_lo,
@@ -89,7 +88,6 @@ export default {
     //   next(); // Start playing
     // },
     on_lang_selected(id) {
-      console.info(`Language: ${id}`);
       if (id === 'en') {
         // default locale is always loaded before-hand
         this.langSelected = true;
@@ -103,7 +101,6 @@ export default {
           this.execute_lightup();
         })
         .catch(() => {
-          console.error(`Language ${id} has no translation strings`);
           this.langSelected = true;
           this.execute_lightup();
         });
