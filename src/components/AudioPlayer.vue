@@ -1,3 +1,7 @@
+<script setup>
+import stringWidth from 'string-width';
+</script>
+
 <script>
 export default {
   props: {
@@ -24,7 +28,9 @@ export default {
         type: 'audio',
         sources: [
           {
-            src: `http://127.0.0.1:23333${this.$props.list[this.currentIndex].src}`,
+            src: `http://127.0.0.1:23333${
+              this.$props.list[this.currentIndex].src
+            }`,
             type: 'audio/mp3',
           },
         ],
@@ -39,7 +45,14 @@ export default {
   <div class="dkaudio">
     <span id="dkaudio-np">Now Playing</span>
     <span id="dkaudio-background">♪</span>
-    <span><strong>{{ list[currentIndex].title }}</strong></span>
+    <marquee
+      v-if="stringWidth(list[currentIndex].title) > 16"
+      class="music-title"
+      >{{ list[currentIndex].title }}</marquee
+    >
+    <span v-else
+      ><strong>{{ list[currentIndex].title }}</strong></span
+    >
     <p>{{ list[currentIndex].artist }}</p>
     <vue-plyr ref="plyr" :options="{ controls: ['play', 'mute', 'volume'] }">
       <audio controls crossorigin playsinline autoplay>
@@ -82,7 +95,36 @@ export default {
   --plyr-audio-control-color: #fffff;
 }
 
-.dkaudio .plyr__controls .plyr__controls__item:first-child {
-  margin-right: unset;
+.music-title {
+  display: inline-block;
+  font-weight: bold;
+  -webkit-marquee: up medium 2 normal scroll;
+}
+
+.music-title-no-loop {
+  display: inline-block;
+  font-weight: bold;
+}
+
+@keyframes wordsLoop {
+  0% {
+    transform: translateX(200px);
+    -webkit-transform: translateX(200px);
+  }
+  100% {
+    transform: translateX(-100%);
+    -webkit-transform: translateX(-100%);
+  }
+}
+
+@-webkit-keyframes wordsLoop {
+  0% {
+    transform: translateX(200px);
+    -webkit-transform: translateX(200px);
+  }
+  100% {
+    transform: translateX(-100%);
+    -webkit-transform: translateX(-100%);
+  }
 }
 </style>
