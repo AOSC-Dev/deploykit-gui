@@ -29,6 +29,7 @@ export default {
   computed: {
     eta_value() {
       const details = this.progress_detail;
+      console.log(details);
       if (details.eta_lo > 0) {
         return this.$t('d.eta-0', {
           time_lo: details.eta_lo,
@@ -36,12 +37,8 @@ export default {
         });
       }
 
-      if (details.eta_hi > 5) {
-        return this.$tc('d.eta-1', details.eta_hi, { time: details.eta_hi });
-      }
-
       if (details.eta_hi > 0) {
-        return this.$t('d.eta-2');
+        return this.$t('d.eta-1', { time: details.eta_hi });
       }
 
       return '';
