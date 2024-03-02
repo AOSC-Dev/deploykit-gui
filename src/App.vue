@@ -17,7 +17,7 @@ export default {
       page_number: 0,
       progress: 0,
       config: {},
-      lang_selected: false,
+      langSelected: false,
       lightup: 0,
       timer: null,
       progress_detail: {},
@@ -35,10 +35,16 @@ export default {
           time_hi: details.eta_hi,
         });
       }
+
       if (details.eta_hi > 5) {
         return this.$tc('d.eta-1', details.eta_hi, { time: details.eta_hi });
       }
-      return this.$t('d.eta-2');
+
+      if (details.eta_hi > 0) {
+        return this.$t('d.eta-2');
+      }
+
+      return '';
     },
     install_info() {
       const details = this.progress_detail;
@@ -89,19 +95,19 @@ export default {
       console.info(`Language: ${id}`);
       if (id === 'en') {
         // default locale is always loaded before-hand
-        this.lang_selected = true;
+        this.langSelected = true;
         this.execute_lightup();
         return;
       }
       // lazy load the translation strings
       this.switchLocale(id)
         .then(() => {
-          this.lang_selected = true;
+          this.langSelected = true;
           this.execute_lightup();
         })
         .catch(() => {
           console.error(`Language ${id} has no translation strings`);
-          this.lang_selected = true;
+          this.langSelected = true;
           this.execute_lightup();
         });
     },
@@ -175,7 +181,7 @@ export default {
       @click="on_abort"
       @keyup.enter="on_abort"
       :disabled="!can_quit"
-      v-show="lang_selected && isInstall"
+      v-show="langSelected && isInstall"
     >
       <img
         :alt="$t('d.sr-close-icon')"
@@ -184,18 +190,18 @@ export default {
         height="30"
       />
     </button>
-    <header style="width: 90%" v-if="lang_selected && isInstall">
+    <header style="width: 90%" v-if="langSelected && isInstall">
       <DKLogo />
     </header>
   </div>
   <!-- language select overlay -->
-  <LangSelect v-if="!lang_selected" @update:lang="on_lang_selected" />
+  <LangSelect v-if="!langSelected" @update:lang="on_lang_selected" />
   <DesktopOrInstall
-    v-if="lang_selected && !isInstall"
+    v-if="langSelected && !isInstall"
     @update:install="onInstallDk"
   />
   <!-- main content -->
-  <DKLayout :main_class="lightup_seq(1)" v-if="lang_selected && isInstall">
+  <DKLayout :main_class="lightup_seq(1)" v-if="langSelected && isInstall">
     <RouterView @update:can_quit="(v) => (can_quit = v)" />
     <template #left>
       <div class="wrapper" :class="lightup_seq(1)">
@@ -212,7 +218,7 @@ export default {
   <!-- status bar -->
   <div
     class="status-bar"
-    v-if="lang_selected && isInstall"
+    v-if="langSelected && isInstall"
     :class="lightup_seq(4)"
   >
     <progress

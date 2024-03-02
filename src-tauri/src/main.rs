@@ -42,12 +42,14 @@ use zbus::Result as zResult;
 
 use crate::utils::get_download_info;
 use crate::utils::handle_serde_config;
+use crate::utils::DownloadInfo;
 
 mod parser;
 mod utils;
 
 static SKIP_DESKTOP_OR_INSTALL: AtomicBool = AtomicBool::new(false);
 const BGM_LIST: &[u8] = include_bytes!("../bgm.json");
+static IS_BASE_SQFS: AtomicBool = AtomicBool::new(false);
 
 #[proxy(
     interface = "io.aosc.Deploykit1",
@@ -205,12 +207,20 @@ async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<
     let proxy = &state.proxy;
     let config = handle_serde_config(config)?;
 
-    let (url, sha256sum) = get_download_info(&config)?;
+    let DownloadInfo {
+        url,
+        checksum,
+        name,
+    } = get_download_info(&config)?;
+
+    if name == "Base" || name == "Server" {
+        IS_BASE_SQFS.store(true, Ordering::Relaxed);
+    }
 
     let download_value = serde_json::json!({
         "Http": {
             "url": url,
-            "hash": sha256sum,
+            "hash": checksum,
         }
     });
 
@@ -431,6 +441,8 @@ enum ProgressStatus {
 #[derive(Debug, Serialize)]
 struct GuiProgress {
     status: GuiProgressStatus,
+    eta_lo: Option<u64>,
+    eta_hi: Option<u64>,
 }
 
 #[derive(Debug, Serialize)]
@@ -632,12 +644,15 @@ async fn progress_event(window: Window, p: DeploykitProxy<'_>) -> TauriResult<()
         let data: ProgressStatus = serde_json::from_value(progress.data)?;
         match data {
             ProgressStatus::Working { step, progress, .. } => {
+                let (lo, hi) = calc_eta(step, IS_BASE_SQFS.load(Ordering::Relaxed));
                 let data = GuiProgress {
                     status: GuiProgressStatus {
                         c: step,
                         t: 8,
                         p: progress,
                     },
+                    eta_hi: hi,
+                    eta_lo: lo,
                 };
                 window.emit("progress", &data).unwrap();
                 // println!("emit:{:?}", data);
@@ -658,5 +673,25 @@ async fn progress_event(window: Window, p: DeploykitProxy<'_>) -> TauriResult<()
         }
 
         thread::sleep(Duration::from_millis(100));
+    }
+}
+
+fn calc_eta(step: u8, is_base: bool) -> (Option<u64>, Option<u64>) {
+    match step {
+        1 => (None, Some(1)),
+        2 => {
+            if is_base {
+                (None, Some(8))
+            } else {
+                (None, Some(15))
+            }
+        }
+        3 => (None, Some(5)),
+        4 => (None, Some(1)),
+        5 => (Some(2), Some(3)),
+        6 => (None, Some(1)),
+        7 => (Some(2), Some(3)),
+        8 => (None, Some(1)),
+        _ => (None, None),
     }
 }
