@@ -304,7 +304,7 @@ export default {
     <p>{{ error_msg }}</p>
   </div>
   <DKBottomActions v-if="!gparted && !loading">
-    <DKStripButton @click="launch_gparted" :text="$t('part.b1')">
+    <DKStripButton omit_bline="1" @click="launch_gparted" :text="$t('part.b1')">
       <img src="@/../assets/drive-harddisk-root-symbolic.svg" height="18" />
     </DKStripButton>
     <DKStripButton @click="$router.push('/autopart')" :text="$t('part.b2')">
