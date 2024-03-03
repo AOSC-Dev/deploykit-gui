@@ -2,17 +2,18 @@
     "lang": "English (United States)",
     "welcome": {
         "title": "Welcome",
-        "p1": "In the following pages, AOSC OS Installer will guide you through...",
-        "l1": "Variant selection",
+        "p1": "In the following pages, the AOSC OS Installer will guide you through...",
+        "l1": "System variant selection",
         "l2": "Disk partitioning",
         "l3": "System configuration",
         "p2": "The installation process should only take a few minutes, but will require more time on slower hardware.",
         "sr-help": "Please note that Installer may use external programs that does not come with screen reader support, such as GParted, which is used for partitioning. You may want to seek assistance at those steps. Installer will notify you by announcing \"Please seek help before doing so.\""
     },
     "desktop-or-install": {
+        "title": "What would you like to do?",
         "install-system-title": "Install AOSC OS",
         "install-system-p1": "Install and setup AOSC OS on your device",
-        "rescue-and-recovery": "Resue and Recover",
+        "rescue-and-recovery": "Rescue and Recovery",
         "rescue-and-recovery-p1": "Launch the rescue and recovery workspace",
         "reboot-title": "Reboot",
         "reboot-p1": "Exit LiveKit and restart your device"
@@ -20,7 +21,7 @@
     "variant": {
         "title": "Variants",
         "p1": "Please select from below your desired distribution.",
-        "l1": "Fetching mirrors metadata..."
+        "l1": "Fetching system release metadata..."
     },
     "error": {
         "title": "Error",
@@ -106,20 +107,20 @@
         "l1": "Create a {0} EFI System Partition.",
         "l2": "Create a {0} AOSC OS System Partition.",
         "e1": "Select partition too small. require {0} GiB size.",
-        "e2": "Deploykit does not support this partition format, use the ext4/xfs partition format."
+        "e2": "Installer does not support installing AOSC OS on this filesystem, use the ext4/xfs filesystem."
     },
     "esp": {
         "title": "ESP Partition",
-        "p1": "The installer detects that there are multiple EFI System Partitions (ESPs) on your device, which are used to store critical boot data such as the bootloader. Generally, this partition and your AOSC OS system partition should be on the same storage device, and this configuration will help in migrating and backing up your data.",
-        "p2": "If you need to select an EFI system partition on another storage device, think twice: if the drive is subsequently replaced or diverted, you will need to reinstall the AOSC OS bootloader."
+        "p1": "Installer detected multiple EFI System Partitions (ESPs) on your device, which are used to store critical boot data such as the bootloader. This partition and your AOSC OS system partition should generally be on the same storage device, making it easier to migrate and backup system data when the need arises.",
+        "p2": "Should you decide to specify an EFI System Partition on another storage device, do think twice: if that drive is subsequently replaced, you will need to reinstall the bootloader for AOSC OS."
     },
     "mirror": {
-        "title": "Download Source",
+        "title": "Mirror",
         "p1": "Installer will now detect the fastest mirror to download AOSC OS from. If you would like to manual select a mirror, press \"Customize...\" below.",
         "b1": "Customize...",
-        "p2": "Below are a list of available mirrors to download AOSC OS from. You may make selection based on the mirror's location or by benchmarking them using the \"Benchmark...\" button.",
+        "p2": "Listed below are all available mirrors to download AOSC OS from. You may select based on the mirrors' geographical location. Alternatively, you may benchmark them using the \"Benchmark...\" button.",
         "b2": "Benchmark...",
-        "k1": "Running benchmarks..."
+        "k1": "Benchmarking mirrors..."
     },
     "user": {
         "title": "User Account",
@@ -127,10 +128,10 @@
         "l1": "Username",
         "l2": "Password",
         "l3": "Confirm Password",
-        "bad1": "Username can't be empty.",
-        "bad2": "Password can't be empty.",
-        "bad3": "Passwords do not match.",
-        "bad4": "Invalid username."
+        "bad1": "The username cannot be empty.",
+        "bad2": "The password cannot be empty.",
+        "bad3": "The passwords do not match.",
+        "bad4": "Username contains invalid characters."
     },
     "confirm": {
         "title": "Pre-Flight Check",
@@ -145,7 +146,7 @@
         "l7": "AOSC OS will use {0}.",
         "l7-1": "UTC as local time",
         "l7-2": "RTC as local time",
-        "w1": "If everything looks right to you, by pressing \"Next,\" Installer will begin downloading, installing, and configuring AOSC OS on your device. Otherwise, please use the \"Previous\" button to go back top revious configuration pages."
+        "w1": "By pressing \"Next,\" Installer will begin downloading, installing, and configuring AOSC OS on your device. If anything looks off, please use the \"Previous\" button to return to the previous configuration pages."
     },
     "locale": {
         "title": "Locale & Time",
@@ -153,14 +154,14 @@
         "p2": "Please select your local time zone. Linux systems usually use UTC as local time by default, but may result in time discrepancy with your other operating systems, like Windows. Setting RTC time as local time will prevent this.",
         "l1": "Locale",
         "l2": "Timezone",
-        "l3": "Reference Time",
+        "l3": "Time Reference",
         "o1": "UTC (Recommended)",
         "o2": "RTC (like Windows)"
     },
     "d": {
-        "sr-close": "close button",
-        "sr-close-icon": "close button",
-        "sr-progress": "overall progress",
+        "sr-close": "Close button",
+        "sr-close-icon": "Close button",
+        "sr-progress": "Overall progress",
         "nav-0": "Introduction",
         "nav-1": "User Preferences",
         "nav-2": "Installation",
@@ -171,7 +172,7 @@
     },
     "driver": {
         "title": "NVIDIA",
-        "p1": "Installer has detected a graphics card on your device that is supported by NVIDIA's official Linux driver. Installing this driver may improve system stability, power efficiency, and graphical performance. This driver is considered proprietary software and carries additional licensing terms in the {0}.",
+        "p1": "Installer has detected a graphics card on your device that is supported by NVIDIA's official Linux driver. Installing this driver may enhance overall system stability, power efficiency, and graphics performance. This driver is considered proprietary software and carries additional licensing terms in the {0}.",
         "p1-1": "License For Customer Use of NVIDIA GeForce Software",
         "eula_link": "https://www.nvidia.com/en-us/drivers/geforce-license/",
         "p2": "Would you like to install a system release with official NVIDIA drivers preinstalled?",
@@ -189,8 +190,8 @@
         "p4": "AOSC OS comes pre-installed with RescueKit where available, a self-contained maintenance and rescue environment.\nCorrupted file system? Accidental deletes? Messed up system updates? No worries! RescueKit has most (if not everything) you need to get your AOSC OS back on track.\nIf you are the cautious type, RescueKit also comes with essential tools for backing up your system for a rainy day.",
         "t5": "Device Ready",
         "p5": "Built on the highly scalable Linux Kernel and its portable and vibrant userspace, AOSC OS is ready for your single-board computers, laptops, desktops, and servers.\nConfigured for full feature sets, AOSC OS readies your new and old devices and peripherals for maximal functionality.\nProprietary drivers needed? No problem! With our liberal software support policies, if your hardware vendors let us, we will ship them for you.",
-        "t6": "Retro Ready",
-        "p6": "Still holding onto your 486? No worries, our maintainers love their old computers, and intend to have them run AOSC OS.\nAOSC OS/Retro is a purpose-built distribution optimised for devices with limited RAM, processing power, and storage space. With six architectures supported and counting, AOSC OS/Retro keeps your old and tired computers going with optimized and up-to-date software.\n",
+        "t6": "Application Ready",
+        "p6": "The operating system's principal task is to help get your applications up and running and keeping your productivity on track.\nApart from the software packages tested and shipped by yours truly, AOSC OS also supports installing applications from inter-distribution ecosystems such as Flatpak, Linglong, and Snap, as well as distribution formats such as AppImage. Our Spiral project, currently under development, will provide compatibility with applications built for Debian and Ubuntu.",
         "t7": "You Ready",
         "p7": "At AOSC, we pride ourselves with friendly and ready support for our users. Warranty and merchantability notwithstanding, we believe that our users should be respected of their time and energy spent on adapting to a new work environment.\nAt Telegram, Discord, IRC, or Matrix, our maintainers, contributors, and friends are ready to offer help. We wish you much joy at our community and great success with AOSC OS.\nEnjoy!"
     },
