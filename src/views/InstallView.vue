@@ -44,27 +44,19 @@ export default {
     };
 
     this.timer = setInterval(this.next_slide, 6000);
+    listen('progress', (event) => {
+      this.progress = event.payload;
+      if (event.payload.status === 'Finish') {
+        this.$router.replace('/finish');
+      } else if (event.payload.status === 'Error') {
+        this.$router.replace({
+          path: `/error/${encodeURIComponent(JSON.stringify(event.payload))}`,
+          query: { isInstalling: true },
+        });
+      }
+    });
 
-    setTimeout(() => {
-      invoke('start_install');
-    }, 200);
-
-    setTimeout(async () => {
-      await listen('progress', (event) => {
-        setTimeout(() => {
-          if (event.payload.status === 'Finish') {
-            this.$router.replace('/finish');
-          } else if (event.payload.status === 'Error') {
-            this.$router.replace(
-              {
-                path: `/error/${encodeURIComponent(JSON.stringify(event.payload))}`,
-                query: { isInstalling: true },
-              },
-            );
-          }
-        }, 200);
-      });
-    }, 200);
+    invoke('start_install');
   },
   beforeUnmount() {
     clearInterval(this.timer);

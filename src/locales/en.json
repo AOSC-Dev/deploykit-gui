@@ -25,7 +25,8 @@
     },
     "error": {
         "title": "Error",
-        "p1": "Installer has encountered an error."
+        "p1": "Installer has encountered an error.",
+        "retrying": "Retring ..."
     },
     "install": {
         "firefox": "Launch Firefox",

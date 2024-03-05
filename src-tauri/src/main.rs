@@ -76,6 +76,7 @@ trait Deploykit {
     async fn ping(&self) -> zResult<String>;
     async fn get_all_esp_partitions(&self) -> zResult<String>;
     async fn reset_progress_status(&self) -> zResult<String>;
+    async fn sync_disk(&self) -> zResult<String>;
 }
 
 #[derive(Debug, Deserialize)]
@@ -102,6 +103,7 @@ enum DbusMethod<'a> {
     Ping,
     GetAllEspPartitions,
     ResetProgressStatus,
+    SyncDisk,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -150,6 +152,7 @@ impl Dbus {
             DbusMethod::Ping => proxy.ping().await?,
             DbusMethod::GetAllEspPartitions => proxy.get_all_esp_partitions().await?,
             DbusMethod::ResetProgressStatus => proxy.reset_progress_status().await?,
+            DbusMethod::SyncDisk => proxy.sync_disk().await?,
         };
 
         let res = Self::try_from(s)?;
@@ -432,6 +435,13 @@ async fn get_bgm_list() -> TauriResult<Vec<Value>> {
     Ok(bgm_list)
 }
 
+#[tauri::command]
+async fn sync_disk(state: State<'_, DkState<'_>>) -> TauriResult<()> {
+    Dbus::run(&state.proxy, DbusMethod::SyncDisk).await?;
+
+    Ok(())
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "status")]
 enum ProgressStatus {
@@ -655,7 +665,8 @@ async fn main() {
                     is_skip,
                     reset_progress_status,
                     get_bgm_list,
-                    i18n_recipe
+                    i18n_recipe,
+                    sync_disk,
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");
