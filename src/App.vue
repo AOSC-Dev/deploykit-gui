@@ -129,14 +129,14 @@ export default {
     };
   },
   async created() {
+    let isStop = false;
     listen('progress', (event) => {
       this.progress_detail = event.payload;
       const details = this.progress_detail;
-      if (
-        details.status
-        && (details.status === 'Pending' || details.status === 'Finish')
-      ) {
+
+      if (details.status && details.status === 'Finish' && !isStop) {
         this.$refs.plyr.stop();
+        isStop = true;
       }
     });
 
