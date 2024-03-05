@@ -17,7 +17,6 @@ export default {
       return `http://127.0.0.1:23333${src}`;
     },
     stop() {
-      console.log(1);
       const fadeInterval = setInterval(() => {
         if (this.$refs.plyr.player.volume <= 0) {
           clearInterval(fadeInterval);
