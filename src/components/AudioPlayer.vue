@@ -27,13 +27,7 @@ export default {
     },
   },
   mounted() {
-    this.$refs.plyr.player.volume = 0;
-    this.$refs.plyr.player.on('play', () => {
-      const fadeInterval = setInterval(() => {
-        if (this.$refs.plyr.player.volume >= 0.3) clearInterval(fadeInterval);
-        this.$refs.plyr.player.volume += 0.001;
-      }, 50);
-    });
+    this.$refs.plyr.player.volume = 0.3;
     this.$refs.plyr.player.on('ended', () => {
       this.currentIndex += 1;
       if (this.currentIndex >= this.$props.list.length) {
