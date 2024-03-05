@@ -23,7 +23,7 @@ export default {
           this.$refs.plyr.player.pause();
         }
         this.$refs.plyr.player.volume -= 0.001;
-      }, 50);
+      }, 100);
     },
   },
   mounted() {
