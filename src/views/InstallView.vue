@@ -1,6 +1,5 @@
 <script>
 import { invoke } from '@tauri-apps/api';
-import { listen } from '@tauri-apps/api/event';
 
 export default {
   data() {
@@ -44,17 +43,6 @@ export default {
     };
 
     this.timer = setInterval(this.next_slide, 6000);
-    listen('progress', (event) => {
-      this.progress = event.payload;
-      if (event.payload.status === 'Finish') {
-        this.$router.replace('/finish');
-      } else if (event.payload.status === 'Error') {
-        this.$router.replace({
-          path: `/error/${encodeURIComponent(JSON.stringify(event.payload))}`,
-          query: { isInstalling: true },
-        });
-      }
-    });
 
     invoke('start_install');
   },

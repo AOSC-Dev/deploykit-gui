@@ -138,6 +138,15 @@ export default {
         this.$refs.plyr.stop();
         isStop = true;
       }
+
+      if (details.status && details.status === 'Finish') {
+        this.$router.replace('/finish');
+      } else if (details.status && details.status === 'Error') {
+        this.$router.replace({
+          path: `/error/${encodeURIComponent(JSON.stringify(event.payload))}`,
+          query: { isInstalling: true },
+        });
+      }
     });
 
     setTimeout(async () => {
