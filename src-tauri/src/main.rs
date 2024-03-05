@@ -688,9 +688,9 @@ async fn progress_event(window: Window, p: DeploykitProxy<'_>) -> TauriResult<()
                     if step != 1 {
                         let (lo, hi) = calc_eta(step - 1, IS_BASE_SQFS.load(Ordering::Relaxed));
                         if lo.is_none() {
-                            all = all - hi.unwrap_or(0) as i8;
+                            all -= hi.unwrap_or(0) as i8;
                         } else {
-                            all = all - lo.unwrap() as i8;
+                            all -= lo.unwrap() as i8;
                         }
                     }
                 }
