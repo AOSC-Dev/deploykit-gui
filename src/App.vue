@@ -113,6 +113,10 @@ export default {
     },
   },
   mounted() {
+    window.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+    });
+
     this.$router.beforeEach((to) => {
       if (to.name === 'error' || to.name === 'abort') return;
       this.page_number = to.meta.steps;
