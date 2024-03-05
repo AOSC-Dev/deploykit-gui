@@ -118,13 +118,6 @@ export default {
       this.page_number = to.meta.steps;
       this.progress = this.page_number * 25;
     });
-
-    setTimeout(
-      () => listen('progress', (event) => {
-        this.progress_detail = event.payload;
-      }),
-      200,
-    );
   },
   provide() {
     return {
@@ -134,6 +127,13 @@ export default {
   async created() {
     listen('progress', (event) => {
       this.progress_detail = event.payload;
+      const details = this.progress_detail;
+      if (
+        details.status
+        && (details.status === 'Pending' || details.status === 'Finish')
+      ) {
+        this.$refs.plyr.stop();
+      }
     });
 
     setTimeout(async () => {
@@ -204,8 +204,8 @@ export default {
         <nav :class="nav_menu_bold(2)">{{ $t("d.nav-2") }}</nav>
         <nav :class="nav_menu_bold(3)">{{ $t("d.nav-3") }}</nav>
       </div>
-      <div v-if="page_number === 2">
-        <AudioPlayer :list="playList"></AudioPlayer>
+      <div v-if="page_number >= 2">
+        <AudioPlayer ref="plyr" :list="playList"></AudioPlayer>
       </div>
     </template>
   </DKLayout>
