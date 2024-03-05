@@ -263,12 +263,13 @@ async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<
     )
     .await?;
 
-    let swap_config = match config.swapfile.size {
-        0 => "\"Disable\"".to_string(),
-        x => serde_json::json!({
-            "Custom": x * 1024 * 1024 * 1024
+    let swap_config = if config.swapfile.size == 0.0 {
+        "\"Disable\"".to_string()
+    } else {
+        serde_json::json!({
+            "Custom": (config.swapfile.size * 1024.0 * 1024.0 * 1024.0) as u64,
         })
-        .to_string(),
+        .to_string()
     };
 
     Dbus::run(proxy, DbusMethod::SetConfig("swapfile", &swap_config)).await?;

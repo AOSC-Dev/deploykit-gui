@@ -62,7 +62,7 @@ pub struct InstallConfig {
 
 #[derive(Deserialize)]
 pub struct SwapFile {
-    pub size: usize,
+    pub size: f64,
 }
 
 #[derive(Deserialize)]
