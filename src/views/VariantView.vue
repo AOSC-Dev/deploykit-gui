@@ -15,26 +15,34 @@ export default {
       selected: null,
     };
   },
-  created() {
-    invoke('get_recipe')
-      .then((req) => {
-        const { variants } = req;
+  async created() {
+    try {
+      const recipe = await invoke('get_recipe');
+      const { variants } = recipe;
 
-        variants.forEach((item, index) => {
-          const title = item.name;
-          variants[index].title = title;
-          const body = item.description;
-          variants[index].body = body;
-        });
-
-        this.options = variants
-          .filter((v) => !v.retro && v.name !== 'BuildKit')
-          .sort((a, b) => (a.name > b.name ? 1 : -1));
-        this.loading = false;
-      })
-      .catch((e) => {
-        this.$router.replace(`/error/${encodeURIComponent(e)}`);
+      const recipeI18n = await invoke('i18n_recipe', {
+        locale: this.config.locale.id,
       });
+
+      variants.forEach((item, index) => {
+        const title = recipeI18n[item['name-tr']]
+          ? recipeI18n[item['name-tr']]
+          : item.name;
+        variants[index].title = title;
+
+        const body = recipeI18n[item['description-tr']]
+          ? recipeI18n[item['description-tr']]
+          : item.name;
+        variants[index].body = body;
+      });
+
+      this.options = variants
+        .filter((v) => !v.retro && v.name !== 'BuildKit')
+        .sort((a, b) => (a.name > b.name ? 1 : -1));
+      this.loading = false;
+    } catch (e) {
+      this.$router.replace(`/error/${encodeURIComponent(e)}`);
+    }
   },
 };
 </script>

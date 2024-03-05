@@ -39,7 +39,16 @@ export default {
   async created() {
     try {
       const data = await invoke('get_recipe');
-      this.mirrors = data.mirrors.sort((a, b) => (a.name > b.name ? 1 : -1));
+      const recipeI18n = await invoke('i18n_recipe', {
+        locale: this.config.locale.id,
+      });
+
+      this.mirrors = data.mirrors;
+      data.mirrors.forEach((item, index) => {
+        data.mirrors[index].nameTr = recipeI18n[item['name-tr']];
+        data.mirrors[index].locTr = recipeI18n[item['loc-tr']];
+      });
+
       this.loading = false;
     } catch (e) {
       this.$router.replace(`/error/${encodeURIComponent(e)}`);
@@ -62,7 +71,10 @@ export default {
         <template #item="option">
           <div>
             <span
-              ><b>{{ option.name }}</b></span
+              ><b
+                >{{ option.locTr ? option.locTr : option.loc }} -
+                {{ option.nameTr ? option.nameTr : option.name }}</b
+              ></span
             >
           </div>
         </template>

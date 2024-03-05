@@ -5,6 +5,7 @@ use axum::http::HeaderValue;
 use axum::http::Method;
 use axum::Router;
 use eyre::bail;
+use eyre::eyre;
 use eyre::Result;
 use parser::list_zoneinfo;
 use parser::ZoneInfo;
@@ -13,6 +14,7 @@ use rand::thread_rng;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
+use std::collections::HashMap;
 use std::io;
 use std::io::ErrorKind;
 use std::process;
@@ -507,6 +509,30 @@ fn is_skip() -> bool {
 }
 
 #[tauri::command]
+async fn i18n_recipe(state: State<'_, DkState<'_>>, locale: &str) -> TauriResult<Value> {
+    let mut lock = state.recipe_i18n.lock().await;
+
+    let map = match &*lock {
+        Some(r) => r.to_owned(),
+        None => {
+            let recipe = utils::get_i18n_file().await?;
+            *lock = Some(recipe.clone());
+
+            recipe
+        }
+    };
+
+    let value = match locale {
+        "zh-CN" | "zh-TW" => map.get("zh-CN"),
+        _ => map.get("en"),
+    }
+    .ok_or_else(|| eyre!("Failed to get language value in i18n file"))?
+    .to_owned();
+
+    Ok(value)
+}
+
+#[tauri::command]
 async fn reset_progress_status(state: State<'_, DkState<'_>>) -> TauriResult<()> {
     let proxy = &state.proxy;
     Dbus::run(proxy, DbusMethod::ResetProgressStatus).await?;
@@ -516,6 +542,7 @@ async fn reset_progress_status(state: State<'_, DkState<'_>>) -> TauriResult<()>
 
 struct DkState<'a> {
     recipe: Mutex<Option<Recipe>>,
+    recipe_i18n: Mutex<Option<HashMap<String, Value>>>,
     proxy: DeploykitProxy<'a>,
 }
 
@@ -603,6 +630,7 @@ async fn main() {
                 })
                 .manage(DkState {
                     recipe: Mutex::new(None),
+                    recipe_i18n: Mutex::new(None),
                     proxy: p,
                 })
                 .invoke_handler(tauri::generate_handler![
@@ -625,7 +653,8 @@ async fn main() {
                     reboot,
                     is_skip,
                     reset_progress_status,
-                    get_bgm_list
+                    get_bgm_list,
+                    i18n_recipe
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");

@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::path::Path;
 
 use eyre::{eyre, Result};
@@ -26,6 +27,19 @@ pub async fn get_recpie() -> Result<Recipe> {
         .await?
         .error_for_status()?
         .json::<Recipe>()
+        .await?;
+
+    Ok(recipe)
+}
+
+pub async fn get_i18n_file() -> Result<HashMap<String, Value>> {
+    let client = Client::builder().user_agent("deploykit").build()?;
+    let recipe = client
+        .get("https://releases.aosc.io/manifest/recipe-i18n.json")
+        .send()
+        .await?
+        .error_for_status()?
+        .json()
         .await?;
 
     Ok(recipe)
