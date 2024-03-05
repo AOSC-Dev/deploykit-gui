@@ -8,6 +8,17 @@ import DKSpinner from '@/components/DKSpinner.vue';
 </script>
 
 <script>
+
+const covertMirrorsListToUiString = (m, recipeI18n) => {
+  const mirrors = m;
+  mirrors.forEach((item, index) => {
+    mirrors[index].nameTr = recipeI18n[item['name-tr']];
+    mirrors[index].locTr = recipeI18n[item['loc-tr']];
+  });
+
+  return mirrors;
+};
+
 export default {
   inject: ['config'],
   data() {
@@ -15,6 +26,7 @@ export default {
       mirrors: [],
       loading: false,
       selected: null,
+      recipeI18n: {},
     };
   },
   watch: {
@@ -26,9 +38,11 @@ export default {
     async run_bench() {
       this.loading = true;
       try {
-        const mirrors = await invoke('mirrors_speedtest', {
+        const m = await invoke('mirrors_speedtest', {
           mirrors: this.mirrors,
         });
+        const mirrors = covertMirrorsListToUiString(m, this.recipeI18n);
+
         this.mirrors = mirrors;
         this.loading = false;
       } catch (e) {
@@ -42,12 +56,10 @@ export default {
       const recipeI18n = await invoke('i18n_recipe', {
         locale: this.config.locale.id,
       });
+      this.recipeI18n = recipeI18n;
 
-      this.mirrors = data.mirrors;
-      data.mirrors.forEach((item, index) => {
-        data.mirrors[index].nameTr = recipeI18n[item['name-tr']];
-        data.mirrors[index].locTr = recipeI18n[item['loc-tr']];
-      });
+      const mirrors = covertMirrorsListToUiString(data.mirrors, recipeI18n);
+      this.mirrors = mirrors;
 
       this.loading = false;
     } catch (e) {
