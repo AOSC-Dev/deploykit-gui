@@ -37,8 +37,8 @@ export default {
       });
 
       this.options = variants
-        .filter((v) => !v.retro && v.name !== 'BuildKit')
-        .sort((a, b) => (a.name > b.name ? 1 : -1));
+        .filter((v) => !v.retro && v.name !== 'BuildKit');
+
       this.loading = false;
     } catch (e) {
       this.$router.replace(`/error/${encodeURIComponent(e)}`);
