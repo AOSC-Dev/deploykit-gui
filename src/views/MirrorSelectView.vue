@@ -61,6 +61,10 @@ export default {
       const mirrors = covertMirrorsListToUiString(data.mirrors, recipeI18n);
       this.mirrors = mirrors;
 
+      if (this.config.mirror) {
+        this.selected = this.mirrors.findIndex((v) => v.name === this.config.mirror.name);
+      }
+
       this.loading = false;
     } catch (e) {
       this.$router.replace(`/error/${encodeURIComponent(e)}`);

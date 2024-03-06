@@ -35,6 +35,11 @@ export default {
       this.ramSize = requireRamSize;
       this.recommendSize = recommendSwapSize;
       this.size = recommendSizeGiB(this.recommendSize);
+
+      if (this.config.swapfile) {
+        this.type = 1;
+        this.size = this.config.swapfile.size;
+      }
     } catch (e) {
       this.$router.replace(`/error/${encodeURIComponent(e)}`);
     }

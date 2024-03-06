@@ -15,24 +15,30 @@ export default {
       loading: true,
       locales: langData,
       timezones: [],
-      selected_locale: langData.findIndex(
+      selectedLocale: langData.findIndex(
         (v) => v.locale === this.config.locale.locale,
       ),
-      rtc_tz: `${!(this.config.rtc_utc || true) || 0}`,
-      timezone: 0,
+      rtcTimezone: this.config.rtc_utc === false ? 1 : 0,
+      selectedTimezone: 0,
     };
   },
   methods: {
     save_config() {
-      this.config.rtc_utc = this.rtc_tz === '0';
-      this.config.timezone = this.timezones[this.timezone];
-      this.config.locale = langData[this.selected_locale];
+      this.config.rtc_utc = this.rtcTimezone === '0';
+      this.config.timezone = this.timezones[this.selectedTimezone];
+      this.config.locale = langData[this.selectedLocale];
     },
   },
   async created() {
     try {
       const data = await invoke('list_timezone');
       this.timezones = data;
+
+      if (this.config.timezone) {
+        this.selectedTimezone = this.timezones.findIndex(
+          (v) => v.text === this.config.timezone.text,
+        );
+      }
     } catch (e) {
       this.$router.replace(`/error/${encodeURIComponent(e)}`);
     }
@@ -49,10 +55,10 @@ export default {
     <form class="form-layout">
       <label for="locale">{{ $t("locale.l1") }}</label>
       <DKFilterSelect
-        :default="selected_locale"
+        :default="selectedLocale"
         :options="locales"
         id="locale"
-        v-model:selected="selected_locale"
+        v-model:selected="selectedLocale"
       />
     </form>
     <br />
@@ -63,15 +69,15 @@ export default {
       <p>
         <DKFilterSelect
           v-if="!loading"
-          :default="timezone"
+          :default="selectedTimezone"
           :options="timezones"
           id="timezone"
-          v-model:selected="timezone"
+          v-model:selected="selectedTimezone"
         />
       </p>
       <label for="rtc">{{ $t("locale.l3") }}</label>
       <p class="select">
-        <select id="rtc" name="rtc" v-model="rtc_tz">
+        <select id="rtc" name="rtc" v-model="rtcTimezone">
           <option value="0">{{ $t("locale.o1") }}</option>
           <option value="1">{{ $t("locale.o2") }}</option>
         </select>
@@ -80,7 +86,7 @@ export default {
   </div>
   <DKBottomSteps
     :trigger="save_config"
-    :can_proceed="selected_locale != null && timezone != null"
+    :can_proceed="selectedLocale != null && selectedTimezone != null"
   />
 </template>
 

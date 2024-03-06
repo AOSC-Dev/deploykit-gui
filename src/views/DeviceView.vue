@@ -58,6 +58,12 @@ export default {
       }
 
       this.requireSize = requireSize;
+
+      if (this.config.device) {
+        this.selected = this.devices.findIndex(
+          (value) => value.path === this.config.device.path,
+        );
+      }
     } catch (e) {
       this.$router.replace(`/error/${encodeURIComponent(e)}`);
     }

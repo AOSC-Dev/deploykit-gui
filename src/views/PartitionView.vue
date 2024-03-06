@@ -203,6 +203,10 @@ export default {
       const resp = req;
       this.partitions = resp;
 
+      if (this.config.partition) {
+        this.selected = this.partitions.findIndex((v) => v.path === this.config.partition.path);
+      }
+
       const v = this.config.variant;
       const squashfsInfo = await invoke('get_squashfs_info', {
         v,

@@ -39,6 +39,10 @@ export default {
       this.options = variants
         .filter((v) => !v.retro && v.name !== 'BuildKit');
 
+      if (this.config.variant) {
+        this.selected = this.options.findIndex((v) => v.name === this.config.variant.name);
+      }
+
       this.loading = false;
     } catch (e) {
       this.$router.replace(`/error/${encodeURIComponent(e)}`);
