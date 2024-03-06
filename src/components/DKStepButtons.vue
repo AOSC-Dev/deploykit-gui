@@ -9,6 +9,7 @@ export default {
     guard: Function,
     can_proceed: { type: Boolean, default: true },
     no_previous: Boolean,
+    replace: Boolean,
   },
   methods: {
     proceed() {
@@ -16,7 +17,11 @@ export default {
         if (!this.guard(this)) return;
       }
       if (this.trigger) this.trigger(this);
-      this.$router.push(this.$router.currentRoute.value.meta.next);
+      if (this.replace) {
+        this.$router.replace(this.$router.currentRoute.value.meta.next);
+      } else {
+        this.$router.push(this.$router.currentRoute.value.meta.next);
+      }
     },
   },
 };

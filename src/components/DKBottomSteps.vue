@@ -10,6 +10,7 @@ export default {
     guard: Function,
     no_previous: Boolean,
     can_proceed: { type: Boolean, default: true },
+    replace: Boolean,
   },
 };
 </script>
@@ -21,6 +22,7 @@ export default {
       :guard="guard"
       :no_previous="no_previous"
       :can_proceed="can_proceed"
+      :replace="replace"
     />
   </DKBottomActions>
 </template>

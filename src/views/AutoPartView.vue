@@ -105,7 +105,7 @@ export default {
     <p>{{ error_msg }}</p>
   </div>
   <DKBottomActions v-if="!loading">
-    <DKBottomSteps :trigger="autoPart"> </DKBottomSteps>
+    <DKBottomSteps :replace="true" :trigger="autoPart"></DKBottomSteps>
   </DKBottomActions>
 </template>
 
