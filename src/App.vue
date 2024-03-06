@@ -135,14 +135,14 @@ export default {
       const details = this.progressDetail;
       const { status } = details;
 
-      if (status && status === 'Finish' && !isStop) {
+      if (status === 'Finish' && !isStop) {
         this.$refs.player.stop();
         isStop = true;
       }
 
-      if (status && status === 'Finish') {
+      if (status === 'Finish') {
         this.$router.replace('/finish');
-      } else if (status && status === 'Error') {
+      } else if (status === 'Error') {
         this.$router.replace({
           path: `/error/${encodeURIComponent(JSON.stringify(event.payload))}`,
           query: { isInstalling: true },
