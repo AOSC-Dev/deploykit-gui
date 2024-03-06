@@ -114,7 +114,9 @@ export default {
         @input="validateCpassword"
       />
     </form>
-    <p class="error-msg">{{ error_msg }}</p>
+    <div class="error-msg">
+      <span>{{ error_msg }}</span>
+    </div>
   </div>
   <DKBottomSteps
     :trigger="save_config"
@@ -126,6 +128,7 @@ export default {
 <style scoped>
 .error-msg {
   color: var(--dk-accent);
+  height: 1rem;
 }
 
 .form-layout {

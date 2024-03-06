@@ -305,7 +305,7 @@ export default {
     <DKSpinner :title="$t('part.r1')" />
   </div>
   <div class="error-msg">
-    <p>{{ error_msg }}</p>
+    <span>{{ error_msg }}</span>
   </div>
   <DKBottomActions v-if="!gparted && !loading">
     <DKStripButton omit_bline="1" @click="launch_gparted" :text="$t('part.b1')">
@@ -336,7 +336,7 @@ export default {
 } */
 
 .error-msg {
-  margin: 1rem;
+  height: 1rem;
 }
 
 p.secondary {
