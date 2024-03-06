@@ -20,7 +20,7 @@ export default {
       langSelected: false,
       lightup: 0,
       timer: null,
-      progress_detail: {},
+      progressDetail: {},
       can_quit: true,
       isInstall: false,
       playList: [],
@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     eta_value() {
-      const details = this.progress_detail;
+      const details = this.progressDetail;
       if (details.eta_lo > 0) {
         return this.$t('d.eta-0', {
           time_lo: details.eta_lo,
@@ -43,7 +43,7 @@ export default {
       return '';
     },
     install_info() {
-      const details = this.progress_detail;
+      const details = this.progressDetail;
       if (
         Object.keys(details).length === 0
         || !Object.keys(details).includes('status')
@@ -109,7 +109,7 @@ export default {
       this.isInstall = true;
     },
     on_progress_update(progress) {
-      this.progress_detail = progress;
+      this.progressDetail = progress;
     },
   },
   mounted() {
@@ -131,40 +131,26 @@ export default {
   async created() {
     let isStop = false;
     listen('progress', (event) => {
-      this.progress_detail = event.payload;
-      const details = this.progress_detail;
+      this.progressDetail = event.payload;
+      const details = this.progressDetail;
+      const { status } = details;
 
-      if (details.status && details.status === 'Finish' && !isStop) {
-        this.$refs.plyr.stop();
+      if (status && status === 'Finish' && !isStop) {
+        this.$refs.player.stop();
         isStop = true;
       }
 
-      if (details.status && details.status === 'Finish') {
+      if (status && status === 'Finish') {
         this.$router.replace('/finish');
-      } else if (details.status && details.status === 'Error') {
+      } else if (status && status === 'Error') {
         this.$router.replace({
           path: `/error/${encodeURIComponent(JSON.stringify(event.payload))}`,
           query: { isInstalling: true },
         });
+      } else if (!status) {
+        this.$router.replace('/install');
       }
     });
-
-    setTimeout(async () => {
-      const details = this.progress_detail;
-      if (
-        Object.keys(details).length === 0
-        || !Object.keys(details).includes('status')
-      ) {
-        return;
-      }
-      if (
-        details.status
-        && (details.status === 'Pending' || details.status === 'Finish')
-      ) {
-        return;
-      }
-      this.$router.replace('/install');
-    }, 200);
 
     const isInstall = await invoke('is_skip');
     this.isInstall = isInstall;
@@ -218,7 +204,7 @@ export default {
         <nav :class="nav_menu_bold(3)">{{ $t("d.nav-3") }}</nav>
       </div>
       <div v-if="page_number >= 2">
-        <AudioPlayer ref="plyr" :list="playList"></AudioPlayer>
+        <AudioPlayer ref="player" :list="playList"></AudioPlayer>
       </div>
     </template>
   </DKLayout>
