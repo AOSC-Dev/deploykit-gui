@@ -4,6 +4,7 @@ import { listen } from '@tauri-apps/api/event';
 import DKBottomActions from '@/components/DKBottomActions.vue';
 import DKSpinner from '@/components/DKSpinner.vue';
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
+import DKBody from '../components/DKBody.vue';
 </script>
 
 <script>
@@ -84,26 +85,28 @@ export default {
 </script>
 
 <template>
-  <div v-if="!loading">
-    <h1>{{ $t("part.title") }}</h1>
-    <p>{{ $t("part.p4") }}</p>
-    <ul>
-      <i18n-t v-if="isEFI" keypath="part.l1" tag="li">
-        <strong>512MiB</strong>
-      </i18n-t>
-      <i18n-t keypath="part.l2" tag="li">
-        <strong>{{ new_partition_size }}GiB</strong>
-      </i18n-t>
-    </ul>
-  </div>
-  <!-- loading screen -->
-  <div class="loading" v-else>
-    <h1>{{ $t("part.title") }}</h1>
-    <DKSpinner :title="$t('part.r1')" />
-  </div>
-  <div class="error-msg">
-    <p>{{ error_msg }}</p>
-  </div>
+  <DKBody>
+    <div v-if="!loading">
+      <h1>{{ $t("part.title") }}</h1>
+      <p>{{ $t("part.p4") }}</p>
+      <ul>
+        <i18n-t v-if="isEFI" keypath="part.l1" tag="li">
+          <strong>512MiB</strong>
+        </i18n-t>
+        <i18n-t keypath="part.l2" tag="li">
+          <strong>{{ new_partition_size }}GiB</strong>
+        </i18n-t>
+      </ul>
+    </div>
+    <!-- loading screen -->
+    <div class="loading" v-else>
+      <h1>{{ $t("part.title") }}</h1>
+      <DKSpinner :title="$t('part.r1')" />
+    </div>
+    <div class="error-msg">
+      <p>{{ error_msg }}</p>
+    </div>
+  </DKBody>
   <DKBottomActions v-if="!loading">
     <DKBottomSteps :replace="true" :trigger="autoPart"></DKBottomSteps>
   </DKBottomActions>
