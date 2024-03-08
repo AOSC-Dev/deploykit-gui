@@ -14,6 +14,7 @@ use rand::thread_rng;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
+use tracing::debug;
 use std::collections::HashMap;
 use std::io;
 use std::io::ErrorKind;
@@ -31,6 +32,11 @@ use tokio::sync::Mutex;
 use tokio::time::sleep;
 use tower_http::cors::CorsLayer;
 use tower_http::services::ServeDir;
+use tracing_subscriber::fmt;
+use tracing_subscriber::layer::SubscriberExt;
+use tracing_subscriber::util::SubscriberInitExt;
+use tracing_subscriber::EnvFilter;
+use tracing_subscriber::Layer;
 use utils::candidate_sqfs;
 use utils::get_mirror_speed_score;
 use utils::is_efi;
@@ -568,6 +574,17 @@ async fn init() -> Result<DeploykitProxy<'static>> {
 
 #[tokio::main]
 async fn main() {
+    // initialize tracing
+    let env_log = EnvFilter::try_from_default_env();
+
+    if let Ok(filter) = env_log {
+        tracing_subscriber::registry()
+            .with(fmt::layer().with_filter(filter))
+            .init();
+    } else {
+        tracing_subscriber::registry().with(fmt::layer()).init();
+    }
+
     let proxy = init().await;
 
     match proxy {
@@ -682,9 +699,12 @@ async fn main() {
 async fn progress_event(window: Window, p: DeploykitProxy<'_>) -> TauriResult<()> {
     let mut all: i8 = -1;
     let mut now_step = 0;
+
     loop {
         let progress = Dbus::run(&p, DbusMethod::GetProgress).await?;
         let data: ProgressStatus = serde_json::from_value(progress.data)?;
+        debug!("Backend progress status: {:?}", data);
+
         match data {
             ProgressStatus::Working { step, progress, .. } => {
                 if now_step == 0 {
@@ -705,6 +725,8 @@ async fn progress_event(window: Window, p: DeploykitProxy<'_>) -> TauriResult<()
                             all -= lo.unwrap() as i8;
                         }
                     }
+
+                    debug!("Step {}: need {} minute", step, all);
                 }
 
                 let data = GuiProgress {
@@ -717,11 +739,11 @@ async fn progress_event(window: Window, p: DeploykitProxy<'_>) -> TauriResult<()
                     eta_lo: None,
                 };
                 window.emit("progress", &data).unwrap();
-                // println!("emit:{:?}", data);
+                debug!("emit:{:?}", data);
             }
             ProgressStatus::Error(_) => {
                 window.emit("progress", &data).unwrap();
-                println!("emit {:?}", data);
+                debug!("emit {:?}", data);
                 Dbus::run(&p, DbusMethod::ResetProgressStatus).await?;
             }
             ProgressStatus::Finish => {
