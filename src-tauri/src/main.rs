@@ -426,7 +426,7 @@ async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> Vec<Mirror> {
 }
 
 #[tauri::command]
-async fn get_bgm_list() -> TauriResult<Vec<Value>> {
+fn get_bgm_list() -> TauriResult<Vec<Value>> {
     let mut bgm_list: Vec<Value> = serde_json::from_slice(BGM_LIST)?;
     let mut rng = thread_rng();
 
