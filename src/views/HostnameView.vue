@@ -50,10 +50,17 @@ export default {
     <div>
       <h1>{{ $t("host.title") }}</h1>
       <p>{{ $t("host.p1") }}</p>
-      <form class="form-layout">
+      <div class="form-layout">
         <label for="hostname">{{ $t("host.title") }}</label>
-        <input id="hostname" name="hostname" v-model="name" @focus="on_focus" />
-      </form>
+        <input
+          id="hostname"
+          type="text"
+          name="hostname"
+          v-model="name"
+          @focus="on_focus"
+          @keyup.enter="() => {}"
+        />
+      </div>
       <p class="error-msg">{{ err_msg }}</p>
     </div>
   </DKBody>
@@ -63,3 +70,23 @@ export default {
     :can_proceed="name != ''"
   />
 </template>
+
+<style scoped>
+.error-msg {
+  color: var(--dk-accent);
+  height: 1rem;
+}
+
+.form-layout {
+  display: grid;
+  grid-template-columns: 40% 60%;
+}
+
+input {
+  margin-bottom: 0.5em;
+}
+
+[disabled] {
+  cursor: not-allowed;
+}
+</style>

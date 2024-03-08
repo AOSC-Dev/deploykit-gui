@@ -31,9 +31,16 @@ export default {
   },
   methods: {
     lock_selection(index) {
-      const selected = this.filtered_options[index];
-      this.show_dropdown = false;
-      this.user_input = selected.text;
+      let selected;
+      if (index === null) {
+        selected = null;
+        this.show_dropdown = true;
+        this.user_input = '';
+      } else {
+        selected = this.filtered_options[index];
+        this.show_dropdown = false;
+        this.user_input = selected.text;
+      }
       this.$emit('update:selected', index);
     },
     edit_selection() {

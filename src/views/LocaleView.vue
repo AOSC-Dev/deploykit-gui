@@ -57,7 +57,7 @@ export default {
     <div>
       <h1>{{ $t("locale.title") }}</h1>
       <p>{{ $t("locale.p1") }}</p>
-      <form class="form-layout">
+      <div class="form-layout">
         <label for="locale">{{ $t("locale.l1") }}</label>
         <DKFilterSelect
           :default="selectedLocale"
@@ -65,11 +65,11 @@ export default {
           id="locale"
           v-model:selected="selectedLocale"
         />
-      </form>
+      </div>
       <br />
       <p>{{ $t("locale.p2") }}</p>
       <p class="error-msg"></p>
-      <form class="form-layout">
+      <div class="form-layout">
         <label for="timezone">{{ $t("locale.l2") }}</label>
         <p>
           <DKFilterSelect
@@ -87,7 +87,7 @@ export default {
             <option value="1">{{ $t("locale.o2") }}</option>
           </select>
         </p>
-      </form>
+      </div>
     </div>
   </DKBody>
   <DKBottomSteps :trigger="save_config" :can_proceed="canProced()" />
