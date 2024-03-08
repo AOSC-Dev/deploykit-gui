@@ -86,7 +86,7 @@ export default {
     <div>
       <h1>{{ $t("user.title") }}</h1>
       <p>{{ $t("user.p1") }}</p>
-      <form class="form-layout">
+      <div class="form-layout">
         <label for="username" :class="name_style">{{ $t("user.l1") }}</label>
         <input
           id="username"
@@ -115,7 +115,7 @@ export default {
           :disabled="!pwd"
           @input="validateCpassword"
         />
-      </form>
+      </div>
       <div class="error-msg">
         <span>{{ error_msg }}</span>
       </div>

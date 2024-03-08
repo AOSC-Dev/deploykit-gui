@@ -59,7 +59,7 @@ export default {
       <p>
         {{ $t("swap.p1") }}
       </p>
-      <form>
+      <div>
         <section class="form-layout">
           <label for="swap">{{ $t("swap.title") }}</label>
           <p class="select">
@@ -118,7 +118,7 @@ export default {
         <p class="error-msg" v-if="type === 1 && size == 0">
           <i>{{ $t("swap.w1") }}</i>
         </p>
-      </form>
+      </div>
     </div>
     <!-- loading screen -->
     <div class="loading" v-else>
