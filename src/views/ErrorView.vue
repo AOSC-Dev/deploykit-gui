@@ -7,7 +7,7 @@ export default {
   props: {
     message: String,
     openGparted: Boolean,
-    isInstalling: Boolean,
+    currentRoute: { type: String, required: true },
   },
   data() {
     return {
@@ -20,21 +20,22 @@ export default {
       try {
         await invoke('cancel_install_and_exit', { resetConfig: false });
       } catch (e) {
-        this.$router.replace(`/error/${encodeURIComponent(e)}`);
+        const { path } = this.$router.currentRoute.value;
+
+        this.$router.replace({
+          path: `/error/${encodeURIComponent(e)}`,
+          query: { currentRoute: path },
+        });
       }
     },
     async launchGparted() {
       await invoke('gparted');
     },
     async retry() {
-      if (this.isInstalling) {
-        this.loading = true;
-        await invoke('sync_disk');
-        this.loading = false;
-        this.$router.replace('/install');
-      } else {
-        this.$router.replace('/');
-      }
+      this.loading = true;
+      await invoke('sync_disk');
+      this.loading = false;
+      this.$router.replace(this.$props.currentRoute);
     },
   },
 };

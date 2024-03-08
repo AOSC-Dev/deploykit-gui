@@ -145,9 +145,13 @@ export default {
       } else if (status === 'Error' && path !== '/error' && path !== '/abort') {
         this.$router.replace({
           path: `/error/${encodeURIComponent(JSON.stringify(event.payload))}`,
-          query: { isInstalling: true },
+          query: { currentRoute: path },
         });
-      } else if (status !== 'Pending' && path !== '/install' && path !== '/abort') {
+      } else if (
+        status !== 'Pending'
+        && path !== '/install'
+        && path !== '/abort'
+      ) {
         this.$router.replace('/install');
       }
     });
@@ -159,7 +163,11 @@ export default {
       const playlist = await invoke('get_bgm_list');
       this.playList = playlist;
     } catch (e) {
-      this.$router.replace(`/error/${encodeURIComponent(e)}`);
+      const { path } = this.$router.currentRoute.value;
+      this.$router.replace({
+        path: `/error/${encodeURIComponent(e)}`,
+        query: { currentRoute: path },
+      });
     }
   },
 };

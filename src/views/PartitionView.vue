@@ -92,9 +92,11 @@ export default {
           }
         }
       } catch (e) {
+        const { path } = this.$router.currentRoute.value;
+
         this.$router.replace({
           path: `/error/${encodeURIComponent(e)}`,
-          query: { openGparted: true },
+          query: { openGparted: true, currentRoute: path },
         });
       }
 
@@ -150,7 +152,12 @@ export default {
         try {
           invoke('auto_partition', { dev: this.config.device.path }).catch(
             (e) => {
-              this.$router.replace(`/error/${encodeURIComponent(e)}`);
+              const { path } = this.$router.currentRoute.value;
+
+              this.$router.replace({
+                path: `/error/${encodeURIComponent(e)}`,
+                query: { openGparted: true, currentRoute: path },
+              });
             },
           );
 
@@ -177,16 +184,20 @@ export default {
                 }, 200);
               });
             } catch (e) {
+              const { path } = this.$router.currentRoute.value;
+
               this.$router.replace({
                 path: `/error/${encodeURIComponent(e)}`,
-                query: { openGparted: true },
+                query: { openGparted: true, currentRoute: path },
               });
             }
           }, 200);
         } catch (e) {
+          const { path } = this.$router.currentRoute.value;
+
           this.$router.replace({
             path: `/error/${encodeURIComponent(e)}`,
-            query: { openGparted: true },
+            query: { openGparted: true, currentRoute: path },
           });
         }
       }
@@ -222,9 +233,11 @@ export default {
         await invoke('disk_is_right_combo', { disk: device.path });
         const espParts = await invoke('find_all_esp_parts');
         if (espParts.length === 0) {
+          const { path } = this.$router.currentRoute.value;
+
           this.$router.replace({
             path: `/error/${encodeURIComponent('Has no EFI Partition!')}`,
-            query: { openGparted: true },
+            query: { openGparted: true, currentRoute: path },
           });
         } else if (espParts.length === 1) {
           const selectEFIPart = espParts[0];
@@ -250,9 +263,11 @@ export default {
         }
       }
     } catch (e) {
+      const { path } = this.$router.currentRoute.value;
+
       this.$router.replace({
         path: `/error/${encodeURIComponent(e)}`,
-        query: { openGparted: true },
+        query: { openGparted: true, currentRoute: path },
       });
     }
 
@@ -324,7 +339,7 @@ export default {
       </DKStripButton>
     </DKBottomActions>
   </DKBody>
-  <DKBottomSteps :trigger="next" :guard="validate" :can_proceed="valid"/>
+  <DKBottomSteps :trigger="next" :guard="validate" :can_proceed="valid" />
 </template>
 
 <style scoped>

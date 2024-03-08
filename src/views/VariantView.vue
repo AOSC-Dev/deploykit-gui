@@ -47,7 +47,12 @@ export default {
 
       this.loading = false;
     } catch (e) {
-      this.$router.replace(`/error/${encodeURIComponent(e)}`);
+      const { path } = this.$router.currentRoute.value;
+
+      this.$router.replace({
+        path: `/error/${encodeURIComponent(e)}`,
+        query: { currentRoute: path },
+      });
     }
   },
 };

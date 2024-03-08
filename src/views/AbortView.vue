@@ -18,7 +18,11 @@ export default {
         this.exiting = true;
         await invoke('cancel_install_and_exit', { resetConfig });
       } catch (e) {
-        this.$router.replace(`/error/${encodeURIComponent(e)}`);
+        const { path } = this.$router.currentRoute.value;
+        this.$router.replace({
+          path: `/error/${encodeURIComponent(e)}`,
+          query: { currentRoute: path },
+        });
       }
     },
   },
@@ -38,7 +42,11 @@ export default {
     <DKSpinner :title="$t('exiting.l1')" />
   </div>
   <DKBottomActions>
-    <DKStripButton omit_bline="1" :text="$t('abort.resume')" @click="$router.back()">
+    <DKStripButton
+      omit_bline="1"
+      :text="$t('abort.resume')"
+      @click="$router.back()"
+    >
       <img src="@/../assets/resume.svg" height="36" />
     </DKStripButton>
     <DKStripButton omit_bline="1" :text="$t('abort.save')" @click="quit(false)">

@@ -22,7 +22,11 @@ export default {
       try {
         invoke('auto_partition', { dev: this.config.device.path }).catch(
           (e) => {
-            this.$router.replace(`/error/${encodeURIComponent(e)}`);
+            const { path } = this.$router.currentRoute.value;
+            this.$router.replace({
+              path: `/error/${encodeURIComponent(e)}`,
+              query: { currentRoute: path },
+            });
           },
         );
 
@@ -49,16 +53,19 @@ export default {
               }, 200);
             });
           } catch (e) {
+            const { path } = this.$router.currentRoute.value;
             this.$router.replace({
               path: `/error/${encodeURIComponent(e)}`,
-              query: { openGparted: true },
+              query: { openGparted: true, currentRoute: path },
             });
           }
         }, 200);
       } catch (e) {
+        const { path } = this.$router.currentRoute.value;
+
         this.$router.replace({
           path: `/error/${encodeURIComponent(e)}`,
-          query: { openGparted: true },
+          query: { openGparted: true, currentRoute: path },
         });
       }
     },
@@ -70,7 +77,12 @@ export default {
         dev: this.config.device.path,
       });
     } catch (e) {
-      this.$router.replace(`/error/${encodeURIComponent(e)}`);
+      const { path } = this.$router.currentRoute.value;
+
+      this.$router.replace({
+        path: `/error/${encodeURIComponent(e)}`,
+        query: { currentRoute: path },
+      });
     }
 
     if (this.isEFI) {
