@@ -37,6 +37,7 @@ export default {
       this.$emit('update:selected', index);
     },
     edit_selection() {
+      this.$emit('update:selected', null);
       this.show_dropdown = true;
     },
   },

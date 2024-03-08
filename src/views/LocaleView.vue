@@ -29,6 +29,9 @@ export default {
       this.config.timezone = this.timezones[this.selectedTimezone];
       this.config.locale = langData[this.selectedLocale];
     },
+    canProced() {
+      return this.selectedLocale != null && this.selectedTimezone != null;
+    },
   },
   async created() {
     try {
@@ -87,10 +90,7 @@ export default {
       </form>
     </div>
   </DKBody>
-  <DKBottomSteps
-    :trigger="save_config"
-    :can_proceed="selectedLocale != null && selectedTimezone != null"
-  />
+  <DKBottomSteps :trigger="save_config" :can_proceed="canProced()" />
 </template>
 
 <style scoped>
