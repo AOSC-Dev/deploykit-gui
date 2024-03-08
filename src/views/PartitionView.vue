@@ -6,6 +6,7 @@ import DKBottomActions from '@/components/DKBottomActions.vue';
 import DKListSelect from '@/components/DKListSelect.vue';
 import DKSpinner from '@/components/DKSpinner.vue';
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
+import DKBody from '../components/DKBody.vue';
 </script>
 
 <script>
@@ -204,7 +205,9 @@ export default {
       this.partitions = resp;
 
       if (this.config.partition) {
-        this.selected = this.partitions.findIndex((v) => v.path === this.config.partition.path);
+        this.selected = this.partitions.findIndex(
+          (v) => v.path === this.config.partition.path,
+        );
       }
 
       const v = this.config.variant;
@@ -259,64 +262,69 @@ export default {
 </script>
 
 <template>
-  <div v-if="!loading">
-    <h1>{{ $t("part.title") }}</h1>
-    <section v-if="!new_disk">
-      <p>{{ $t("part.p1") }}</p>
-      <section>
-        <DKListSelect
-          :no_margin="true"
-          v-model:selected="selected"
-          :options="partitions"
-          :is_limit_height="true"
-          :click_fn="select"
-        >
-          <template #item="option">
-            <div style="width: 100%">
-              <span class="column-80">{{ option.path }}</span>
-              <span class="column-20">{{ humanSize(option.size) }}</span>
-              <p class="secondary">
-                <span>{{ option.fs_type || $t("part.k0") }}</span>
-              </p>
-            </div>
-          </template>
-        </DKListSelect>
+  <DKBody>
+    <div v-if="!loading">
+      <h1>{{ $t("part.title") }}</h1>
+      <section v-if="!new_disk">
+        <p>{{ $t("part.p1") }}</p>
+        <section>
+          <DKListSelect
+            :no_margin="true"
+            v-model:selected="selected"
+            :options="partitions"
+            :is_limit_height="true"
+            :click_fn="select"
+          >
+            <template #item="option">
+              <div style="width: 100%">
+                <span class="column-80">{{ option.path }}</span>
+                <span class="column-20">{{ humanSize(option.size) }}</span>
+                <p class="secondary">
+                  <span>{{ option.fs_type || $t("part.k0") }}</span>
+                </p>
+              </div>
+            </template>
+          </DKListSelect>
+        </section>
       </section>
-    </section>
 
-    <section v-if="new_disk">
-      <p>{{ $t("part.p2") }}</p>
-      <ul>
-        <i18n-t v-if="is_efi" keypath="part.l1" tag="li">
-          <strong>512MiB</strong>
-        </i18n-t>
-        <i18n-t keypath="part.l2" tag="li">
-          <strong>{{ new_partition_size }}GiB</strong>
-        </i18n-t>
-      </ul>
-      <p>
-        {{ $t("part.p3") }}
-      </p>
-    </section>
-  </div>
-  <!-- loading screen -->
-  <div class="loading" v-else>
-    <h1>{{ $t("part.title") }}</h1>
-    <DKSpinner :title="$t('part.r1')" />
-  </div>
-  <div class="error-msg">
-    <span>{{ error_msg }}</span>
-  </div>
-  <DKBottomActions v-if="!gparted && !loading">
-    <DKStripButton omit_bline="1" @click="launch_gparted" :text="$t('part.b1')">
-      <img src="@/../assets/drive-harddisk-root-symbolic.svg" height="18" />
-    </DKStripButton>
-    <DKStripButton @click="$router.push('/autopart')" :text="$t('part.b2')">
-      <img src="@/../assets/drive-harddisk-root-symbolic.svg" height="18" />
-    </DKStripButton>
-    <DKBottomSteps :trigger="next" :guard="validate" :can_proceed="valid">
-    </DKBottomSteps>
-  </DKBottomActions>
+      <section v-if="new_disk">
+        <p>{{ $t("part.p2") }}</p>
+        <ul>
+          <i18n-t v-if="is_efi" keypath="part.l1" tag="li">
+            <strong>512MiB</strong>
+          </i18n-t>
+          <i18n-t keypath="part.l2" tag="li">
+            <strong>{{ new_partition_size }}GiB</strong>
+          </i18n-t>
+        </ul>
+        <p>
+          {{ $t("part.p3") }}
+        </p>
+      </section>
+    </div>
+    <!-- loading screen -->
+    <div class="loading" v-else>
+      <h1>{{ $t("part.title") }}</h1>
+      <DKSpinner :title="$t('part.r1')" />
+    </div>
+    <div class="error-msg">
+      <span>{{ error_msg }}</span>
+    </div>
+    <DKBottomActions v-if="!gparted && !loading">
+      <DKStripButton
+        omit_bline="1"
+        @click="launch_gparted"
+        :text="$t('part.b1')"
+      >
+        <img src="@/../assets/drive-harddisk-root-symbolic.svg" height="18" />
+      </DKStripButton>
+      <DKStripButton @click="$router.push('/autopart')" :text="$t('part.b2')">
+        <img src="@/../assets/drive-harddisk-root-symbolic.svg" height="18" />
+      </DKStripButton>
+    </DKBottomActions>
+  </DKBody>
+  <DKBottomSteps :trigger="next" :guard="validate" :can_proceed="valid"/>
 </template>
 
 <style scoped>

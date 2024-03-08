@@ -1,14 +1,14 @@
 <script setup>
 import { invoke } from '@tauri-apps/api';
 import DKBottomActions from '@/components/DKBottomActions.vue';
-import DKStepButtons from '@/components/DKStepButtons.vue';
+import DKBottomSteps from '@/components/DKBottomSteps.vue';
 import DKStripButton from '@/components/DKStripButton.vue';
 import DKListSelect from '@/components/DKListSelect.vue';
 import DKSpinner from '@/components/DKSpinner.vue';
+import DKBody from '../components/DKBody.vue';
 </script>
 
 <script>
-
 const covertMirrorsListToUiString = (m, recipeI18n) => {
   const mirrors = m;
   mirrors.forEach((item, index) => {
@@ -62,7 +62,9 @@ export default {
       this.mirrors = mirrors;
 
       if (this.config.mirror) {
-        this.selected = this.mirrors.findIndex((v) => v.name === this.config.mirror.name);
+        this.selected = this.mirrors.findIndex(
+          (v) => v.name === this.config.mirror.name,
+        );
       }
 
       this.loading = false;
@@ -74,43 +76,45 @@ export default {
 </script>
 
 <template>
-  <div v-if="!loading">
-    <h1>{{ $t("mirror.title") }}</h1>
-    <p>{{ $t("mirror.p2") }}</p>
-    <section class="mirror-select">
-      <DKListSelect
-        :no_margin="true"
-        :options="mirrors"
-        v-model:selected="selected"
-        :is_limit_height="true"
-      >
-        <template #item="option">
-          <div>
-            <span
-              ><b
-                >{{ option.locTr ? option.locTr : option.loc }} -
-                {{ option.nameTr ? option.nameTr : option.name }}</b
-              ></span
-            >
-          </div>
-        </template>
-      </DKListSelect>
-    </section>
-  </div>
-  <!-- loading screen -->
-  <div class="loading" v-else>
-    <h1>{{ $t("mirror.title") }}</h1>
-    <DKSpinner :title="$t('mirror.k1')" />
-  </div>
-  <DKBottomActions v-if="!loading">
-    <DKStripButton :text="$t('mirror.b2')" @click="run_bench">
-      <img src="@/../assets/histogram-symbolic.svg" height="36" />
-    </DKStripButton>
-    <DKStepButtons
-      :trigger="() => (config.mirror = mirrors[selected])"
-      :can_proceed="selected != null"
-    />
-  </DKBottomActions>
+  <DKBody>
+    <div v-if="!loading">
+      <h1>{{ $t("mirror.title") }}</h1>
+      <p>{{ $t("mirror.p2") }}</p>
+      <section class="mirror-select">
+        <DKListSelect
+          :no_margin="true"
+          :options="mirrors"
+          v-model:selected="selected"
+          :is_limit_height="true"
+        >
+          <template #item="option">
+            <div>
+              <span
+                ><b
+                  >{{ option.locTr ? option.locTr : option.loc }} -
+                  {{ option.nameTr ? option.nameTr : option.name }}</b
+                ></span
+              >
+            </div>
+          </template>
+        </DKListSelect>
+      </section>
+    </div>
+    <!-- loading screen -->
+    <div class="loading" v-else>
+      <h1>{{ $t("mirror.title") }}</h1>
+      <DKSpinner :title="$t('mirror.k1')" />
+    </div>
+    <DKBottomActions v-if="!loading">
+      <DKStripButton :text="$t('mirror.b2')" @click="run_bench">
+        <img src="@/../assets/histogram-symbolic.svg" height="36" />
+      </DKStripButton>
+    </DKBottomActions>
+  </DKBody>
+  <DKBottomSteps
+    :trigger="() => (config.mirror = mirrors[selected])"
+    :can_proceed="selected != null"
+  />
 </template>
 
 <style scoped>

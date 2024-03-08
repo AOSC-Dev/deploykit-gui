@@ -6,7 +6,6 @@ export default {
     no_margin: Boolean,
     is_limit_height: Boolean,
     click_fn: Function,
-    small_vh: Boolean,
   },
   methods: {
     select(index) {
@@ -24,7 +23,6 @@ export default {
     class="list-container"
     :class="[
       is_limit_height ? 'limit-height' : 'no-limit-height',
-      small_vh ? 'limit-height-35' : '',
     ]"
   >
     <button
@@ -75,10 +73,6 @@ button[disabled].button:hover {
 }
 
 .limit-height {
-  height: 40vh;
-}
-
-.limit-height-35 {
   height: 35vh;
 }
 

@@ -1,5 +1,6 @@
 <script setup>
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
+import DKBody from '../components/DKBody.vue';
 </script>
 
 <script>
@@ -81,43 +82,45 @@ export default {
 </script>
 
 <template>
-  <div>
-    <h1>{{ $t("user.title") }}</h1>
-    <p>{{ $t("user.p1") }}</p>
-    <form class="form-layout">
-      <label for="username" :class="name_style">{{ $t("user.l1") }}</label>
-      <input
-        id="username"
-        name="username"
-        type="text"
-        v-model="user"
-        :class="name_style"
-        @blur="validate_user"
-      />
-      <label for="pwd" :class="pwd_style">{{ $t("user.l2") }}</label>
-      <input
-        id="pwd"
-        name="pwd"
-        type="password"
-        v-model="pwd"
-        :class="pwd_style"
-        @input="pwd2 = ''"
-      />
-      <label for="pwd2" :class="pwd_style">{{ $t("user.l3") }}</label>
-      <input
-        id="pwd2"
-        name="pwd2"
-        type="password"
-        v-model="pwd2"
-        :class="pwd_style"
-        :disabled="!pwd"
-        @input="validateCpassword"
-      />
-    </form>
-    <div class="error-msg">
-      <span>{{ error_msg }}</span>
+  <DKBody>
+    <div>
+      <h1>{{ $t("user.title") }}</h1>
+      <p>{{ $t("user.p1") }}</p>
+      <form class="form-layout">
+        <label for="username" :class="name_style">{{ $t("user.l1") }}</label>
+        <input
+          id="username"
+          name="username"
+          type="text"
+          v-model="user"
+          :class="name_style"
+          @blur="validate_user"
+        />
+        <label for="pwd" :class="pwd_style">{{ $t("user.l2") }}</label>
+        <input
+          id="pwd"
+          name="pwd"
+          type="password"
+          v-model="pwd"
+          :class="pwd_style"
+          @input="pwd2 = ''"
+        />
+        <label for="pwd2" :class="pwd_style">{{ $t("user.l3") }}</label>
+        <input
+          id="pwd2"
+          name="pwd2"
+          type="password"
+          v-model="pwd2"
+          :class="pwd_style"
+          :disabled="!pwd"
+          @input="validateCpassword"
+        />
+      </form>
+      <div class="error-msg">
+        <span>{{ error_msg }}</span>
+      </div>
     </div>
-  </div>
+  </DKBody>
   <DKBottomSteps
     :trigger="save_config"
     :guard="validate"

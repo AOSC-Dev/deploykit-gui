@@ -35,7 +35,6 @@ export default {
       v-model:selected="selected"
       :is_limit_height="true"
       :options="esp_parts"
-      :small_vh="true"
     >
       <template #item="option">
         <div style="width: 100%">

@@ -2,6 +2,7 @@
 import { invoke } from '@tauri-apps/api';
 import DKFilterSelect from '@/components/DKFilterSelect.vue';
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
+import DKBody from '@/components/DKBody.vue';
 </script>
 
 <script>
@@ -49,41 +50,43 @@ export default {
 </script>
 
 <template>
-  <div>
-    <h1>{{ $t("locale.title") }}</h1>
-    <p>{{ $t("locale.p1") }}</p>
-    <form class="form-layout">
-      <label for="locale">{{ $t("locale.l1") }}</label>
-      <DKFilterSelect
-        :default="selectedLocale"
-        :options="locales"
-        id="locale"
-        v-model:selected="selectedLocale"
-      />
-    </form>
-    <br />
-    <p>{{ $t("locale.p2") }}</p>
-    <p class="error-msg"></p>
-    <form class="form-layout">
-      <label for="timezone">{{ $t("locale.l2") }}</label>
-      <p>
+  <DKBody>
+    <div>
+      <h1>{{ $t("locale.title") }}</h1>
+      <p>{{ $t("locale.p1") }}</p>
+      <form class="form-layout">
+        <label for="locale">{{ $t("locale.l1") }}</label>
         <DKFilterSelect
-          v-if="!loading"
-          :default="selectedTimezone"
-          :options="timezones"
-          id="timezone"
-          v-model:selected="selectedTimezone"
+          :default="selectedLocale"
+          :options="locales"
+          id="locale"
+          v-model:selected="selectedLocale"
         />
-      </p>
-      <label for="rtc">{{ $t("locale.l3") }}</label>
-      <p class="select">
-        <select id="rtc" name="rtc" v-model="rtcTimezone">
-          <option value="0">{{ $t("locale.o1") }}</option>
-          <option value="1">{{ $t("locale.o2") }}</option>
-        </select>
-      </p>
-    </form>
-  </div>
+      </form>
+      <br />
+      <p>{{ $t("locale.p2") }}</p>
+      <p class="error-msg"></p>
+      <form class="form-layout">
+        <label for="timezone">{{ $t("locale.l2") }}</label>
+        <p>
+          <DKFilterSelect
+            v-if="!loading"
+            :default="selectedTimezone"
+            :options="timezones"
+            id="timezone"
+            v-model:selected="selectedTimezone"
+          />
+        </p>
+        <label for="rtc">{{ $t("locale.l3") }}</label>
+        <p class="select">
+          <select id="rtc" name="rtc" v-model="rtcTimezone">
+            <option value="0">{{ $t("locale.o1") }}</option>
+            <option value="1">{{ $t("locale.o2") }}</option>
+          </select>
+        </p>
+      </form>
+    </div>
+  </DKBody>
   <DKBottomSteps
     :trigger="save_config"
     :can_proceed="selectedLocale != null && selectedTimezone != null"

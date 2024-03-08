@@ -1,7 +1,11 @@
-<script>
-import { invoke } from '@tauri-apps/api';
+<script setup>
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
 import DKSpinner from '@/components/DKSpinner.vue';
+import DKBody from '@/components/DKBody.vue';
+</script>
+
+<script>
+import { invoke } from '@tauri-apps/api';
 
 function recommendSizeGiB(recommendSize) {
   return Math.floor(recommendSize / 1073741824);
@@ -17,7 +21,6 @@ export default {
       return Math.floor(this.recommendSize / 1073741824);
     },
   },
-  components: { DKBottomSteps, DKSpinner },
   data() {
     return {
       type: 0,
@@ -50,62 +53,78 @@ export default {
 </script>
 
 <template>
-  <div v-if="!loading">
-    <h1>{{ $t("swap.title") }}</h1>
-    <p>
-      {{ $t("swap.p1") }}
-    </p>
-    <form>
-      <section class="form-layout">
-        <label for="swap">{{ $t("swap.title") }}</label>
-        <p class="select">
-          <select name="swap" v-model="type">
-            <option :value="0">{{ $t("swap.o1") }}</option>
-            <option :value="1">{{ $t("swap.o2") }}</option>
-            <option :value="2">{{ $t("swap.o3") }}</option>
-          </select>
-        </p>
-        <div></div>
-        <p v-if="type === 0" style="font-size: 0.9rem">
+  <DKBody>
+    <div v-if="!loading">
+      <h1>{{ $t("swap.title") }}</h1>
+      <p>
+        {{ $t("swap.p1") }}
+      </p>
+      <form>
+        <section class="form-layout">
+          <label for="swap">{{ $t("swap.title") }}</label>
+          <p class="select">
+            <select name="swap" v-model="type">
+              <option :value="0">{{ $t("swap.o1") }}</option>
+              <option :value="1">{{ $t("swap.o2") }}</option>
+              <option :value="2">{{ $t("swap.o3") }}</option>
+            </select>
+          </p>
+          <div></div>
+          <p v-if="type === 0" style="font-size: 0.9rem">
+            <i>{{ $t("swap.l1", { size: humanSize(ramSize) }) }}</i>
+            <br />
+            <i>{{ $t("swap.l2", { size: humanSize(recommendSize) }) }}</i>
+          </p>
+          <p class="error-msg" v-if="type === 2">
+            <i>{{ $t("swap.w1") }}</i>
+          </p>
+        </section>
+        <br />
+        <div style="display: flex" v-if="type === 1">
+          <section style="width: 75%; margin-left: 0.7rem">
+            <input
+              class="dk-slider"
+              type="range"
+              :max="max_size"
+              min="0"
+              step="0.5"
+              v-model="size"
+            />
+            <div class="sliderticks">
+              <p>0GiB</p>
+              <p>{{ rec_size_gb }}GiB</p>
+              <p>{{ max_size }}GiB</p>
+            </div>
+          </section>
+          <span style="float: right; width: 25%; margin-left: 2rem">
+            <input
+              type="number"
+              :max="max_size"
+              min="0"
+              step="0.5"
+              style="width: 67%"
+              v-model="size"
+              required
+            />
+            GiB
+          </span>
+        </div>
+        <p v-if="type === 1" style="font-size: 0.9rem; margin-left: 30%">
+          <br />
           <i>{{ $t("swap.l1", { size: humanSize(ramSize) }) }}</i>
           <br />
-          <i>{{ $t("swap.l2", { size: humanSize(recommendSize) }) }}</i>
+          <i>{{ $t("swap.l3", { size: humanSize(recommendSize) }) }}</i>
         </p>
-        <p class="error-msg" v-if="type === 2">
+        <p class="error-msg" v-if="type === 1 && size == 0">
           <i>{{ $t("swap.w1") }}</i>
         </p>
-      </section>
-      <br />
-      <div style="display: flex" v-if="type === 1">
-        <section style="width: 75%; margin-left: 0.7rem">
-          <input class="dk-slider" type="range" :max="max_size" min="0" step="0.5" v-model="size" />
-          <div class="sliderticks">
-            <p>0GiB</p>
-            <p>{{ rec_size_gb }}GiB</p>
-            <p>{{ max_size }}GiB</p>
-          </div>
-        </section>
-        <span style="float: right; width: 25%; margin-left: 2rem">
-          <input type="number" :max="max_size" min="0" step="0.5" style="width: 67%" v-model="size"
-            required />
-          GiB
-        </span>
-      </div>
-      <p v-if="type === 1" style="font-size: 0.9rem; margin-left: 30%">
-        <br />
-        <i>{{ $t("swap.l1", { size: humanSize(ramSize) }) }}</i>
-        <br />
-        <i>{{ $t("swap.l3", { size: humanSize(recommendSize) }) }}</i>
-      </p>
-      <p class="error-msg" v-if="type === 1 && size == 0">
-        <i>{{ $t("swap.w1") }}</i>
-      </p>
-    </form>
-  </div>
-  <!-- loading screen -->
-  <div class="loading" v-else>
-    <DKSpinner :title="$t('swap.lo1')" />
-  </div>
+      </form>
+    </div>
+    <!-- loading screen -->
+    <div class="loading" v-else>
+      <DKSpinner :title="$t('swap.lo1')" />
+    </div>
+  </DKBody>
   <DKBottomSteps :trigger="() => (config.swapfile = { size: Number(size) })" />
 </template>
 

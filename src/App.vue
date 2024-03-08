@@ -134,20 +134,20 @@ export default {
       this.progressDetail = event.payload;
       const details = this.progressDetail;
       const { status } = details;
-
-      if (status === 'Finish' && !isStop) {
-        this.$refs.player.stop();
-        isStop = true;
-      }
+      const { path } = this.$router.currentRoute.value;
 
       if (status === 'Finish') {
         this.$router.replace('/finish');
-      } else if (status === 'Error') {
+        if (!isStop) {
+          this.$refs.player.stop();
+          isStop = true;
+        }
+      } else if (status === 'Error' && path !== '/error' && path !== '/abort') {
         this.$router.replace({
           path: `/error/${encodeURIComponent(JSON.stringify(event.payload))}`,
           query: { isInstalling: true },
         });
-      } else if (!status) {
+      } else if (status !== 'Pending' && path !== '/install' && path !== '/abort') {
         this.$router.replace('/install');
       }
     });

@@ -2,6 +2,7 @@
 import { invoke } from '@tauri-apps/api';
 import DKListSelect from '@/components/DKListSelect.vue';
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
+import DKBody from '../components/DKBody.vue';
 </script>
 
 <script>
@@ -74,34 +75,36 @@ export default {
 </script>
 
 <template>
-  <div v-if="!loading">
-    <h1>{{ $t("device.title") }}</h1>
-    <p>{{ $t("device.p1") }}</p>
-    <section>
-      <DKListSelect
-        :no_margin="true"
-        v-model:selected="selected"
-        :is_limit_height="true"
-        :options="devices"
-        :click_fn="select"
-      >
-        <template #item="option">
-          <div style="width: 100%">
-            <span class="column-80">{{ option.model }}</span>
-            <span class="column-20">{{ humanSize(option.size) }}</span>
-            <p class="secondary">
-              <span>{{ option.path }}</span>
-            </p>
-          </div>
-        </template>
-      </DKListSelect>
-      <DKBottomSteps
-        :trigger="() => (config.device = devices[selected])"
-        :can_proceed="selected != null"
-        :guard="validate"
-      />
-    </section>
-  </div>
+  <DKBody>
+    <div v-if="!loading">
+      <h1>{{ $t("device.title") }}</h1>
+      <p>{{ $t("device.p1") }}</p>
+      <section>
+        <DKListSelect
+          :no_margin="true"
+          v-model:selected="selected"
+          :is_limit_height="true"
+          :options="devices"
+          :click_fn="select"
+        >
+          <template #item="option">
+            <div style="width: 100%">
+              <span class="column-80">{{ option.model }}</span>
+              <span class="column-20">{{ humanSize(option.size) }}</span>
+              <p class="secondary">
+                <span>{{ option.path }}</span>
+              </p>
+            </div>
+          </template>
+        </DKListSelect>
+      </section>
+    </div>
+  </DKBody>
+  <DKBottomSteps
+    :trigger="() => (config.device = devices[selected])"
+    :can_proceed="selected != null"
+    :guard="validate"
+  />
 </template>
 
 <style scoped>

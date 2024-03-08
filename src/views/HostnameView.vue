@@ -1,5 +1,6 @@
 <script setup>
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
+import DKBody from '../components/DKBody.vue';
 </script>
 
 <script>
@@ -45,15 +46,17 @@ export default {
 </script>
 
 <template>
-  <div>
-    <h1>{{ $t("host.title") }}</h1>
-    <p>{{ $t("host.p1") }}</p>
-    <form class="form-layout">
-      <label for="hostname">{{ $t("host.title") }}</label>
-      <input id="hostname" name="hostname" v-model="name" @focus="on_focus" />
-    </form>
-    <p class="error-msg">{{ err_msg }}</p>
-  </div>
+  <DKBody>
+    <div>
+      <h1>{{ $t("host.title") }}</h1>
+      <p>{{ $t("host.p1") }}</p>
+      <form class="form-layout">
+        <label for="hostname">{{ $t("host.title") }}</label>
+        <input id="hostname" name="hostname" v-model="name" @focus="on_focus" />
+      </form>
+      <p class="error-msg">{{ err_msg }}</p>
+    </div>
+  </DKBody>
   <DKBottomSteps
     :trigger="() => (config.hostname = name)"
     :guard="validate"
