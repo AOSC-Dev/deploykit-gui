@@ -5,7 +5,7 @@ import DKBody from '@/components/DKBody.vue';
 </script>
 
 <script>
-import { invoke } from '@tauri-apps/api';
+import { invoke } from '@tauri-apps/api/core';
 
 function recommendSizeGiB(recommendSize) {
   return Math.floor(recommendSize / 1073741824);

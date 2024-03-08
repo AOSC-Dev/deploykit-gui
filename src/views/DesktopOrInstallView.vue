@@ -3,7 +3,7 @@ import DKLayout from '@/components/DKLayout.vue';
 </script>
 
 <script>
-import { invoke } from '@tauri-apps/api';
+import { invoke } from '@tauri-apps/api/core';
 
 export default {
   inject: ['config'],

@@ -1,5 +1,5 @@
 <script setup>
-import { invoke } from '@tauri-apps/api';
+import { invoke } from '@tauri-apps/api/core';
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
 import DKBody from '../components/DKBody.vue';
 </script>

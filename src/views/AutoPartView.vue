@@ -1,5 +1,5 @@
 <script setup>
-import { invoke } from '@tauri-apps/api';
+import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import DKBottomActions from '@/components/DKBottomActions.vue';
 import DKSpinner from '@/components/DKSpinner.vue';

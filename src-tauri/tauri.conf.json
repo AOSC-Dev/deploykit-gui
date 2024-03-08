@@ -2,37 +2,39 @@
   "build": {
     "beforeDevCommand": "yarn dev",
     "beforeBuildCommand": "yarn build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist"
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420"
   },
-  "package": {
-    "productName": "deploykit-gui",
-    "version": "0.1.0"
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "./icons/aosc-os.svg"
+    ]
   },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      },
-      "dialog": {
-        "all": true, 
-        "confirm": true, 
-        "message": true
-      }
-    },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "io.aosc.deploykit",
-      "icon": [
-        "./icons/aosc-os.svg"
+  "productName": "deploykit-gui",
+  "version": "0.1.0",
+  "identifier": "io.aosc.deploykit",
+  "plugins": {
+    "cli": {
+      "description": "Depliykit GUI",
+      "args": [
+        {
+          "name": "skip",
+          "short": "s",
+          "description": "Skip select Desktop or Install view"
+        },
+        {
+          "name": "resource-dir",
+          "short": "d",
+          "description": "Resource directory",
+          "takesValue": true,
+          "required": true
+        }
       ]
-    },
-    "security": {
-      "csp": null
-    },
+    }
+  },
+  "app": {
     "windows": [
       {
         "fullscreen": true,
@@ -42,21 +44,8 @@
         "height": 768
       }
     ],
-    "cli": {
-      "description": "Depliykit GUI",
-      "args": [{
-        "name": "skip",
-        "short": "s",
-        "multipleOccurrences": true,
-        "description": "Skip select Desktop or Install view"
-      }, {
-        "name": "resource-dir",
-        "short": "d",
-        "multipleOccurrences": false,
-        "description": "Resource directory",
-        "takesValue": true,
-        "required": true
-      }]
+    "security": {
+      "csp": null
     }
   }
 }
