@@ -57,6 +57,7 @@ export default {
     <marquee
       v-if="stringWidth(list[currentIndex].title) > 16"
       class="music-title"
+      scrollamount="3"
       >{{ list[currentIndex].title }}</marquee
     >
     <span v-else
@@ -107,7 +108,6 @@ export default {
 .music-title {
   display: inline-block;
   font-weight: bold;
-  -webkit-marquee: up medium 2 normal scroll;
 }
 
 .music-title-no-loop {
