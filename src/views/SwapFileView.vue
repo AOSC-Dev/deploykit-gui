@@ -15,7 +15,7 @@ export default {
   inject: ['config', 'humanSize'],
   computed: {
     max_size() {
-      return this.canRecommend ? Math.floor(this.recommendSize / 536870912) : Math.floor(this.recommendSize / 1073741824);
+      return 32;
     },
     rec_size_gb() {
       return Math.floor(this.recommendSize / 1073741824);
@@ -37,7 +37,7 @@ export default {
       const recommendSwapSize = await invoke('get_recommend_swap_size');
 
       this.ramSize = requireRamSize;
-      this.recommendSize = recommendSwapSize;
+      this.recommendSize = recommendSwapSize > 32 * 1024 * 1024 * 1024 ? 32 * 1024 * 1024 * 1024 : recommendSwapSize;
 
       const squashfsInfo = await invoke('get_squashfs_info', {
         v: this.config.variant,
