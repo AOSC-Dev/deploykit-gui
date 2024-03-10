@@ -14,7 +14,7 @@ use rand::thread_rng;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
-use tracing::debug;
+use tracing::level_filters::LevelFilter;
 use std::collections::HashMap;
 use std::io;
 use std::io::ErrorKind;
@@ -32,6 +32,7 @@ use tokio::sync::Mutex;
 use tokio::time::sleep;
 use tower_http::cors::CorsLayer;
 use tower_http::services::ServeDir;
+use tracing::debug;
 use tracing_subscriber::fmt;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
@@ -582,7 +583,10 @@ async fn main() {
             .with(fmt::layer().with_filter(filter))
             .init();
     } else {
-        tracing_subscriber::registry().with(fmt::layer()).init();
+        tracing_subscriber::registry()
+            .with(fmt::layer())
+            .with(LevelFilter::DEBUG)
+            .init();
     }
 
     let proxy = init().await;
