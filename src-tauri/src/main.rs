@@ -584,8 +584,7 @@ async fn main() {
             .init();
     } else {
         tracing_subscriber::registry()
-            .with(fmt::layer())
-            .with(LevelFilter::DEBUG)
+            .with(fmt::layer().with_filter(LevelFilter::INFO))
             .init();
     }
 

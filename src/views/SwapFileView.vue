@@ -130,7 +130,7 @@ export default {
       <DKSpinner :title="$t('swap.lo1')" />
     </div>
   </DKBody>
-  <DKBottomSteps :trigger="() => (config.swapfile = { size: Number(size) })" />
+  <DKBottomSteps :trigger="() => (config.swapfile = { size: type === 2 ? 0 : Number(size) })" />
 </template>
 
 <style scoped>
