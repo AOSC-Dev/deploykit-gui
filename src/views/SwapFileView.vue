@@ -15,7 +15,7 @@ export default {
   inject: ['config', 'humanSize'],
   computed: {
     max_size() {
-      return Math.floor(this.recommendSize / 536870912);
+      return this.canRecommend ? Math.floor(this.recommendSize / 536870912) : Math.floor(this.recommendSize / 1073741824);
     },
     rec_size_gb() {
       return Math.floor(this.recommendSize / 1073741824);
@@ -102,8 +102,7 @@ export default {
         <br />
         <div style="display: flex" v-if="type === 1">
           <section style="width: 75%; margin-left: 0.7rem">
-            <input class="dk-slider" type="range" :max="max_size" min="0" step="0.5"
-            v-model="size" />
+            <input class="dk-slider" type="range" :max="max_size" min="0" step="0.5" v-model="size" />
             <div class="sliderticks">
               <p>0GiB</p>
               <p>{{ rec_size_gb }}GiB</p>
@@ -111,8 +110,7 @@ export default {
             </div>
           </section>
           <span style="float: right; width: 25%; margin-left: 2rem">
-            <input type="number" :max="max_size" min="0" step="0.5" style="width: 67%"
-            v-model="size" required />
+            <input type="number" :max="max_size" min="0" step="0.5" style="width: 67%" v-model="size" required />
             GiB
           </span>
         </div>
