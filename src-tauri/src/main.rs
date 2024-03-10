@@ -443,6 +443,11 @@ fn get_bgm_list() -> TauriResult<Vec<Value>> {
 }
 
 #[tauri::command]
+fn is_debug() -> bool {
+    return cfg!(debug_assertions);
+}
+
+#[tauri::command]
 async fn sync_disk(state: State<'_, DkState<'_>>) -> TauriResult<()> {
     Dbus::run(&state.proxy, DbusMethod::SyncDisk).await?;
 
@@ -687,6 +692,7 @@ async fn main() {
                     get_bgm_list,
                     i18n_recipe,
                     sync_disk,
+                    is_debug
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");
