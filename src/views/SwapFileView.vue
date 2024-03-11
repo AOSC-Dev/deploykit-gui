@@ -37,7 +37,9 @@ export default {
       const recommendSwapSize = await invoke('get_recommend_swap_size');
 
       this.ramSize = requireRamSize;
-      this.recommendSize = recommendSwapSize > 32 * 1024 * 1024 * 1024 ? 32 * 1024 * 1024 * 1024 : recommendSwapSize;
+      this.recommendSize = recommendSwapSize > 32 * 1024 * 1024 * 1024
+        ? 32 * 1024 * 1024 * 1024
+        : recommendSwapSize;
 
       const squashfsInfo = await invoke('get_squashfs_info', {
         v: this.config.variant,
@@ -46,7 +48,10 @@ export default {
 
       const sqfsSize = squashfsInfo.downloadSize + squashfsInfo.instSize;
 
-      if (this.recommendSize > this.config.partition.size - sqfsSize - 1024 * 1024 * 1024) {
+      if (
+        this.recommendSize
+        > this.config.partition.size - sqfsSize - 1024 * 1024 * 1024
+      ) {
         this.canRecommend = false;
         this.type = 1;
         this.recommendSize = this.config.partition.size - sqfsSize - 1024 * 1024 * 1024;
@@ -84,7 +89,9 @@ export default {
           <label for="swap">{{ $t("swap.title") }}</label>
           <p class="select">
             <select name="swap" v-model="type">
-              <option :value="0" v-if="canRecommend">{{ $t("swap.o1") }}</option>
+              <option :value="0" v-if="canRecommend">
+                {{ $t("swap.o1") }}
+              </option>
               <option :value="1">{{ $t("swap.o2") }}</option>
               <option :value="2">{{ $t("swap.o3") }}</option>
             </select>
@@ -102,7 +109,14 @@ export default {
         <br />
         <div style="display: flex" v-if="type === 1">
           <section style="width: 75%; margin-left: 0.7rem">
-            <input class="dk-slider" type="range" :max="max_size" min="0" step="0.5" v-model="size" />
+            <input
+              class="dk-slider"
+              type="range"
+              :max="max_size"
+              min="0"
+              step="0.5"
+              v-model="size"
+            />
             <div class="sliderticks">
               <p>0GiB</p>
               <p>{{ rec_size_gb }}GiB</p>
@@ -110,7 +124,15 @@ export default {
             </div>
           </section>
           <span style="float: right; width: 25%; margin-left: 2rem">
-            <input type="number" :max="max_size" min="0" step="0.5" style="width: 67%" v-model="size" required />
+            <input
+              type="number"
+              :max="max_size"
+              min="0"
+              step="0.5"
+              style="width: 67%"
+              v-model="size"
+              required
+            />
             GiB
           </span>
         </div>
@@ -130,7 +152,9 @@ export default {
       <DKSpinner :title="$t('swap.lo1')" />
     </div>
   </DKBody>
-  <DKBottomSteps :trigger="() => (config.swapfile = { size: type === 2 ? 0 : Number(size) })" />
+  <DKBottomSteps
+    :trigger="() => (config.swapfile = { size: type === 2 ? 0 : Number(size) })"
+  />
 </template>
 
 <style scoped>

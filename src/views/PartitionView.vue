@@ -289,8 +289,13 @@ export default {
       <section v-if="!new_disk">
         <p>{{ $t("part.p1") }}</p>
         <section>
-          <DKListSelect :no_margin="true" v-model:selected="selected" :options="partitions" :is_limit_height="true"
-            :click_fn="select">
+          <DKListSelect
+            :no_margin="true"
+            v-model:selected="selected"
+            :options="partitions"
+            :is_limit_height="true"
+            :click_fn="select"
+          >
             <template #item="option">
               <div style="width: 100%">
                 <span class="column-80">{{ option.path }}</span>
@@ -328,7 +333,11 @@ export default {
       <span>{{ error_msg }}</span>
     </div>
     <DKBottomActions v-if="!gparted && !loading">
-      <DKStripButton omit_bline="1" @click="launch_gparted" :text="$t('part.b1')">
+      <DKStripButton
+        omit_bline="1"
+        @click="launch_gparted"
+        :text="$t('part.b1')"
+      >
         <img src="@/../assets/drive-harddisk-root-symbolic.svg" height="18" />
       </DKStripButton>
       <DKStripButton @click="$router.push('/autopart')" :text="$t('part.b2')">
