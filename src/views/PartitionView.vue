@@ -58,10 +58,35 @@ export default {
     },
     async launch_gparted() {
       invoke('gparted');
+      const isDebug = await invoke('is_debug');
+      let device;
+
+      if (isDebug) {
+        device = {
+          path: '/dev/loop30',
+          model: 'loop',
+          size: 50 * 1024 * 1024 * 1024,
+        };
+      } else {
+        device = this.config.device;
+      }
+
+      // 检查 GParted 之后分区表是否合法
+      try {
+        await invoke('disk_is_right_combo', { disk: device.path });
+      } catch (e) {
+        const { path } = this.$router.currentRoute.value;
+
+        this.$router.replace({
+          path: `/error/${encodeURIComponent(e)}`,
+          query: { openGparted: true, currentRoute: path },
+        });
+      }
+
       this.gparted = true;
       this.loading = true;
+
       try {
-        const { device } = this.config;
         const req = await invoke('list_partitions', { dev: device.path });
         const resp = req;
         this.partitions = resp;
@@ -152,52 +177,37 @@ export default {
         try {
           invoke('auto_partition', { dev: this.config.device.path }).catch(
             (e) => {
-              const { path } = this.$router.currentRoute.value;
-
               this.$router.replace({
                 path: `/error/${encodeURIComponent(e)}`,
-                query: { openGparted: true, currentRoute: path },
+                query: { openGparted: true, currentRoute: '/partitions' },
               });
             },
           );
 
-          setTimeout(async () => {
-            try {
-              await listen('auto_partition_progress', (event) => {
-                setTimeout(() => {
-                  if (event.payload.status === 'Finish') {
-                    const parts = event.payload.res.Ok;
+          await listen('auto_partition_progress', (event) => {
+            setTimeout(() => {
+              if (event.payload.status === 'Finish') {
+                const parts = event.payload.res.Ok;
 
-                    if (parts.length === 2) {
-                      const sysPart = parts[1];
-                      const efiPart = parts[0];
-                      this.config.partition = sysPart;
-                      this.config.efi_partition = efiPart;
-                    } else {
-                      const sysPart = parts[0];
-                      this.config.partition = sysPart;
-                    }
-                    this.loading = false;
-                  } else {
-                    this.loading = true;
-                  }
-                }, 200);
-              });
-            } catch (e) {
-              const { path } = this.$router.currentRoute.value;
-
-              this.$router.replace({
-                path: `/error/${encodeURIComponent(e)}`,
-                query: { openGparted: true, currentRoute: path },
-              });
-            }
-          }, 200);
+                if (parts.length === 2) {
+                  const sysPart = parts[1];
+                  const efiPart = parts[0];
+                  this.config.partition = sysPart;
+                  this.config.efi_partition = efiPart;
+                } else {
+                  const sysPart = parts[0];
+                  this.config.partition = sysPart;
+                }
+                this.loading = false;
+              } else {
+                this.loading = true;
+              }
+            });
+          });
         } catch (e) {
-          const { path } = this.$router.currentRoute.value;
-
           this.$router.replace({
             path: `/error/${encodeURIComponent(e)}`,
-            query: { openGparted: true, currentRoute: path },
+            query: { openGparted: true, currentRoute: '/partitions' },
           });
         }
       }
