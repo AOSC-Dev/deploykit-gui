@@ -1,6 +1,5 @@
 <script setup>
 import { invoke } from '@tauri-apps/api';
-import { listen } from '@tauri-apps/api/event';
 import DKStripButton from '@/components/DKStripButton.vue';
 import DKBottomActions from '@/components/DKBottomActions.vue';
 import DKListSelect from '@/components/DKListSelect.vue';
@@ -170,46 +169,9 @@ export default {
 
       this.error_msg = '';
     },
-    async next() {
+    next() {
       if (!this.new_disk) {
         this.config.partition = this.partitions[this.selected];
-      } else {
-        try {
-          invoke('auto_partition', { dev: this.config.device.path }).catch(
-            (e) => {
-              this.$router.replace({
-                path: `/error/${encodeURIComponent(e)}`,
-                query: { openGparted: true, currentRoute: '/partitions' },
-              });
-            },
-          );
-
-          await listen('auto_partition_progress', (event) => {
-            setTimeout(() => {
-              if (event.payload.status === 'Finish') {
-                const parts = event.payload.res.Ok;
-
-                if (parts.length === 2) {
-                  const sysPart = parts[1];
-                  const efiPart = parts[0];
-                  this.config.partition = sysPart;
-                  this.config.efi_partition = efiPart;
-                } else {
-                  const sysPart = parts[0];
-                  this.config.partition = sysPart;
-                }
-                this.loading = false;
-              } else {
-                this.loading = true;
-              }
-            });
-          });
-        } catch (e) {
-          this.$router.replace({
-            path: `/error/${encodeURIComponent(e)}`,
-            query: { openGparted: true, currentRoute: '/partitions' },
-          });
-        }
       }
     },
   },
@@ -232,9 +194,13 @@ export default {
       this.partitions = resp;
 
       if (this.config.partition) {
-        this.selected = this.partitions.findIndex(
-          (v) => v.path === this.config.partition.path,
-        );
+        if (this.partitions.length === 0) {
+          this.config.partition = null;
+        } else {
+          this.selected = this.partitions.findIndex(
+            (v) => v.path === this.config.partition.path,
+          );
+        }
       }
 
       const v = this.config.variant;
