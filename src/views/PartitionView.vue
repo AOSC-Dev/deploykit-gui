@@ -341,7 +341,7 @@ export default {
 } */
 
 .error-msg {
-  height: 1rem;
+  height: 1.2rem;
 }
 
 p.secondary {
