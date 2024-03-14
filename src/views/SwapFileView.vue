@@ -119,7 +119,7 @@ export default {
             />
             <div class="sliderticks">
               <p>0GiB</p>
-              <p>{{ rec_size_gb }}GiB</p>
+              <p>{{ max_size / 2 }}GiB</p>
               <p>{{ max_size }}GiB</p>
             </div>
           </section>
