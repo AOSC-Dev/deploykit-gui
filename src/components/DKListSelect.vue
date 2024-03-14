@@ -73,7 +73,7 @@ button[disabled].button:hover {
 }
 
 .limit-height {
-  height: 35vh;
+  height: 37vh;
 }
 
 .no-limit-height {
