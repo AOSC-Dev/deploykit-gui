@@ -131,7 +131,7 @@ export default {
 <style scoped>
 .error-msg {
   color: var(--dk-accent);
-  height: 1rem;
+  height: 1.3rem;
 }
 
 .form-layout {
