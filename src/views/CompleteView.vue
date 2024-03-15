@@ -17,13 +17,13 @@ export default {
     async finish() {
       this.exiting = true;
       try {
-        await invoke('cancel_install_and_exit', { resetConfig: true });
+        await invoke('reboot');
       } catch (e) {
         const { path } = this.$router.currentRoute.value;
 
         this.$router.replace({
           path: `/error/${encodeURIComponent(e)}`,
-          query: { openGparted: true, currentRoute: path },
+          query: { currentRoute: path },
         });
       }
     },
@@ -46,7 +46,7 @@ export default {
   </DKBody>
   <DKBottomActions>
     <DKBottomRightButtons>
-      <button class="button" @click="finish">{{ $t("finish.finish") }}</button>
+      <button class="button" @click="finish">{{ $t("finish.reboot") }}</button>
     </DKBottomRightButtons>
   </DKBottomActions>
 </template>

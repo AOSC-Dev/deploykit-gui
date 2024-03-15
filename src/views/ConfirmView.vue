@@ -27,7 +27,7 @@ export default {
 
         this.$router.replace({
           path: `/error/${encodeURIComponent(e)}`,
-          query: { openGparted: true, currentRoute: path },
+          query: { currentRoute: path },
         });
       }
     },

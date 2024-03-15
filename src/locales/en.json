@@ -62,7 +62,8 @@
         "p2": "As you click on \"Finish,\" Installer will restart your device and AOSC OS will take it from here. Please eject or unplug your installation media when prompted to do so.",
         "sr-help": "Please seek help before doing so, as this screen reader will stop guiding you after the installer exits. AOSC OS does not come with screen reader and other accessibility settings enabled by default, so you may need assistance setting up. Your assistant may find relevant documentations on our Wiki site.",
         "p3": "Thank you for your time and for choosing AOSC OS!",
-        "finish": "Finish"
+        "finish": "Finish",
+        "reboot": "reboot"
     },
     "swap": {
         "title": "Swapfile",
