@@ -20,6 +20,7 @@ import EspPartitionView from '@/views/EspPartitionView.vue';
 import WelcomeView from '@/views/WelcomeView.vue';
 import AutoPartView from '@/views/AutoPartView.vue';
 import PartitionProgressView from '@/views/PartitionProgressView.vue';
+import NetworkView from '../views/NetworkView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,6 +30,11 @@ const router = createRouter({
       name: 'home',
       component: WelcomeView,
       meta: { steps: 0, next: '/variants' },
+    },
+    {
+      path: '/network',
+      name: 'network',
+      component: NetworkView,
     },
     {
       path: '/users',

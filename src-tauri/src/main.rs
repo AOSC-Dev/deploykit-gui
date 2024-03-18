@@ -14,7 +14,6 @@ use rand::thread_rng;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
-use tracing::level_filters::LevelFilter;
 use std::collections::HashMap;
 use std::io;
 use std::io::ErrorKind;
@@ -33,6 +32,7 @@ use tokio::time::sleep;
 use tower_http::cors::CorsLayer;
 use tower_http::services::ServeDir;
 use tracing::debug;
+use tracing::level_filters::LevelFilter;
 use tracing_subscriber::fmt;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
@@ -563,6 +563,18 @@ async fn reset_progress_status(state: State<'_, DkState<'_>>) -> TauriResult<()>
     Ok(())
 }
 
+#[tauri::command]
+async fn run_nmtui() -> TauriResult<()> {
+    tokio::process::Command::new("mate-terminal")
+        .arg("--command")
+        .arg("nmtui")
+        .arg("--disable-factory") // 让 mate-terminal 不要去 fork 自己
+        .output()
+        .await?;
+
+    Ok(())
+}
+
 struct DkState<'a> {
     recipe: Mutex<Option<Recipe>>,
     recipe_i18n: Mutex<Option<HashMap<String, Value>>>,
@@ -692,7 +704,8 @@ async fn main() {
                     get_bgm_list,
                     i18n_recipe,
                     sync_disk,
-                    is_debug
+                    is_debug,
+                    run_nmtui,
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");

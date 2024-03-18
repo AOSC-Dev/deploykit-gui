@@ -17,7 +17,7 @@ tauri = { version = "1.6", features = ["cli", "shell-open", "dialog-all"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 zbus = { version = "4.0", features = ["tokio"] }
-tokio = { version = "1.35", features = ["rt-multi-thread"] }
+tokio = { version = "1.35", features = ["rt-multi-thread", "process"] }
 eyre = "0.6"
 nom = "7"
 url = "2.5"

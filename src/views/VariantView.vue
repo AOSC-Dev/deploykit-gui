@@ -47,12 +47,7 @@ export default {
 
       this.loading = false;
     } catch (e) {
-      const { path } = this.$router.currentRoute.value;
-
-      this.$router.replace({
-        path: `/error/${encodeURIComponent(e)}`,
-        query: { currentRoute: path },
-      });
+      this.$router.push('/network');
     }
   },
 };
