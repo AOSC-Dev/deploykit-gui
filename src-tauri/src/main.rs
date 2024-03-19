@@ -398,9 +398,12 @@ async fn cancel_install_and_exit(
     loop {
         let progress = Dbus::run(&state.proxy, DbusMethod::GetProgress).await?;
         let progress = serde_json::from_value::<ProgressStatus>(progress.data)?;
-        if let ProgressStatus::Pending = progress {
-            break;
+
+        match progress {
+            ProgressStatus::Pending | ProgressStatus::Finish => break,
+            _ => {}
         }
+
         sleep(Duration::from_millis(50)).await;
     }
 
