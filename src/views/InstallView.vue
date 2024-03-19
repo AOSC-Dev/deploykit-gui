@@ -36,7 +36,7 @@ export default {
       }, 200);
     },
   },
-  async mounted() {
+  mounted() {
     this.current_slide = {
       title: this.slides[0].title,
       paras: this.slides[0].body.split('\n'),
