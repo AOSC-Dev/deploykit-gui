@@ -14,6 +14,7 @@ use rand::thread_rng;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
+use tracing::info;
 use std::collections::HashMap;
 use std::io;
 use std::io::ErrorKind;
@@ -616,6 +617,8 @@ async fn main() {
             .with(fmt::layer().with_filter(LevelFilter::INFO))
             .init();
     }
+
+    info!("Git version: {}", env!("VERGEN_GIT_DESCRIBE"));
 
     let proxy = init().await;
 
