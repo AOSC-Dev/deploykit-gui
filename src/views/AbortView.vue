@@ -44,13 +44,6 @@ export default {
       >
         <img src="@/../assets/resume.svg" height="36" />
       </DKStripButton>
-      <DKStripButton
-        omit_bline="1"
-        :text="$t('abort.save')"
-        @click="quit(false)"
-      >
-        <img src="@/../assets/document-save.svg" height="36" />
-      </DKStripButton>
       <DKStripButton :text="$t('abort.quit')" @click="quit(true)">
         <img src="@/../assets/exit-run.svg" height="36" />
       </DKStripButton>
