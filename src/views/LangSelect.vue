@@ -33,7 +33,7 @@ export default {
 
 <template>
   <DKLayout>
-    <section style="max-height: 65vh; overflow-y: scroll">
+    <section style="max-height: 75vh; overflow-y: scroll">
       <DKListSelect
         :options="displayData"
         v-model:selected="selection"
