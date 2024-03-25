@@ -33,7 +33,7 @@ export default {
 
 <template>
   <DKLayout>
-    <section style="max-height: 75vh; overflow-y: scroll">
+    <section style="max-height: 65vh; overflow-y: scroll; margin-top: 5vh;">
       <DKListSelect
         :options="displayData"
         v-model:selected="selection"
@@ -47,7 +47,7 @@ export default {
       </DKBottomRightButtons>
     </DKBottomActions>
     <template #left>
-      <div>
+      <div style="margin-top: 5vh;;">
         <img />
         <div style="line-height: 1" v-if="!is_inverted">
           <h1 style="font-size: 3rem; text-align: right; margin-bottom: 0">
