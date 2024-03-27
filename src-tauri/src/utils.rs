@@ -54,6 +54,7 @@ pub struct InstallConfig {
     pub efi_partition: Option<Partition>,
     pub user: String,
     pub pwd: String,
+    pub fullname: Option<String>,
     pub hostname: String,
     pub rtc_utc: bool,
     pub timezone: Timezone,

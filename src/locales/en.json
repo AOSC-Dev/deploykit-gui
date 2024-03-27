@@ -131,6 +131,7 @@
         "l1": "Username",
         "l2": "Password",
         "l3": "Confirm Password",
+        "l4": "Full name",
         "bad1": "The username cannot be empty.",
         "bad2": "The password cannot be empty.",
         "bad3": "The passwords do not match.",

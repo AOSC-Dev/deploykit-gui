@@ -9,6 +9,7 @@ export default {
   data() {
     return {
       user: this.config.user || '',
+      fullname: this.config.fullname || '',
       pwd: '',
       pwd2: '',
       error_msg: '',
@@ -75,6 +76,7 @@ export default {
     },
     save_config() {
       this.config.user = this.user;
+      this.config.fullname = this.fullname;
       this.config.pwd = this.pwd;
     },
   },
@@ -95,6 +97,14 @@ export default {
           v-model="user"
           :class="name_style"
           @blur="validate_user"
+        />
+        <label for="fullname" :class="name_style">{{ $t("user.l4") }}</label>
+        <input
+          id="fullname"
+          name="fullname"
+          type="text"
+          v-model="fullname"
+          :class="name_style"
         />
         <label for="pwd" :class="pwd_style">{{ $t("user.l2") }}</label>
         <input

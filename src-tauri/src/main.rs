@@ -14,7 +14,6 @@ use rand::thread_rng;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
-use tracing::info;
 use std::collections::HashMap;
 use std::io;
 use std::io::ErrorKind;
@@ -33,6 +32,7 @@ use tokio::time::sleep;
 use tower_http::cors::CorsLayer;
 use tower_http::services::ServeDir;
 use tracing::debug;
+use tracing::info;
 use tracing::level_filters::LevelFilter;
 use tracing_subscriber::fmt;
 use tracing_subscriber::layer::SubscriberExt;
@@ -248,18 +248,20 @@ async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<
     )
     .await?;
 
-    Dbus::run(
-        proxy,
-        DbusMethod::SetConfig(
-            "user",
-            &serde_json::json! {{
-                "username": &config.user,
-                "password": &config.pwd,
-            }}
-            .to_string(),
-        ),
-    )
-    .await?;
+    let json = if let Some(fullname) = config.fullname {
+        serde_json::json! {{
+            "username": &config.user,
+            "password": &config.pwd,
+            "full_name": &fullname,
+        }}
+    } else {
+        serde_json::json! {{
+            "username": &config.user,
+            "password": &config.pwd,
+        }}
+    };
+
+    Dbus::run(proxy, DbusMethod::SetConfig("user", &json.to_string())).await?;
 
     Dbus::run(
         proxy,
