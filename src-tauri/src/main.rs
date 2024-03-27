@@ -17,6 +17,7 @@ use serde_json::Value;
 use std::collections::HashMap;
 use std::io;
 use std::io::ErrorKind;
+use std::io::Write;
 use std::process;
 use std::process::Command;
 use std::sync::atomic::AtomicBool;
@@ -590,6 +591,21 @@ async fn run_nmtui() -> TauriResult<()> {
     Ok(())
 }
 
+#[tauri::command]
+fn set_locale(locale: &str) {
+    if let Err(e) = set_locale_inner(locale) {
+        eprintln!("{e}");
+    }
+}
+
+fn set_locale_inner(locale: &str) -> io::Result<()> {
+    let mut f = std::fs::File::create("/etc/locale.conf")?;
+    f.write_all(b"LANG=")?;
+    f.write_all(format!("{locale}\n").as_bytes())?;
+
+    Ok(())
+}
+
 struct DkState<'a> {
     recipe: Mutex<Option<Recipe>>,
     recipe_i18n: Mutex<Option<HashMap<String, Value>>>,
@@ -723,6 +739,7 @@ async fn main() {
                     sync_disk,
                     is_debug,
                     run_nmtui,
+                    set_locale
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");
