@@ -22,14 +22,6 @@
         "message": true
       }
     },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "io.aosc.deploykit",
-      "icon": [
-        "./icons/aosc-os.svg"
-      ]
-    },
     "security": {
       "csp": null
     },
