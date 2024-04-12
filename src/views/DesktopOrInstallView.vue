@@ -24,7 +24,7 @@ export default {
 
 <template>
   <DKLayout>
-    <section style="margin-top: 5vh;">
+    <section style="margin-top: 6.5vh;">
       <h1>{{ $t("desktop-or-install.title") }}</h1>
       <div class="list-container">
         <button @click="goInstall">
