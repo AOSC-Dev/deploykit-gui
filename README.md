@@ -1,7 +1,35 @@
-# Tauri + Vue 3
+DeployKit GUI
+===
 
-This template should help get you started developing with Tauri + Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Graphical installer for AOSC OS, inspired by Microsoft® Windows® XP and early Loonghorn installers. DeployKit GUI provides a wizard-like interface for users to install and configure AOSC OS:
 
-## Recommended IDE Setup
+- Selecting a system version.
+- Selecting a download source.
+- Configuration of...
+  - Partitioning.
+  - User accounts.
+  - Time and language settings.
+  - Swap space.
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+Dependencies
+---
+
+- Rust >= 1.75
+- WebKitGTK+ (4.1)
+- Yarn
+
+Building
+---
+
+Building DeployKit GUI is simple.
+
+### Building for release deployment
+
+```bash
+yarn tauri build --release
+```
+### Building for development/debugging
+
+```bash
+yarn tauri build --debug
+```
