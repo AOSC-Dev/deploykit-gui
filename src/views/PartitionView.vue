@@ -224,7 +224,7 @@ export default {
         } else if (this.is_efi && espParts.length === 1) {
           const selectEFIPart = espParts[0];
           this.config.efi_partition = selectEFIPart;
-        } else if (!this.config.efi_partition) {
+        } else if (this.is_efi && !this.config.efi_partition) {
           this.$router.push(
             `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
           );
