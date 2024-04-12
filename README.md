@@ -33,3 +33,9 @@ yarn tauri build
 ```bash
 yarn tauri build --debug
 ```
+
+or
+
+```bash
+yarn tauri dev
+```
