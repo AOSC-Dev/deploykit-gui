@@ -214,20 +214,22 @@ export default {
         this.new_disk = false;
         await invoke('disk_is_right_combo', { disk: device.path });
         const espParts = await invoke('find_all_esp_parts');
-        if (this.is_efi && espParts.length === 0) {
-          const { path } = this.$router.currentRoute.value;
+        if (this.is_efi) {
+          if (espParts.length === 0) {
+            const { path } = this.$router.currentRoute.value;
 
-          this.$router.replace({
-            path: `/error/${encodeURIComponent('Has no EFI Partition!')}`,
-            query: { openGparted: true, currentRoute: path },
-          });
-        } else if (this.is_efi && espParts.length === 1) {
-          const selectEFIPart = espParts[0];
-          this.config.efi_partition = selectEFIPart;
-        } else if (this.is_efi && !this.config.efi_partition) {
-          this.$router.push(
-            `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
-          );
+            this.$router.replace({
+              path: `/error/${encodeURIComponent('Has no EFI Partition!')}`,
+              query: { openGparted: true, currentRoute: path },
+            });
+          } else if (espParts.length === 1) {
+            const selectEFIPart = espParts[0];
+            this.config.efi_partition = selectEFIPart;
+          } else if (!this.config.efi_partition) {
+            this.$router.push(
+              `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
+            );
+          }
         }
       } else {
         this.new_disk = true;
