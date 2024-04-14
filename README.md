@@ -26,16 +26,19 @@ Building DeployKit GUI is simple.
 ### Building for release deployment
 
 ```bash
+yarn
 yarn tauri build
 ```
 ### Building for development/debugging
 
 ```bash
+yarn
 yarn tauri build --debug
 ```
 
 or
 
 ```bash
+yarn
 yarn tauri dev
 ```
