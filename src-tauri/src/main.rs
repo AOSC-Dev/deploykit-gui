@@ -17,7 +17,6 @@ use serde_json::Value;
 use std::collections::HashMap;
 use std::io;
 use std::io::ErrorKind;
-use std::io::Write;
 use std::process;
 use std::process::Command;
 use std::sync::atomic::AtomicBool;
@@ -599,9 +598,10 @@ fn set_locale(locale: &str) {
 }
 
 fn set_locale_inner(locale: &str) -> io::Result<()> {
-    let mut f = std::fs::File::create("/etc/locale.conf")?;
-    f.write_all(b"LANG=")?;
-    f.write_all(format!("{locale}\n").as_bytes())?;
+    Command::new("localectl")
+        .arg("set-locale")
+        .arg(locale)
+        .output()?;
 
     Ok(())
 }
