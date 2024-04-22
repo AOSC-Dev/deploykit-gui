@@ -145,7 +145,10 @@ export default {
         return false;
       }
 
-      if (!['ext4', 'xfs'].includes(this.partitions[this.selected].fs_type)) {
+      if (
+        this.partitions[this.selected].fs_type
+        && !['ext4', 'xfs'].includes(this.partitions[this.selected].fs_type)
+      ) {
         this.error_msg = this.$t('part.e2');
         return false;
       }
@@ -162,7 +165,10 @@ export default {
         return;
       }
 
-      if (!['ext4', 'xfs'].includes(this.partitions[this.selected].fs_type)) {
+      if (
+        this.partitions[this.selected].fs_type
+        && !['ext4', 'xfs'].includes(this.partitions[this.selected].fs_type)
+      ) {
         this.error_msg = this.$t('part.e2');
         return;
       }
@@ -172,6 +178,9 @@ export default {
     next() {
       if (!this.new_disk) {
         this.config.partition = this.partitions[this.selected];
+        if (!this.config.partition.fs_type) {
+          this.config.partition.fs_type = 'ext4';
+        }
       }
     },
   },
