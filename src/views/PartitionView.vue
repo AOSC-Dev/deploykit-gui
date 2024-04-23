@@ -222,8 +222,8 @@ export default {
       if (this.partitions.length !== 0) {
         this.new_disk = false;
         await invoke('disk_is_right_combo', { disk: device.path });
-        const espParts = await invoke('find_all_esp_parts');
         if (this.is_efi) {
+          const espParts = await invoke('find_all_esp_parts');
           if (espParts.length === 0) {
             const { path } = this.$router.currentRoute.value;
 
