@@ -187,15 +187,19 @@ export default {
   async created() {
     const isDebug = await invoke('is_debug');
     let device;
-    if (isDebug) {
-      device = {
-        path: '/dev/loop30',
-        model: 'loop',
-        size: 50 * 1024 * 1024 * 1024,
-      };
-    } else {
-      device = this.config.device;
-    }
+    // if (isDebug) {
+    //   device = {
+    //     path: '/dev/loop30',
+    //     model: 'loop',
+    //     size: 50 * 1024 * 1024 * 1024,
+    //   };
+    // } else {
+    //   device = this.config.device;
+    // }
+    device = this.config.device;
+
+    const isEFI = await invoke('is_efi_api');
+    this.is_efi = isEFI;
 
     try {
       const req = await invoke('list_partitions', { dev: device.path });
@@ -234,6 +238,13 @@ export default {
           } else if (espParts.length === 1) {
             const selectEFIPart = espParts[0];
             this.config.efi_partition = selectEFIPart;
+            if (
+              this.config.efi_partition.parent_path !== this.config.device.path
+            ) {
+              this.$router.push(
+                `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
+              );
+            }
           } else if (!this.config.efi_partition) {
             this.$router.push(
               `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
@@ -242,8 +253,6 @@ export default {
         }
       } else {
         this.new_disk = true;
-        const isEFI = await invoke('is_efi_api');
-        this.is_efi = isEFI;
 
         if (isEFI) {
           this.new_partition_size = Math.round(
