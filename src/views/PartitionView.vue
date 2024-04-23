@@ -236,12 +236,12 @@ export default {
             });
           } else if (espParts.length === 1 && !this.config.efi_partition) {
             const selectEFIPart = espParts[0];
-            if (
-              selectEFIPart.parent_path !== this.config.device.path
-            ) {
+            if (selectEFIPart.parent_path !== this.config.device.path) {
               this.$router.push(
                 `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
               );
+            } else {
+              this.config.efi_partition = selectEFIPart;
             }
           } else if (!this.config.efi_partition) {
             this.$router.push(
