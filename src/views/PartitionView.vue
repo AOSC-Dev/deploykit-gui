@@ -187,16 +187,15 @@ export default {
   async created() {
     const isDebug = await invoke('is_debug');
     let device;
-    // if (isDebug) {
-    //   device = {
-    //     path: '/dev/loop30',
-    //     model: 'loop',
-    //     size: 50 * 1024 * 1024 * 1024,
-    //   };
-    // } else {
-    //   device = this.config.device;
-    // }
-    device = this.config.device;
+    if (isDebug) {
+      device = {
+        path: '/dev/loop30',
+        model: 'loop',
+        size: 50 * 1024 * 1024 * 1024,
+      };
+    } else {
+      device = this.config.device;
+    }
 
     const isEFI = await invoke('is_efi_api');
     this.is_efi = isEFI;
@@ -235,11 +234,10 @@ export default {
               path: `/error/${encodeURIComponent('Has no EFI Partition!')}`,
               query: { openGparted: true, currentRoute: path },
             });
-          } else if (espParts.length === 1) {
+          } else if (espParts.length === 1 && !this.config.efi_partition) {
             const selectEFIPart = espParts[0];
-            this.config.efi_partition = selectEFIPart;
             if (
-              this.config.efi_partition.parent_path !== this.config.device.path
+              selectEFIPart.parent_path !== this.config.device.path
             ) {
               this.$router.push(
                 `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
