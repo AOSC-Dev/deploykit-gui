@@ -19,13 +19,13 @@ export default {
       selectedLocale: langData.findIndex(
         (v) => v.locale === this.config.locale.locale,
       ),
-      rtcTimezone: this.config.rtc_utc === false ? 1 : 0,
+      rtcTimezone: this.config.rtc_as_localtime === false ? 1 : 0,
       selectedTimezone: 0,
     };
   },
   methods: {
     save_config() {
-      this.config.rtc_utc = this.rtcTimezone === '0';
+      this.config.rtc_as_localtime = this.rtcTimezone === '0';
       this.config.timezone = this.timezones[this.selectedTimezone];
       this.config.locale = langData[this.selectedLocale];
     },
