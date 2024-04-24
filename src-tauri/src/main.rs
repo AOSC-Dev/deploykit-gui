@@ -272,7 +272,7 @@ async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<
     Dbus::run(proxy, DbusMethod::SetConfig("hostname", &config.hostname)).await?;
     Dbus::run(
         proxy,
-        DbusMethod::SetConfig("rtc_as_localtime", &(!config.rtc_utc).to_string()),
+        DbusMethod::SetConfig("rtc_as_localtime", &(config.rtc_as_localtime).to_string()),
     )
     .await?;
 
@@ -459,7 +459,7 @@ fn get_bgm_list() -> TauriResult<Vec<Value>> {
 
 #[tauri::command]
 fn is_debug() -> bool {
-    return cfg!(debug_assertions);
+    cfg!(debug_assertions)
 }
 
 #[tauri::command]

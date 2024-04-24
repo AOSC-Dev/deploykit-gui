@@ -56,7 +56,7 @@ pub struct InstallConfig {
     pub pwd: String,
     pub fullname: Option<String>,
     pub hostname: String,
-    pub rtc_utc: bool,
+    pub rtc_as_localtime: bool,
     pub timezone: Timezone,
     pub swapfile: SwapFile,
 }
