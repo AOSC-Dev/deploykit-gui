@@ -7,6 +7,9 @@ import DKSpinner from '@/components/DKSpinner.vue';
 
 <script>
 export default {
+  props: {
+    done: Boolean,
+  },
   data() {
     return {
       exiting: false,
@@ -26,11 +29,16 @@ export default {
       }
     },
   },
+  async mounted() {
+    if (this.done) {
+      await invoke('cancel_install_and_exit', { resetConfig: true });
+    }
+  },
 };
 </script>
 
 <template>
-  <div v-if="!exiting">
+  <div v-if="!exiting && !done">
     <h1>{{ $t("abort.title") }}</h1>
     <i18n-t keypath="abort.p1" tag="p">
       {{ $t("abort.p1-1") }}

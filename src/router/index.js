@@ -45,6 +45,7 @@ const router = createRouter({
     {
       path: '/abort',
       name: 'abort',
+      props: (route) => ({ ...route.query, ...route.params }),
       component: AbortView,
     },
     {

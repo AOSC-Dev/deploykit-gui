@@ -65,7 +65,15 @@ export default {
   },
   methods: {
     on_abort() {
-      this.$router.push('/abort');
+      const { path } = this.$router.currentRoute.value;
+      if (path === '/finish') {
+        this.$router.push({
+          path: '/abort',
+          query: { done: true },
+        });
+      } else {
+        this.$router.push('/abort');
+      }
     },
     nav_menu_bold(step) {
       return this.page_number >= step ? 'active' : '';
