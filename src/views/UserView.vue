@@ -15,6 +15,7 @@ export default {
       error_msg: '',
       name_error: false,
       pwd_error: false,
+      fullname_error: false,
     };
   },
   computed: {
@@ -23,6 +24,9 @@ export default {
     },
     pwd_style() {
       return this.pwd_error ? 'error-msg' : '';
+    },
+    fullname_style() {
+      return this.fullname_error ? 'error-msg' : '';
     },
   },
   methods: {
@@ -42,6 +46,28 @@ export default {
       this.error_msg = '';
       return true;
     },
+    vaildateFullname() {
+      if (this.fullname.includes(':')) {
+        this.fullname_error = true;
+        this.error_msg = this.$t('user.bad5');
+        return false;
+      }
+      this.fullname_error = false;
+      return true;
+    },
+    generateUsername(fullname) {
+      const username = fullname.replace(' ', '').toLowerCase();
+
+      let res = '';
+
+      username.split('').forEach((element) => {
+        if (/^[a-z][a-z0-9-]*$/.test(element)) {
+          res += element;
+        }
+      });
+
+      return res;
+    },
     validateCpassword() {
       if (this.pwd2.length >= this.pwd.length) {
         if (this.pwd !== this.pwd2) {
@@ -58,6 +84,7 @@ export default {
     },
     validate() {
       if (!this.validate_user()) return false;
+      if (!this.vaildateFullname()) return false;
 
       if (this.pwd.length < 1 || this.pwd2.length < 1) {
         this.error_msg = this.$t('user.bad2');
@@ -65,6 +92,7 @@ export default {
         return false;
       }
       this.name_error = false;
+      this.fullname_error = false;
       if (this.pwd !== this.pwd2) {
         this.error_msg = this.$t('user.bad3');
         this.pwd_error = true;
@@ -89,6 +117,15 @@ export default {
       <h1>{{ $t("user.title") }}</h1>
       <p>{{ $t("user.p1") }}</p>
       <div class="form-layout">
+        <label for="fullname" :class="fullname_style">{{ $t("user.l4") }}</label>
+        <input
+          id="fullname"
+          name="fullname"
+          type="text"
+          v-model="fullname"
+          :class="fullname_style"
+          @input="user = generateUsername(fullname)"
+        />
         <label for="username" :class="name_style">{{ $t("user.l1") }}</label>
         <input
           id="username"
@@ -97,14 +134,6 @@ export default {
           v-model="user"
           :class="name_style"
           @blur="validate_user"
-        />
-        <label for="fullname" :class="name_style">{{ $t("user.l4") }}</label>
-        <input
-          id="fullname"
-          name="fullname"
-          type="text"
-          v-model="fullname"
-          :class="name_style"
         />
         <label for="pwd" :class="pwd_style">{{ $t("user.l2") }}</label>
         <input
