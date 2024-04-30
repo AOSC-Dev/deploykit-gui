@@ -268,9 +268,12 @@ export default {
               this.unsupportedTable = true;
               break;
             }
-            default:
+            case 'PartitionType': {
               this.error_msg = e.message;
               this.otherError = true;
+              break;
+            }
+            default:
               break;
           }
         }
