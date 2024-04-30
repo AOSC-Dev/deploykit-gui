@@ -193,8 +193,8 @@ enum DeploykitGuiError {
     SerdeJson(#[from] serde_json::Error),
     #[error(transparent)]
     Join(#[from] tokio::task::JoinError),
-    #[error("Failed to auto partition: {path}")]
-    AutoPartitionFailed { path: String, err: DkError },
+    #[error("Failed to auto partition")]
+    AutoPartitionFailed { err: DkError },
     #[error("Failed to run DkApi")]
     DkApi { err: DkError },
 }
@@ -205,8 +205,7 @@ impl Serialize for DeploykitGuiError {
         S: serde::ser::Serializer,
     {
         match self {
-            DeploykitGuiError::AutoPartitionFailed { path, err } => err.serialize(serializer),
-            DeploykitGuiError::DkApi { err } => {
+            DeploykitGuiError::AutoPartitionFailed { err } | DeploykitGuiError::DkApi { err } => {
                 err.serialize(serializer)
             }
             _ => {
@@ -539,7 +538,6 @@ async fn auto_partition(
             AutoPartitionProgress::Finish { ref res } => match res {
                 Err(v) => {
                     return Err(DeploykitGuiError::AutoPartitionFailed {
-                        path: dev.to_string(),
                         err: serde_json::from_value(v.clone())?,
                     })
                 }
