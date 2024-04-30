@@ -111,7 +111,9 @@
         "l2": "Create a {0} AOSC OS System Partition.",
         "e1": "Select partition too small. require {0} GiB size.",
         "e2": "Installer does not support this filesystem. Please use ext4/xfs instead.",
-        "e3": "The combination of {bootmode} and {table} is not supported."
+        "e3": "The combination of {bootmode} and {table} is not supported.",
+        "e4": "The unit does not have an EFI partition to continue the installation.",
+        "e5": "This partitioned table type is not supported: {table}"
     },
     "esp": {
         "title": "ESP Partition",

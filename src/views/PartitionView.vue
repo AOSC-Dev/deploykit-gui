@@ -23,6 +23,9 @@ export default {
       is_efi: false,
       new_disk: !this.partitions || this.partitions.length < 1,
       rightCombine: false,
+      efiError: false,
+      unsupportedTable: false,
+      otherError: false,
     };
   },
   computed: {
@@ -137,7 +140,12 @@ export default {
         return true;
       }
 
-      if (!this.rightCombine) {
+      if (
+        !this.rightCombine
+        || this.efiError
+        || this.unsupportedTable
+        || this.otherError
+      ) {
         return false;
       }
 
@@ -182,10 +190,13 @@ export default {
         return;
       }
 
-      if (this.rightCombine) {
+      if (
+        this.rightCombine
+        && !this.efiError
+        && !this.unsupportedTable
+        && !this.otherError
+      ) {
         this.error_msg = '';
-      } else {
-        this.error_msg = this.$t('part.e3');
       }
     },
     next() {
@@ -241,24 +252,33 @@ export default {
           await invoke('disk_is_right_combo', { disk: device.path });
           this.rightCombine = true;
         } catch (e) {
-          if (e.data.t === 'WrongCombine') {
-            const { bootmode, table } = e.data.data;
-            this.error_msg = this.$t('part.e3', {
-              bootmode,
-              table,
-            });
+          switch (e.data.t) {
+            case 'WrongCombine': {
+              const { bootmode, table } = e.data.data;
+              this.error_msg = this.$t('part.e3', {
+                bootmode,
+                table,
+              });
+              this.rightCombine = false;
+              break;
+            }
+            case 'UnsupportedTable': {
+              const { table } = e.data.data;
+              this.error_msg = this.$t('part.e5', { table });
+              this.unsupportedTable = true;
+              break;
+            }
+            default:
+              this.error_msg = e.message;
+              this.otherError = true;
+              break;
           }
-          this.rightCombine = false;
         }
         if (this.is_efi) {
           const espParts = await invoke('find_all_esp_parts');
           if (espParts.length === 0) {
-            const { path } = this.$router.currentRoute.value;
-
-            this.$router.replace({
-              path: `/error/${encodeURIComponent('Has no EFI Partition!')}`,
-              query: { openGparted: true, currentRoute: path },
-            });
+            this.error_msg = this.$('part.e4');
+            this.efiError = true;
           } else if (espParts.length === 1 && !this.config.efi_partition) {
             const selectEFIPart = espParts[0];
             if (selectEFIPart.parent_path !== this.config.device.path) {
