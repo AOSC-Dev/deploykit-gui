@@ -4,7 +4,6 @@
 use axum::http::HeaderValue;
 use axum::http::Method;
 use axum::Router;
-use eyre::bail;
 use eyre::eyre;
 use eyre::Result;
 use parser::list_zoneinfo;
@@ -129,20 +128,25 @@ enum DbusResult {
 }
 
 impl TryFrom<String> for Dbus {
-    type Error = eyre::Error;
+    type Error = DeploykitGuiError;
 
-    fn try_from(value: String) -> std::prelude::v1::Result<Self, <Dbus as TryFrom<String>>::Error> {
+    fn try_from(value: String) -> Result<Self, DeploykitGuiError> {
         let res = serde_json::from_str::<Dbus>(&value)?;
 
         match res.result {
             DbusResult::Ok => Ok(res),
-            DbusResult::Error => bail!("Failed to execute query: {:?}", res.data),
+            DbusResult::Error => Err(DeploykitGuiError::DkApi {
+                err: serde_json::from_value(res.data).unwrap(),
+            }),
         }
     }
 }
 
 impl Dbus {
-    async fn run(proxy: &DeploykitProxy<'_>, method: DbusMethod<'_>) -> Result<Self> {
+    async fn run(
+        proxy: &DeploykitProxy<'_>,
+        method: DbusMethod<'_>,
+    ) -> Result<Self, DeploykitGuiError> {
         let s = match method {
             DbusMethod::SetConfig(field, value) => proxy.set_config(field, value).await?,
             DbusMethod::AutoPartition(p) => proxy.auto_partition(p).await?,
@@ -170,6 +174,13 @@ impl Dbus {
 
 type TauriResult<T> = std::result::Result<T, DeploykitGuiError>;
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct DkError {
+    pub message: String,
+    pub t: String,
+    pub data: Value,
+}
+
 #[derive(Debug, thiserror::Error)]
 enum DeploykitGuiError {
     #[error(transparent)]
@@ -182,8 +193,10 @@ enum DeploykitGuiError {
     SerdeJson(#[from] serde_json::Error),
     #[error(transparent)]
     Join(#[from] tokio::task::JoinError),
-    #[error("Failed to auto partition: {path}, err: {err}")]
-    AutoPartitionFailed { path: String, err: Value },
+    #[error("Failed to auto partition: {path}")]
+    AutoPartitionFailed { path: String, err: DkError },
+    #[error("Failed to run DkApi")]
+    DkApi { err: DkError },
 }
 
 impl Serialize for DeploykitGuiError {
@@ -191,7 +204,16 @@ impl Serialize for DeploykitGuiError {
     where
         S: serde::ser::Serializer,
     {
-        serializer.serialize_str(self.to_string().as_ref())
+        match self {
+            DeploykitGuiError::AutoPartitionFailed { path, err } => err.serialize(serializer),
+            DeploykitGuiError::DkApi { err } => {
+                err.serialize(serializer)
+            }
+            _ => {
+                dbg!(&self);
+                serializer.serialize_str(self.to_string().as_ref())
+            }
+        }
     }
 }
 
@@ -518,7 +540,7 @@ async fn auto_partition(
                 Err(v) => {
                     return Err(DeploykitGuiError::AutoPartitionFailed {
                         path: dev.to_string(),
-                        err: v.to_owned(),
+                        err: serde_json::from_value(v.clone())?,
                     })
                 }
                 Ok(_) => {

@@ -22,6 +22,7 @@ export default {
       new_partition_size: null,
       is_efi: false,
       new_disk: !this.partitions || this.partitions.length < 1,
+      rightCombine: false,
     };
   },
   computed: {
@@ -73,13 +74,10 @@ export default {
       // 检查 GParted 之后分区表是否合法
       try {
         await invoke('disk_is_right_combo', { disk: device.path });
+        this.rightCombine = true;
       } catch (e) {
-        const { path } = this.$router.currentRoute.value;
-
-        this.$router.replace({
-          path: `/error/${encodeURIComponent(e)}`,
-          query: { openGparted: true, currentRoute: path },
-        });
+        this.rightCombine = false;
+        this.error_msg = this.$t('part.e3');
       }
 
       this.gparted = true;
@@ -99,7 +97,14 @@ export default {
 
         if (this.partitions.length !== 0) {
           this.new_disk = false;
-          await invoke('disk_is_right_combo', { disk: device.path });
+          try {
+            await invoke('disk_is_right_combo', { disk: device.path });
+            this.rightCombine = true;
+          } catch (e) {
+            this.rightCombine = false;
+            this.error_msg = this.$t('part.e3');
+          }
+          this.rightCombine = true;
         } else {
           this.new_disk = true;
           const isEFI = await invoke('is_efi_api');
@@ -130,6 +135,10 @@ export default {
     validate() {
       if (this.new_disk) {
         return true;
+      }
+
+      if (!this.rightCombine) {
+        return false;
       }
 
       if (this.partitions.length === 0) {
@@ -173,7 +182,11 @@ export default {
         return;
       }
 
-      this.error_msg = '';
+      if (this.rightCombine) {
+        this.error_msg = '';
+      } else {
+        this.error_msg = this.$t('part.e3');
+      }
     },
     next() {
       if (!this.new_disk) {
@@ -224,7 +237,19 @@ export default {
 
       if (this.partitions.length !== 0) {
         this.new_disk = false;
-        await invoke('disk_is_right_combo', { disk: device.path });
+        try {
+          await invoke('disk_is_right_combo', { disk: device.path });
+          this.rightCombine = true;
+        } catch (e) {
+          if (e.data.t === 'WrongCombine') {
+            const { bootmode, table } = e.data.data;
+            this.error_msg = this.$t('part.e3', {
+              bootmode,
+              table,
+            });
+          }
+          this.rightCombine = false;
+        }
         if (this.is_efi) {
           const espParts = await invoke('find_all_esp_parts');
           if (espParts.length === 0) {
@@ -323,7 +348,7 @@ export default {
       <h1>{{ $t("part.title") }}</h1>
       <DKSpinner :title="$t('part.r1')" />
     </div>
-    <div class="error-msg">
+    <div class="error-msg" v-if="!loading">
       <span>{{ error_msg }}</span>
     </div>
     <DKBottomActions v-if="!gparted && !loading">
