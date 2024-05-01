@@ -17,7 +17,7 @@ vergen = { version = "8.3.1", features = ["build", "cargo", "git", "gitcl", "rus
 tauri = { version = "1.6", features = ["cli", "shell-open", "dialog-all"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-zbus = { version = "4.0", features = ["tokio"] }
+zbus = { version = "4.2", features = ["tokio"] }
 tokio = { version = "1.35", features = ["rt-multi-thread", "process"] }
 eyre = "0.6"
 nom = "7"
