@@ -9,6 +9,107 @@ import DKBody from '../components/DKBody.vue';
 </script>
 
 <script>
+async function checkDisk(obj, device) {
+  try {
+    const o = obj;
+    const req = await invoke('list_partitions', { dev: device.path });
+    const resp = req;
+    o.partitions = resp;
+
+    if (obj.config.partition) {
+      if (obj.partitions.length === 0) {
+        o.config.partition = null;
+      } else {
+        o.selected = o.partitions.findIndex(
+          (v) => v.path === o.config.partition.path,
+        );
+      }
+    }
+
+    const v = o.config.variant;
+    const squashfsInfo = await invoke('get_squashfs_info', {
+      v,
+      url: obj.config.mirror.url,
+    });
+    o.sqfs_size = squashfsInfo.downloadSize + squashfsInfo.instSize;
+
+    if (o.partitions.length !== 0) {
+      o.new_disk = false;
+      try {
+        await invoke('disk_is_right_combo', { disk: device.path });
+        o.rightCombine = true;
+      } catch (e) {
+        switch (e.data.t) {
+          case 'WrongCombine': {
+            const { bootmode, table } = e.data.data;
+            o.error_msg = o.$t('part.e3', {
+              bootmode,
+              table,
+            });
+            o.rightCombine = false;
+            break;
+          }
+          case 'UnsupportedTable': {
+            const { table } = e.data.data;
+            o.error_msg = o.$t('part.e5', { table });
+            o.unsupportedTable = true;
+            break;
+          }
+          case 'PartitionType': {
+            o.error_msg = e.message;
+            o.otherError = true;
+            break;
+          }
+          default:
+            break;
+        }
+      }
+      if (o.is_efi) {
+        const espParts = await invoke('find_all_esp_parts');
+        if (espParts.length === 0) {
+          o.error_msg = o.$('part.e4');
+          o.efiError = true;
+        } else if (espParts.length === 1 && !o.config.efi_partition) {
+          const selectEFIPart = espParts[0];
+          if (selectEFIPart.parent_path !== o.config.device.path) {
+            obj.$router.push(
+              `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
+            );
+          } else {
+            o.config.efi_partition = selectEFIPart;
+          }
+        } else if (!o.config.efi_partition) {
+          obj.$router.push(
+            `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
+          );
+        }
+      }
+    } else {
+      o.new_disk = true;
+
+      if (obj.is_efi) {
+        o.new_partition_size = Math.round(
+          (device.size - 512 * 1024 * 1024) / 1024 / 1024 / 1024,
+        );
+      } else {
+        o.new_partition_size = Math.round(
+          device.size / 1024 / 1024 / 1024,
+        );
+      }
+    }
+  } catch (e) {
+    const { path } = obj.$router.currentRoute.value;
+
+    obj.$router.replace({
+      path: `/error/${encodeURIComponent(e)}`,
+      query: { openGparted: true, currentRoute: path },
+    });
+  }
+
+  const o = obj;
+  o.loading = false;
+}
+
 export default {
   inject: ['config', 'humanSize'],
   data() {
@@ -75,62 +176,7 @@ export default {
       }
 
       // 检查 GParted 之后分区表是否合法
-      try {
-        await invoke('disk_is_right_combo', { disk: device.path });
-        this.rightCombine = true;
-      } catch (e) {
-        this.rightCombine = false;
-        this.error_msg = this.$t('part.e3');
-      }
-
-      this.gparted = true;
-      this.loading = true;
-
-      try {
-        const req = await invoke('list_partitions', { dev: device.path });
-        const resp = req;
-        this.partitions = resp;
-
-        const v = this.config.variant;
-        const squashfsInfo = await invoke('get_squashfs_info', {
-          v,
-          url: this.config.mirror.url,
-        });
-        this.sqfs_size = squashfsInfo.downloadSize + squashfsInfo.instSize;
-
-        if (this.partitions.length !== 0) {
-          this.new_disk = false;
-          try {
-            await invoke('disk_is_right_combo', { disk: device.path });
-            this.rightCombine = true;
-          } catch (e) {
-            this.rightCombine = false;
-            this.error_msg = this.$t('part.e3');
-          }
-          this.rightCombine = true;
-        } else {
-          this.new_disk = true;
-          const isEFI = await invoke('is_efi_api');
-          this.is_efi = isEFI;
-
-          if (isEFI) {
-            this.new_partition_size = Math.round(
-              (device.size - 512 * 1024 * 1024) / 1024 / 1024 / 1024,
-            );
-          } else {
-            this.new_partition_size = Math.round(
-              device.size / 1024 / 1024 / 1024,
-            );
-          }
-        }
-      } catch (e) {
-        const { path } = this.$router.currentRoute.value;
-
-        this.$router.replace({
-          path: `/error/${encodeURIComponent(e)}`,
-          query: { openGparted: true, currentRoute: path },
-        });
-      }
+      await checkDisk(this, device);
 
       this.gparted = false;
       this.loading = false;
@@ -224,100 +270,7 @@ export default {
     const isEFI = await invoke('is_efi_api');
     this.is_efi = isEFI;
 
-    try {
-      const req = await invoke('list_partitions', { dev: device.path });
-      const resp = req;
-      this.partitions = resp;
-
-      if (this.config.partition) {
-        if (this.partitions.length === 0) {
-          this.config.partition = null;
-        } else {
-          this.selected = this.partitions.findIndex(
-            (v) => v.path === this.config.partition.path,
-          );
-        }
-      }
-
-      const v = this.config.variant;
-      const squashfsInfo = await invoke('get_squashfs_info', {
-        v,
-        url: this.config.mirror.url,
-      });
-      this.sqfs_size = squashfsInfo.downloadSize + squashfsInfo.instSize;
-
-      if (this.partitions.length !== 0) {
-        this.new_disk = false;
-        try {
-          await invoke('disk_is_right_combo', { disk: device.path });
-          this.rightCombine = true;
-        } catch (e) {
-          switch (e.data.t) {
-            case 'WrongCombine': {
-              const { bootmode, table } = e.data.data;
-              this.error_msg = this.$t('part.e3', {
-                bootmode,
-                table,
-              });
-              this.rightCombine = false;
-              break;
-            }
-            case 'UnsupportedTable': {
-              const { table } = e.data.data;
-              this.error_msg = this.$t('part.e5', { table });
-              this.unsupportedTable = true;
-              break;
-            }
-            case 'PartitionType': {
-              this.error_msg = e.message;
-              this.otherError = true;
-              break;
-            }
-            default:
-              break;
-          }
-        }
-        if (this.is_efi) {
-          const espParts = await invoke('find_all_esp_parts');
-          if (espParts.length === 0) {
-            this.error_msg = this.$('part.e4');
-            this.efiError = true;
-          } else if (espParts.length === 1 && !this.config.efi_partition) {
-            const selectEFIPart = espParts[0];
-            if (selectEFIPart.parent_path !== this.config.device.path) {
-              this.$router.push(
-                `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
-              );
-            } else {
-              this.config.efi_partition = selectEFIPart;
-            }
-          } else if (!this.config.efi_partition) {
-            this.$router.push(
-              `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
-            );
-          }
-        }
-      } else {
-        this.new_disk = true;
-
-        if (isEFI) {
-          this.new_partition_size = Math.round(
-            (device.size - 512 * 1024 * 1024) / 1024 / 1024 / 1024,
-          );
-        } else {
-          this.new_partition_size = Math.round(
-            device.size / 1024 / 1024 / 1024,
-          );
-        }
-      }
-    } catch (e) {
-      const { path } = this.$router.currentRoute.value;
-
-      this.$router.replace({
-        path: `/error/${encodeURIComponent(e)}`,
-        query: { openGparted: true, currentRoute: path },
-      });
-    }
+    await checkDisk(this, device);
 
     this.loading = false;
   },
