@@ -61,6 +61,10 @@ async function checkDisk(obj, device) {
             break;
           }
           default:
+            o.rightCombine = true;
+            o.unsupportedTable = false;
+            o.otherError = false;
+            this.error_msg = '';
             break;
         }
       }
@@ -86,6 +90,10 @@ async function checkDisk(obj, device) {
       }
     } else {
       o.new_disk = true;
+      o.rightCombine = true;
+      o.unsupportedTable = false;
+      o.otherError = false;
+      o.error_msg = '';
 
       if (obj.is_efi) {
         o.new_partition_size = Math.round(
