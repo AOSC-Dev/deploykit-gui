@@ -26,6 +26,8 @@ export default {
         return false;
       }
 
+      this.err_msg = '';
+
       return true;
     },
     select() {
@@ -35,6 +37,8 @@ export default {
         });
         return false;
       }
+
+      this.err_msg = '';
 
       return true;
     },
@@ -103,6 +107,9 @@ export default {
           </template>
         </DKListSelect>
       </section>
+    </div>
+    <div class="error-msg" v-if="!loading">
+      <span>{{ err_msg }}</span>
     </div>
   </DKBody>
   <DKBottomSteps
