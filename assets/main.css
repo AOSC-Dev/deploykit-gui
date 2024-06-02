@@ -85,7 +85,6 @@ select:focus {
   color: #fff;
   font-size: 16px;
   font-weight: 500;
-  font-family: "Source Sans 3", "Noto Sans", sans;
 
   align-items: center;
   display: flex;
@@ -99,6 +98,8 @@ select:focus {
 
   /* Spacing */
   padding: 0.25rem 0.5rem;
+
+  font-family: "Noto Sans CJK SC", "Source Sans 3", sans-serif;
 }
 
 .button:hover {
@@ -110,7 +111,6 @@ button[disabled] {
   color: #8f8f8f;
   cursor: not-allowed;
 }
-
 .error-msg {
   color: var(--dk-accent);
 }
