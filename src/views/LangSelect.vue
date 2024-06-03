@@ -33,7 +33,7 @@ export default {
 
 <template>
   <DKLayout>
-    <section style="max-height: 65vh; overflow-y: scroll; margin-top: 5vh;">
+    <section style="max-height: 65vh; overflow-y: scroll; margin-top: 5vh">
       <DKListSelect
         :options="displayData"
         v-model:selected="selection"
@@ -47,13 +47,18 @@ export default {
       </DKBottomRightButtons>
     </DKBottomActions>
     <template #left>
-      <div style="margin-top: 5vh;;">
+      <div style="margin-top: 5vh">
         <img />
         <div style="line-height: 1" v-if="!is_inverted">
           <h1 style="font-size: 3rem; text-align: right; margin-bottom: 0">
             {{ langData[selection]["aosc"] }}
           </h1>
-          <h2 style="font-size: 1.25rem; text-align: right">
+          <h2
+            style="font-size: 1.25rem; text-align: right"
+            :class="
+              langData[selection].id === 'zh-CN' ? 'zh-cn-font' : 'other-font'
+            "
+          >
             {{ langData[selection]["inst"] }}
           </h2>
         </div>
@@ -70,4 +75,12 @@ export default {
   </DKLayout>
 </template>
 
-<style scoped></style>
+<style scoped>
+.zh-cn-font {
+  font-family: "Noto Sans CJK SC", "Source Sans 3", sans-serif;
+}
+
+.other-font {
+  font-family: "Source Sans 3", sans-serif;
+}
+</style>
