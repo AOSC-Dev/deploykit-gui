@@ -18,7 +18,7 @@ export default {
       progress: 0,
       config: {},
       langSelected: false,
-      current_lang: "en",
+      current_lang: 'en',
       lightup: 0,
       timer: null,
       progressDetail: {},
@@ -186,7 +186,8 @@ export default {
 <template>
   <div
     :class="'lang-' + current_lang"
-    style="padding: 0 2rem; margin-bottom: 1rem">
+    style="padding: 0 2rem; margin-bottom: 1rem"
+  >
     <button
       class="quit-button"
       style="padding-top: 1rem"
@@ -219,7 +220,11 @@ export default {
     @update:install="onInstallDk"
   />
   <!-- main content -->
-  <DKLayout :class="'lang-' + current_lang" :main_class="lightup_seq(1)" v-if="langSelected && isInstall">
+  <DKLayout
+    :class="'lang-' + current_lang"
+    :main_class="lightup_seq(1)"
+    v-if="langSelected && isInstall"
+  >
     <RouterView @update:can_quit="(v) => (can_quit = v)" />
     <template #left>
       <div class="wrapper" :class="lightup_seq(1)">
@@ -237,7 +242,7 @@ export default {
   <div
     class="status-bar"
     v-if="langSelected && isInstall"
-    :class="[ lightup_seq(4), 'lang-' + current_lang ]"
+    :class="[lightup_seq(4), 'lang-' + current_lang]"
   >
     <progress
       id="progressbar"
