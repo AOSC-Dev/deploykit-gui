@@ -1,6 +1,6 @@
 [package]
 name = "deploykit-gui"
-version = "0.3.4"
+version = "0.3.5"
 description = "Deploykit GUI frontend"
 authors = ["you"]
 license = "MIT"
