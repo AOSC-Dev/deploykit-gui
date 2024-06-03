@@ -24,14 +24,16 @@ export default {
 
 <template>
   <DKLayout>
-    <section style="margin-top: 6.5vh">
+    <section style="margin-top: 6.5vh;">
       <h1>{{ $t("desktop-or-install.title") }}</h1>
       <div class="list-container">
         <button class="button" @click="goInstall">
           <div class="entry-box">
             <img src="@/../assets/install.svg" :height="30" :width="30" />
             <div class="button-box">
-              <span style="font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem">
+              <span
+                style="font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem"
+              >
                 {{ $t("desktop-or-install.install-system-title") }}
               </span>
               <span style="font-size: 0.88rem; line-height: 1.2">
@@ -73,17 +75,10 @@ export default {
       </div>
     </section>
     <template #left>
-      <div style="margin-top: 5vh">
+      <div style="margin-top: 5vh;">
         <img />
         <div style="line-height: 1" v-if="!is_inverted">
-          <h1
-            style="
-              font-size: 3rem;
-              text-align: right;
-              margin-bottom: unset;
-              font-family: 'Source Sans 3', sans-serif;
-            "
-          >
+          <h1 style="font-size: 3rem; text-align: right;">
             {{ config.locale["aosc"] }}
           </h1>
           <h2 style="font-size: 1.25rem; text-align: right">

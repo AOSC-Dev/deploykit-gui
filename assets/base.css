@@ -31,7 +31,13 @@
 }
 
 /* semantic color variables for this project */
+/* Also font family preferences for different CJK languages */
 :root {
+  --font-family-zh-cn: 'Source Sans 3', 'Noto Sans CJK SC', 'Noto Sans SC', 'Noto Sans', sans-serif;
+  --font-family-zh-tw: 'Source Sans 3', 'Noto Sans CJK TC', 'Noto Sans TC', 'Noto Sans', sans-serif;
+  --font-family-ko-kr: 'Source Sans 3', 'Noto Sans CJK KR', 'Noto Sans JP', 'Noto Sans', sans-serif;
+  --font-family-ja-jp: 'Source Sans 3', 'Noto Sans CJK JP', 'Noto Sans JP', 'Noto Sans', sans-serif;
+  --font-family-default: 'Source Sans 3', 'Noto Sans', 'DejaVu Sans', sans-serif;
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
@@ -60,6 +66,26 @@
   }
 } */
 
+.lang-zh-cn {
+	font-family: var(--font-family-zh-cn) !important;
+}
+
+.lang-zh-tw {
+	font-family: var(--font-family-zh-tw) !important;
+}
+
+.lang-ko-kr {
+	font-family: var(--font-family-ko-kr) !important;
+}
+
+.lang-ja-jp {
+	font-family: var(--font-family-ja-jp) !important;
+}
+
+.lang-en {
+	font-family: var(--font-family-default) !important;
+}
+
 *,
 *::before,
 *::after {
@@ -67,6 +93,8 @@
   margin: 0;
   position: relative;
   font-weight: normal;
+  /* Preventing Webkit2gtk from using User Agent Stylesheet */
+  font-family: inherit;
 }
 
 body {
@@ -75,6 +103,7 @@ body {
   background: #000000;
   transition: color 0.5s, background-color 0.5s;
   line-height: 1.3;
+  font-family: var(--font-family-default);
   font-size: 16px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

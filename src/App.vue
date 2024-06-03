@@ -18,13 +18,13 @@ export default {
       progress: 0,
       config: {},
       langSelected: false,
+      current_lang: "en",
       lightup: 0,
       timer: null,
       progressDetail: {},
       can_quit: true,
       isInstall: false,
       playList: [],
-      mainClass: 'other-font',
     };
   },
   computed: {
@@ -97,19 +97,13 @@ export default {
     //   next(); // Start playing
     // },
     on_lang_selected(id) {
+      this.current_lang = id.toLowerCase();
       if (id === 'en') {
         // default locale is always loaded before-hand
         this.langSelected = true;
         this.execute_lightup();
         return;
       }
-
-      if (id === 'zh-CN') {
-        this.mainClass = 'zh-cn-font';
-      } else {
-        this.mainClass = 'other-font';
-      }
-
       // lazy load the translation strings
       this.switchLocale(id)
         .then(() => {
@@ -190,59 +184,60 @@ export default {
 </script>
 
 <template>
-  <span :class="mainClass" style="width: 100%; height: 100%">
-    <div style="padding: 0 2rem; margin-bottom: 1rem">
-      <button
-        class="quit-button"
-        style="padding-top: 1rem"
-        :aria-label="$t('d.sr-close')"
-        @click="on_abort"
-        @keyup.enter="on_abort"
-        :disabled="!can_quit"
-        v-show="
-          langSelected &&
-          isInstall &&
-          $router.currentRoute.value.path !== '/abort'
-        "
-      >
-        <img
-          :alt="$t('d.sr-close-icon')"
-          src="@/../assets/window-close-symbolic.svg"
-          width="30"
-          height="30"
-        />
-      </button>
-      <header style="width: 90%" v-if="langSelected && isInstall">
-        <DKLogo />
-      </header>
-    </div>
-    <!-- language select overlay -->
-    <LangSelect v-if="!langSelected" @update:lang="on_lang_selected" />
-    <DesktopOrInstall
-      v-if="langSelected && !isInstall"
-      @update:install="onInstallDk"
-    />
-    <!-- main content -->
-    <DKLayout :main_class="lightup_seq(1)" v-if="langSelected && isInstall">
-      <RouterView @update:can_quit="(v) => (can_quit = v)" />
-      <template #left>
-        <div class="wrapper" :class="lightup_seq(1)">
-          <nav :class="nav_menu_bold(0)">{{ $t("d.nav-0") }}</nav>
-          <nav :class="nav_menu_bold(1)">{{ $t("d.nav-1") }}</nav>
-          <nav :class="nav_menu_bold(2)">{{ $t("d.nav-2") }}</nav>
-          <nav :class="nav_menu_bold(3)">{{ $t("d.nav-3") }}</nav>
-        </div>
-        <div v-if="page_number >= 2">
-          <AudioPlayer ref="player" :list="playList"></AudioPlayer>
-        </div>
-      </template>
-    </DKLayout>
-  </span>
+  <div
+    :class="'lang-' + current_lang"
+    style="padding: 0 2rem; margin-bottom: 1rem">
+    <button
+      class="quit-button"
+      style="padding-top: 1rem"
+      :aria-label="$t('d.sr-close')"
+      @click="on_abort"
+      @keyup.enter="on_abort"
+      :disabled="!can_quit"
+      v-show="
+        langSelected &&
+        isInstall &&
+        $router.currentRoute.value.path !== '/abort'
+      "
+    >
+      <img
+        :alt="$t('d.sr-close-icon')"
+        src="@/../assets/window-close-symbolic.svg"
+        width="30"
+        height="30"
+      />
+    </button>
+    <header style="width: 90%" v-if="langSelected && isInstall">
+      <DKLogo />
+    </header>
+  </div>
+  <!-- language select overlay -->
+  <LangSelect v-if="!langSelected" @update:lang="on_lang_selected" />
+  <DesktopOrInstall
+    :class="'lang-' + current_lang"
+    v-if="langSelected && !isInstall"
+    @update:install="onInstallDk"
+  />
+  <!-- main content -->
+  <DKLayout :class="'lang-' + current_lang" :main_class="lightup_seq(1)" v-if="langSelected && isInstall">
+    <RouterView @update:can_quit="(v) => (can_quit = v)" />
+    <template #left>
+      <div class="wrapper" :class="lightup_seq(1)">
+        <nav :class="nav_menu_bold(0)">{{ $t("d.nav-0") }}</nav>
+        <nav :class="nav_menu_bold(1)">{{ $t("d.nav-1") }}</nav>
+        <nav :class="nav_menu_bold(2)">{{ $t("d.nav-2") }}</nav>
+        <nav :class="nav_menu_bold(3)">{{ $t("d.nav-3") }}</nav>
+      </div>
+      <div v-if="page_number >= 2">
+        <AudioPlayer ref="player" :list="playList"></AudioPlayer>
+      </div>
+    </template>
+  </DKLayout>
   <!-- status bar -->
   <div
     class="status-bar"
     v-if="langSelected && isInstall"
-    :class="lightup_seq(4)"
+    :class="[ lightup_seq(4), 'lang-' + current_lang ]"
   >
     <progress
       id="progressbar"
@@ -251,10 +246,10 @@ export default {
       max="100"
       class="progress-bar"
     ></progress>
-    <span class="info-box" :class="mainClass" v-if="page_number > 1 && page_number < 4">{{
+    <span class="info-box" v-if="page_number > 1 && page_number < 4">{{
       install_info
     }}</span>
-    <label for="progressbar" :class="mainClass" class="eta-box">{{ eta_value }}</label>
+    <label for="progressbar" class="eta-box">{{ eta_value }}</label>
   </div>
 </template>
 
@@ -269,14 +264,6 @@ main {
   opacity: 0;
 }
 
-.zh-cn-font {
-  font-family: "Noto Sans CJK SC", "Source Sans 3", sans-serif;
-}
-
-.other-font {
-  font-family: "Source Sans 3", sans-serif;
-}
-
 div,
 header {
   transition: opacity 0.3s;
@@ -287,7 +274,6 @@ header {
   bottom: 2em;
   left: 0;
   width: 100%;
-  min-height: 5vh;
 }
 
 .progress-bar {

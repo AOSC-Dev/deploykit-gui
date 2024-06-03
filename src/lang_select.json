@@ -463,7 +463,7 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en",
+        "id": "ja-JP",
         "text": "日本語",
         "data": "ja_JP.UTF-8"
     },
@@ -523,7 +523,7 @@
         "aosc": "AOSC OS",
         "inst": "Installer",
         "next": "Next",
-        "id": "en",
+        "id": "ko-KR",
         "text": "한국어",
         "data": "ko_KR.UTF-8"
     },
