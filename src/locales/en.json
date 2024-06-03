@@ -101,7 +101,7 @@
         "k4": "({other_os})",
         "k5": "({other_os}...)",
         "r1": "Analyzing your system...",
-        "p1": "Please select a partition as AOSC OS system partition. If you would like to make changes to your partitions, please select the \"Manage partitions with GParted\" button below.",
+        "p1": "Please select your AOSC OS system partition. To make changes to your partitions, select the \"Manage partitions with GParted\" button below.",
         "p2": "It seems like you have an empty or new storage device. Installer can help you create a standard partition scheme based on your storage configuration, as you press \"Next,\" installer will partition your storage device based on the following specifications.",
         "p3": "If you would like to partition the storage device yourself, please press the \"Manage partitions with GParted\" button below.",
         "p4": "Installer can help you create a standard partition scheme based on your storage configuration, as you press \"Next,\" installer will partition your storage device based on the following specifications.",
