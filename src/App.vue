@@ -274,6 +274,7 @@ header {
   bottom: 2em;
   left: 0;
   width: 100%;
+  min-height: 5vh;
 }
 
 .progress-bar {

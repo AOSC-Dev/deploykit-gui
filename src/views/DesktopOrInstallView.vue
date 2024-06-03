@@ -78,7 +78,7 @@ export default {
       <div style="margin-top: 5vh;">
         <img />
         <div style="line-height: 1" v-if="!is_inverted">
-          <h1 style="font-size: 3rem; text-align: right;">
+          <h1 style="font-size: 3rem; text-align: right; margin-bottom: 0;">
             {{ config.locale["aosc"] }}
           </h1>
           <h2 style="font-size: 1.25rem; text-align: right">

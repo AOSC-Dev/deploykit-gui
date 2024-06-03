@@ -13,6 +13,7 @@ export default {
   data() {
     return {
       langData,
+      current_lang: "zh-cn",
       displayData: langData.map((v) => ({ body: v.lang })),
       selection: 0,
     };
@@ -32,7 +33,7 @@ export default {
 </script>
 
 <template>
-  <DKLayout>
+  <DKLayout :class="'lang-' + langData[selection].id.toLowerCase()">
     <section style="max-height: 65vh; overflow-y: scroll; margin-top: 5vh;">
       <DKListSelect
         :options="displayData"
