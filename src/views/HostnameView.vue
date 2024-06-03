@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     validate() {
-      if (!/^[a-z0-9-]+$/.test(this.name)) {
+      if (!/^[a-zA-Z0-9]+$/.test(this.name)) {
         this.err_msg = this.$t('host.bad');
         return false;
       }
