@@ -251,10 +251,10 @@ export default {
       max="100"
       class="progress-bar"
     ></progress>
-    <span class="info-box" v-if="page_number > 1 && page_number < 4">{{
+    <span class="info-box" :class="mainClass" v-if="page_number > 1 && page_number < 4">{{
       install_info
     }}</span>
-    <label for="progressbar" class="eta-box">{{ eta_value }}</label>
+    <label for="progressbar" :class="mainClass" class="eta-box">{{ eta_value }}</label>
   </div>
 </template>
 
@@ -287,6 +287,7 @@ header {
   bottom: 2em;
   left: 0;
   width: 100%;
+  min-height: 5vh;
 }
 
 .progress-bar {
