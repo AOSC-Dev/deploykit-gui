@@ -24,6 +24,7 @@ export default {
       can_quit: true,
       isInstall: false,
       playList: [],
+      mainClass: '',
     };
   },
   computed: {
@@ -102,6 +103,13 @@ export default {
         this.execute_lightup();
         return;
       }
+
+      if (id === 'zh-CN') {
+        this.mainClass = 'zh-cn-font';
+      } else {
+        this.mainClass = 'other-font';
+      }
+
       // lazy load the translation strings
       this.switchLocale(id)
         .then(() => {
@@ -182,52 +190,54 @@ export default {
 </script>
 
 <template>
-  <div style="padding: 0 2rem; margin-bottom: 1rem">
-    <button
-      class="quit-button"
-      style="padding-top: 1rem"
-      :aria-label="$t('d.sr-close')"
-      @click="on_abort"
-      @keyup.enter="on_abort"
-      :disabled="!can_quit"
-      v-show="
-        langSelected &&
-        isInstall &&
-        $router.currentRoute.value.path !== '/abort'
-      "
-    >
-      <img
-        :alt="$t('d.sr-close-icon')"
-        src="@/../assets/window-close-symbolic.svg"
-        width="30"
-        height="30"
-      />
-    </button>
-    <header style="width: 90%" v-if="langSelected && isInstall">
-      <DKLogo />
-    </header>
-  </div>
-  <!-- language select overlay -->
-  <LangSelect v-if="!langSelected" @update:lang="on_lang_selected" />
-  <DesktopOrInstall
-    v-if="langSelected && !isInstall"
-    @update:install="onInstallDk"
-  />
-  <!-- main content -->
-  <DKLayout :main_class="lightup_seq(1)" v-if="langSelected && isInstall">
-    <RouterView @update:can_quit="(v) => (can_quit = v)" />
-    <template #left>
-      <div class="wrapper" :class="lightup_seq(1)">
-        <nav :class="nav_menu_bold(0)">{{ $t("d.nav-0") }}</nav>
-        <nav :class="nav_menu_bold(1)">{{ $t("d.nav-1") }}</nav>
-        <nav :class="nav_menu_bold(2)">{{ $t("d.nav-2") }}</nav>
-        <nav :class="nav_menu_bold(3)">{{ $t("d.nav-3") }}</nav>
-      </div>
-      <div v-if="page_number >= 2">
-        <AudioPlayer ref="player" :list="playList"></AudioPlayer>
-      </div>
-    </template>
-  </DKLayout>
+  <span :class="mainClass" style="width: 100%; height: 100%">
+    <div style="padding: 0 2rem; margin-bottom: 1rem">
+      <button
+        class="quit-button"
+        style="padding-top: 1rem"
+        :aria-label="$t('d.sr-close')"
+        @click="on_abort"
+        @keyup.enter="on_abort"
+        :disabled="!can_quit"
+        v-show="
+          langSelected &&
+          isInstall &&
+          $router.currentRoute.value.path !== '/abort'
+        "
+      >
+        <img
+          :alt="$t('d.sr-close-icon')"
+          src="@/../assets/window-close-symbolic.svg"
+          width="30"
+          height="30"
+        />
+      </button>
+      <header style="width: 90%" v-if="langSelected && isInstall">
+        <DKLogo />
+      </header>
+    </div>
+    <!-- language select overlay -->
+    <LangSelect v-if="!langSelected" @update:lang="on_lang_selected" />
+    <DesktopOrInstall
+      v-if="langSelected && !isInstall"
+      @update:install="onInstallDk"
+    />
+    <!-- main content -->
+    <DKLayout :main_class="lightup_seq(1)" v-if="langSelected && isInstall">
+      <RouterView @update:can_quit="(v) => (can_quit = v)" />
+      <template #left>
+        <div class="wrapper" :class="lightup_seq(1)">
+          <nav :class="nav_menu_bold(0)">{{ $t("d.nav-0") }}</nav>
+          <nav :class="nav_menu_bold(1)">{{ $t("d.nav-1") }}</nav>
+          <nav :class="nav_menu_bold(2)">{{ $t("d.nav-2") }}</nav>
+          <nav :class="nav_menu_bold(3)">{{ $t("d.nav-3") }}</nav>
+        </div>
+        <div v-if="page_number >= 2">
+          <AudioPlayer ref="player" :list="playList"></AudioPlayer>
+        </div>
+      </template>
+    </DKLayout>
+  </span>
   <!-- status bar -->
   <div
     class="status-bar"
@@ -257,6 +267,22 @@ main {
 <style scoped>
 .hidden {
   opacity: 0;
+}
+
+.zh-cn-font {
+  font-family: "Noto Sans CJK SC", "Source Sans 3", sans-serif;
+}
+
+.zh-cn-font button {
+  font-family: "Noto Sans CJK SC", "Source Sans 3", sans-serif;
+}
+
+.other-font {
+  font-family: "Source Sans 3", sans-serif;
+}
+
+.other-font button {
+  font-family: "Source Sans 3", sans-serif;
 }
 
 div,

@@ -98,8 +98,6 @@ select:focus {
 
   /* Spacing */
   padding: 0.25rem 0.5rem;
-
-  font-family: "Noto Sans CJK SC", "Source Sans 3", sans-serif;
 }
 
 .button:hover {
