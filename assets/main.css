@@ -98,6 +98,9 @@ select:focus {
 
   /* Spacing */
   padding: 0.25rem 0.5rem;
+
+  /* FIXME: button 做成动态 font-family 有点麻烦，先写死 */
+  font-family: "Noto Sans CJK SC", "Source Sans 3", sans-serif;
 }
 
 .button:hover {

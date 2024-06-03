@@ -24,7 +24,7 @@ export default {
       can_quit: true,
       isInstall: false,
       playList: [],
-      mainClass: '',
+      mainClass: 'other-font',
     };
   },
   computed: {
@@ -273,15 +273,7 @@ main {
   font-family: "Noto Sans CJK SC", "Source Sans 3", sans-serif;
 }
 
-.zh-cn-font button {
-  font-family: "Noto Sans CJK SC", "Source Sans 3", sans-serif;
-}
-
 .other-font {
-  font-family: "Source Sans 3", sans-serif;
-}
-
-.other-font button {
   font-family: "Source Sans 3", sans-serif;
 }
 

@@ -31,9 +31,7 @@ export default {
           <div class="entry-box">
             <img src="@/../assets/install.svg" :height="30" :width="30" />
             <div class="button-box">
-              <span
-                style="font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem"
-              >
+              <span style="font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem">
                 {{ $t("desktop-or-install.install-system-title") }}
               </span>
               <span style="font-size: 0.88rem; line-height: 1.2">
@@ -78,7 +76,14 @@ export default {
       <div style="margin-top: 5vh">
         <img />
         <div style="line-height: 1" v-if="!is_inverted">
-          <h1 style="font-size: 3rem; text-align: right; margin-bottom: .5rem;">
+          <h1
+            style="
+              font-size: 3rem;
+              text-align: right;
+              margin-bottom: unset;
+              font-family: 'Source Sans 3', sans-serif;
+            "
+          >
             {{ config.locale["aosc"] }}
           </h1>
           <h2 style="font-size: 1.25rem; text-align: right">
