@@ -239,7 +239,7 @@ export default {
         this.error_msg = '';
       }
     },
-    async next() {
+    next() {
       if (!this.new_disk) {
         this.config.partition = this.partitions[this.selected];
         if (!this.config.partition.fs_type) {
