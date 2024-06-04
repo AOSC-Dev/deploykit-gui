@@ -18,15 +18,17 @@ async function handleEFI(obj) {
   if (espParts.length === 1 && !o.config.efi_partition) {
     const selectEFIPart = espParts[0];
     if (selectEFIPart.parent_path !== o.config.device.path) {
-      o.$router.replace(
-        `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
-      );
+      o.$router.replace(`/esp/${encodeURIComponent(JSON.stringify(espParts))}`);
     } else {
       o.config.efi_partition = selectEFIPart;
       o.$router.replace('/users');
     }
-  } else if (!o.config.efi_partition) {
+  } else if (espParts.length > 1 && !o.config.efi_partition) {
     o.$router.replace(`/esp/${encodeURIComponent(JSON.stringify(espParts))}`);
+  } else if (!o.config.efi_partition) {
+    const selectEFIPart = espParts[0];
+    o.config.efi_partition = selectEFIPart;
+    o.$router.replace('/users');
   }
 }
 
