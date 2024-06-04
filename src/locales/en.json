@@ -113,7 +113,8 @@
         "e2": "Installer does not support this filesystem. Please use ext4/xfs instead.",
         "e3": "The combination of {bootmode} and {table} is not supported.",
         "e4": "The unit does not have an EFI partition to continue the installation.",
-        "e5": "This partitioned table type is not supported: {table}"
+        "e5": "This partitioned table type is not supported: {table}",
+        "r2": "Running GParted"
     },
     "esp": {
         "title": "ESP Partition",

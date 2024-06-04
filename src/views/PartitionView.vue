@@ -154,26 +154,30 @@ export default {
       }
       return this.$t('part.k4', { other_os: comment });
     },
-    async launch_gparted() {
-      invoke('gparted');
-      const isDebug = await invoke('is_debug');
-      let device;
+    launch_gparted() {
+      this.loading = true;
+      this.gparted = true;
+      invoke('gparted').then(() => {
+        invoke('is_debug').then((res) => {
+          let device;
 
-      if (isDebug) {
-        device = {
-          path: '/dev/loop30',
-          model: 'loop',
-          size: 50 * 1024 * 1024 * 1024,
-        };
-      } else {
-        device = this.config.device;
-      }
+          if (res) {
+            device = {
+              path: '/dev/loop30',
+              model: 'loop',
+              size: 50 * 1024 * 1024 * 1024,
+            };
+          } else {
+            device = this.config.device;
+          }
 
-      // 检查 GParted 之后分区表是否合法
-      await checkDisk(this, device);
-
-      this.gparted = false;
-      this.loading = false;
+          // 检查 GParted 之后分区表是否合法
+          checkDisk(this, device).then(() => {
+            this.gparted = false;
+            this.loading = false;
+          });
+        });
+      });
     },
     validate() {
       if (this.new_disk) {
@@ -316,9 +320,13 @@ export default {
       </section>
     </div>
     <!-- loading screen -->
-    <div class="loading" v-else>
+    <div class="loading" v-else-if="loading && !gparted">
       <h1>{{ $t("part.title") }}</h1>
       <DKSpinner :title="$t('part.r1')" />
+    </div>
+    <div class="loading" v-else-if="loading && gparted">
+      <h1>{{ $t("part.title") }}</h1>
+      <DKSpinner :title="$t('part.r2')" />
     </div>
     <div class="error-msg" v-if="!loading">
       <span>{{ error_msg }}</span>

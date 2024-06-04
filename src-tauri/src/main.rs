@@ -220,7 +220,7 @@ impl Serialize for DeploykitGuiError {
 }
 
 #[tauri::command]
-fn gparted() -> TauriResult<()> {
+async fn gparted() -> TauriResult<()> {
     Command::new("gparted").output()?;
 
     Ok(())
