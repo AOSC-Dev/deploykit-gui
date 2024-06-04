@@ -67,25 +67,13 @@ async function checkDisk(obj, device) {
             this.error_msg = '';
             break;
         }
-      }
-      if (o.is_efi) {
-        const espParts = await invoke('find_all_esp_parts');
-        if (espParts.length === 0) {
-          o.error_msg = o.$('part.e4');
-          o.efiError = true;
-        } else if (espParts.length === 1 && !o.config.efi_partition) {
-          const selectEFIPart = espParts[0];
-          if (selectEFIPart.parent_path !== o.config.device.path) {
-            obj.$router.push(
-              `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
-            );
-          } else {
-            o.config.efi_partition = selectEFIPart;
+
+        if (o.is_efi) {
+          const espParts = await invoke('find_all_esp_parts');
+          if (espParts.length === 0) {
+            this.error_msg = this.$('part.e4');
+            this.efiError = true;
           }
-        } else if (!o.config.efi_partition) {
-          obj.$router.push(
-            `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
-          );
         }
       }
     } else {
@@ -100,9 +88,7 @@ async function checkDisk(obj, device) {
           (device.size - 512 * 1024 * 1024) / 1024 / 1024 / 1024,
         );
       } else {
-        o.new_partition_size = Math.round(
-          device.size / 1024 / 1024 / 1024,
-        );
+        o.new_partition_size = Math.round(device.size / 1024 / 1024 / 1024);
       }
     }
   } catch (e) {
@@ -253,13 +239,15 @@ export default {
         this.error_msg = '';
       }
     },
-    next() {
+    async next() {
       if (!this.new_disk) {
         this.config.partition = this.partitions[this.selected];
         if (!this.config.partition.fs_type) {
           this.config.partition.fs_type = 'ext4';
         }
       }
+
+      this.config.is_efi = this.is_efi;
     },
   },
   async created() {

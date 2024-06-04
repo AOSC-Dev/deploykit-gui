@@ -12,6 +12,24 @@ import { listen } from '@tauri-apps/api/event';
 </template>
 
 <script>
+async function handleEFI(obj) {
+  const o = obj;
+  const espParts = await invoke('find_all_esp_parts');
+  if (espParts.length === 1 && !o.config.efi_partition) {
+    const selectEFIPart = espParts[0];
+    if (selectEFIPart.parent_path !== o.config.device.path) {
+      o.$router.replace(
+        `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
+      );
+    } else {
+      o.config.efi_partition = selectEFIPart;
+      o.$router.replace('/users');
+    }
+  } else if (!o.config.efi_partition) {
+    o.$router.replace(`/esp/${encodeURIComponent(JSON.stringify(espParts))}`);
+  }
+}
+
 export default {
   inject: ['config'],
   data() {
@@ -58,8 +76,15 @@ export default {
         });
       }
       this.loading = false;
-    } else {
       this.$router.replace('/users');
+    } else {
+      this.loading = true;
+      if (this.config.is_efi && !this.config.efi_partition) {
+        await handleEFI(this);
+      } else {
+        this.loading = false;
+        this.$router.replace('/users');
+      }
     }
   },
 };

@@ -7,16 +7,13 @@ import UserView from '@/views/UserView.vue';
 import ConfirmView from '@/views/ConfirmView.vue';
 import SwapFileView from '@/views/SwapFileView.vue';
 import LocaleView from '@/views/LocaleView.vue';
-// import MirrorView from "@/views/MirrorView.vue";
 import MirrorSelectView from '@/views/MirrorSelectView.vue';
-// import RescueKitView from "@/views/RescueKitView.vue";
 import PartitionView from '@/views/PartitionView.vue';
 import VariantView from '@/views/VariantView.vue';
 import InstallView from '@/views/InstallView.vue';
 import DriverView from '@/views/DriverView.vue';
 import DeviceView from '@/views/DeviceView.vue';
 import EspPartitionView from '@/views/EspPartitionView.vue';
-// import DesktopOrInstall from '@/views/DesktopOrInstall.vue';
 import WelcomeView from '@/views/WelcomeView.vue';
 import AutoPartView from '@/views/AutoPartView.vue';
 import PartitionProgressView from '@/views/PartitionProgressView.vue';
@@ -136,7 +133,7 @@ const router = createRouter({
       name: 'esp',
       component: EspPartitionView,
       props: true,
-      meta: { steps: 0, next: '/partitions', prev: '/device' },
+      meta: { steps: 0, next: '/users' },
     },
   ],
 });
