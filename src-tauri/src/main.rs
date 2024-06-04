@@ -84,6 +84,7 @@ trait Deploykit {
     async fn get_all_esp_partitions(&self) -> zResult<String>;
     async fn reset_progress_status(&self) -> zResult<String>;
     async fn sync_disk(&self) -> zResult<String>;
+    async fn sync_and_reboot(&self) -> zResult<String>;
 }
 
 #[derive(Debug, Deserialize)]
@@ -111,6 +112,7 @@ enum DbusMethod<'a> {
     GetAllEspPartitions,
     ResetProgressStatus,
     SyncDisk,
+    SyncAndReboot,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -165,6 +167,7 @@ impl Dbus {
             DbusMethod::GetAllEspPartitions => proxy.get_all_esp_partitions().await?,
             DbusMethod::ResetProgressStatus => proxy.reset_progress_status().await?,
             DbusMethod::SyncDisk => proxy.sync_disk().await?,
+            DbusMethod::SyncAndReboot => proxy.sync_and_reboot().await?,
         };
 
         let res = Self::try_from(s)?;
@@ -555,8 +558,8 @@ async fn auto_partition(
 }
 
 #[tauri::command]
-async fn reboot() -> TauriResult<()> {
-    Command::new("systemctl").arg("reboot").output()?;
+async fn reboot(state: State<'_, DkState<'_>>) -> TauriResult<()> {
+    Dbus::run(&state.proxy, DbusMethod::SyncAndReboot).await?;
 
     Ok(())
 }
