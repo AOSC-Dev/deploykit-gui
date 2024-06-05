@@ -33,7 +33,7 @@ export default {
 
         const body = recipeI18n[item['description-tr']]
           ? recipeI18n[item['description-tr']]
-          : item.name;
+          : item.description;
         variants[index].body = body;
       });
 
