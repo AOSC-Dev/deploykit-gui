@@ -18,6 +18,7 @@ export default {
   },
   async created() {
     try {
+      const arch = await invoke('get_arch_name');
       const recipe = await invoke('get_recipe');
       const { variants } = recipe;
 
@@ -37,7 +38,9 @@ export default {
         variants[index].body = body;
       });
 
-      this.options = variants.filter((v) => !v.retro && v.name !== 'BuildKit');
+      this.options = variants
+        .filter((v) => !v.retro && v.name !== 'BuildKit')
+        .filter((v) => v.squashfs.some((r) => r.arch === arch));
 
       if (this.config.variant) {
         this.selected = this.options.findIndex(

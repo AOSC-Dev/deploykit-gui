@@ -5,6 +5,7 @@ use axum::http::HeaderValue;
 use axum::http::Method;
 use axum::Router;
 use eyre::eyre;
+use eyre::ContextCompat;
 use eyre::Result;
 use parser::list_zoneinfo;
 use parser::ZoneInfo;
@@ -341,6 +342,13 @@ async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<
     println!("{:?}", proxy.get_config("").await?);
 
     Ok(())
+}
+
+#[tauri::command]
+fn get_arch_name() -> TauriResult<&'static str> {
+    let res = utils::get_arch_name().context("Failed to get arch name")?;
+
+    Ok(res)
 }
 
 #[tauri::command]
@@ -762,7 +770,8 @@ async fn main() {
                     sync_disk,
                     is_debug,
                     run_nmtui,
-                    set_locale
+                    set_locale,
+                    get_arch_name
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");
