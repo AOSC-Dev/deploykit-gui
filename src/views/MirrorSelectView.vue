@@ -59,14 +59,11 @@ export default {
       if (typeof n !== 'number') {
         return '';
       }
-      const fileSize = 1;
-      let speed = fileSize / n;
-      if (speed >= 1) {
-        return `${speed.toFixed(2)}MiB/s`;
-      }
 
-      speed *= 1024;
-      return `${speed.toFixed(2)}KiB/s`;
+      const fileSize = 1;
+      const speed = fileSize / n;
+
+      return `${speed.toFixed(2)}MiB/s`;
     },
   },
   async created() {

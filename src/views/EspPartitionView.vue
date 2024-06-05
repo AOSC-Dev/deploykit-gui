@@ -41,7 +41,7 @@ export default {
         <template #item="option">
           <div style="width: 100%">
             <span class="column-80">{{ option.path }}</span>
-            <span class="column-20">{{ humanSize(option.size)}}</span>
+            <span class="column-20">{{ humanSize(option.size) }}</span>
           </div>
         </template>
       </DKListSelect>
