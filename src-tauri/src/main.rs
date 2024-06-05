@@ -617,10 +617,9 @@ async fn reset_progress_status(state: State<'_, DkState<'_>>) -> TauriResult<()>
 
 #[tauri::command]
 async fn run_nmtui() -> TauriResult<()> {
-    tokio::process::Command::new("mate-terminal")
-        .arg("--command")
-        .arg("nmtui")
-        .arg("--disable-factory") // 让 mate-terminal 不要去 fork 自己
+    tokio::process::Command::new("bash")
+        .arg("-c")
+        .arg("mate-terminal --command nmtui --disable-factory --title=nmtui | & while ! wmctrl -l | grep nmtui; do wmctrl -r nmtui -b toggle,above; done")
         .output()
         .await?;
 
