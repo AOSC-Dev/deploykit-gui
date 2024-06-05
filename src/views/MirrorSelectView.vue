@@ -14,13 +14,14 @@ const covertMirrorsListToUiString = (m, recipeI18n) => {
   mirrors.forEach((item, index) => {
     mirrors[index].nameTr = recipeI18n[item['name-tr']];
     mirrors[index].locTr = recipeI18n[item['loc-tr']];
+    mirrors[index].score = item.score;
   });
 
   return mirrors;
 };
 
 export default {
-  inject: ['config'],
+  inject: ['config', 'humanSize'],
   data() {
     return {
       mirrors: [],
@@ -53,6 +54,19 @@ export default {
           query: { currentRoute: path },
         });
       }
+    },
+    calc(n) {
+      if (typeof n !== 'number') {
+        return '';
+      }
+      const fileSize = 1;
+      let speed = fileSize / n;
+      if (speed >= 1) {
+        return `${speed.toFixed(2)}MiB/s`;
+      }
+
+      speed *= 1024;
+      return `${speed.toFixed(2)}KiB/s`;
     },
   },
   async created() {
@@ -98,13 +112,14 @@ export default {
           :is_limit_height="true"
         >
           <template #item="option">
-            <div>
+            <div class="mirror">
               <span
                 ><b
                   >{{ option.locTr ? option.locTr : option.loc }} -
                   {{ option.nameTr ? option.nameTr : option.name }}</b
                 ></span
               >
+              <span>{{ calc(option.score) }}</span>
             </div>
           </template>
         </DKListSelect>
@@ -130,5 +145,11 @@ export default {
 <style scoped>
 span b {
   font-weight: 600;
+}
+
+.mirror {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
 }
 </style>

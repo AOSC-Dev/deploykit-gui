@@ -99,6 +99,7 @@ pub struct Mirror {
     #[serde(rename = "loc-tr")]
     pub loc_tr: String,
     pub url: String,
+    pub score: Option<f32>,
 }
 
 #[derive(Deserialize, Serialize)]

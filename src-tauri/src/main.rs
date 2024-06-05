@@ -471,9 +471,14 @@ async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> Vec<Mirror> {
     }
     speedtest_mirror.sort_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap());
     let mut new_mirrors = vec![];
-    for (name, _) in speedtest_mirror {
-        let index = mirrors.iter().position(|x| x.loc_tr == name).unwrap();
-        new_mirrors.push(mirrors[index].to_owned());
+    for (name, score) in speedtest_mirror {
+        let mut mirror = mirrors
+            .iter()
+            .find(|x| x.loc_tr == name)
+            .unwrap()
+            .to_owned();
+        mirror.score = Some(score);
+        new_mirrors.push(mirror);
     }
 
     new_mirrors
