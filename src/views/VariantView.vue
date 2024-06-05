@@ -17,8 +17,18 @@ export default {
     };
   },
   async created() {
+    let arch;
     try {
-      const arch = await invoke('get_arch_name');
+      arch = await invoke('get_arch_name');
+    } catch (e) {
+      const { path } = this.$router.currentRoute.value;
+      this.$router.replace({
+        path: `/error/${encodeURIComponent(e)}`,
+        query: { currentRoute: path },
+      });
+    }
+
+    try {
       const recipe = await invoke('get_recipe');
       const { variants } = recipe;
 
