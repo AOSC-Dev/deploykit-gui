@@ -465,6 +465,7 @@ async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> Vec<Mirror> {
     }
     let results = futures::future::join_all(task).await;
     for (index, result) in results.into_iter().enumerate() {
+        debug!("{:?}: {result:?}", &mirrors[index]);
         if let Ok(score) = result {
             speedtest_mirror.push((mirrors[index].loc_tr.to_owned(), score));
         }

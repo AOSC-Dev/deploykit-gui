@@ -11,7 +11,7 @@ use std::time::Instant;
 use url::Url;
 
 const SPEEDTEST_FILE_CHECKSUM: &str =
-    "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58";
+    "557284748e7fd375d015b2cb71180ff9bf340fbef601da7c4e113ab2dc9f2836";
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Recipe {
@@ -90,7 +90,7 @@ pub struct Squashfs {
     pub sha256sum: String,
 }
 
-#[derive(Deserialize, Clone, Serialize)]
+#[derive(Deserialize, Clone, Serialize, Debug)]
 pub struct Mirror {
     pub name: String,
     #[serde(rename = "name-tr")]
