@@ -33,6 +33,7 @@ axum = "0.7.4"
 tower-http = { version = "0.5.2", features = ["fs", "cors"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+x11rb = "0.13.1"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

@@ -42,6 +42,7 @@ use tracing_subscriber::Layer;
 use utils::candidate_sqfs;
 use utils::get_mirror_speed_score;
 use utils::is_efi;
+use utils::pin_window;
 use utils::Mirror;
 use utils::Recipe;
 use utils::Squashfs;
@@ -222,8 +223,10 @@ impl Serialize for DeploykitGuiError {
 
 #[tauri::command]
 async fn gparted() -> TauriResult<()> {
-    Command::new("sudo").arg("killall").arg("gpartedbin");
-    Command::new("bash").arg("-c").arg("gparted & while ! wmctrl -l | grep GParted; do wmctrl -r GParted -b toggle,above; done").output()?;
+    let mut process = Command::new("gparted").spawn()?;
+    let id = process.id();
+    pin_window(id)?;
+    process.wait()?;
 
     Ok(())
 }
@@ -618,11 +621,14 @@ async fn reset_progress_status(state: State<'_, DkState<'_>>) -> TauriResult<()>
 
 #[tauri::command]
 async fn run_nmtui() -> TauriResult<()> {
-    tokio::process::Command::new("bash")
-        .arg("-c")
-        .arg("mate-terminal --command nmtui --disable-factory --title=nmtui | & while ! wmctrl -l | grep nmtui; do wmctrl -r nmtui -b toggle,above; done")
-        .output()
-        .await?;
+    let process = Command::new("mate-terminal")
+        .arg("--command")
+        .arg("nmtui")
+        .arg("--disable-factory") // 让 mate-terminal 不要去 fork 自己
+        .spawn()?;
+
+    let id = process.id();
+    pin_window(id)?;
 
     Ok(())
 }

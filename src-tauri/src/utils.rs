@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::path::Path;
 
-use eyre::{eyre, Result};
+use eyre::{eyre, OptionExt, Result};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -9,6 +9,10 @@ use sha2::{Digest, Sha256};
 use std::io::Write;
 use std::time::Instant;
 use url::Url;
+use x11rb::connection::Connection;
+use x11rb::protocol::xproto::{
+    AtomEnum, ClientMessageEvent, ConnectionExt, EventMask,
+};
 
 const SPEEDTEST_FILE_CHECKSUM: &str =
     "557284748e7fd375d015b2cb71180ff9bf340fbef601da7c4e113ab2dc9f2836";
@@ -218,4 +222,51 @@ pub(crate) fn get_arch_name() -> Option<&'static str> {
 pub fn is_efi() -> bool {
     let efi_path = "/sys/firmware/efi";
     Path::new(efi_path).exists()
+}
+
+pub fn pin_window(pin_pid: u32) -> Result<()> {
+    let (conn, screen_num) = x11rb::connect(None).unwrap();
+    let screen = &conn.setup().roots[screen_num];
+    let root_id = screen.root;
+    let cookie = conn.intern_atom(true, b"_NET_CLIENT_LIST")?;
+    let atom = cookie.reply()?.atom;
+
+    let reply = conn
+        .get_property(false, root_id, atom, AtomEnum::ANY, 0, u32::MAX)?
+        .reply()?;
+
+    let windows = reply.value32().ok_or_eyre("illage reply")?;
+
+    let cookie = conn.intern_atom(true, b"_NET_WM_PID")?;
+    let atom = cookie.reply()?.atom;
+
+    let pin_window_cookie = conn.intern_atom(true, b"_NET_WM_STATE_ABOVE")?;
+    let pin_window_atom = pin_window_cookie.reply()?.atom;
+
+    let window_state_cookie = conn.intern_atom(true, b"_NET_WM_STATE")?;
+    let window_state_atom = window_state_cookie.reply()?.atom;
+
+    for window in windows {
+        let pid = conn
+            .get_property(false, window, atom, AtomEnum::ANY, 0, u32::MAX)?
+            .reply();
+
+        if let Ok(pid) = pid {
+            let mut pid = pid.value32().ok_or_eyre("illage reply")?;
+            let pid = pid.next().ok_or_eyre("illage reply")?;
+
+            if pid == pin_pid {
+                let event = ClientMessageEvent::new(
+                    32,
+                    window,
+                    window_state_atom,
+                    [1u32, window_state_atom, pin_window_atom, 0, 1],
+                );
+
+                conn.send_event(false, window, EventMask::NO_EVENT, event)?;
+            }
+        }
+    }
+
+    Ok(())
 }
