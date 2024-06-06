@@ -11,7 +11,7 @@ use std::time::Instant;
 use url::Url;
 use x11rb::connection::Connection;
 use x11rb::protocol::xproto::{
-    configure_window, AtomEnum, ClientMessageEvent, ConfigureWindowAux, ConnectionExt, EventMask, StackMode
+    configure_window, AtomEnum, ConfigureWindowAux, ConnectionExt, StackMode
 };
 
 const SPEEDTEST_FILE_CHECKSUM: &str =
