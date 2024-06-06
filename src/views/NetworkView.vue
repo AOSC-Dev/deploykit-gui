@@ -9,7 +9,11 @@ import DKSpinner from '@/components/DKSpinner.vue';
 <template>
   <DKBody>
     <!-- loading screen -->
-    <div class="loading" v-if="loading">
+    <div class="loading" v-if="loading && !running">
+      <h1>{{ $t("network.title") }}</h1>
+      <DKSpinner :title="$t('loading')" />
+    </div>
+    <div class="loading" v-else-if="loading && running">
       <h1>{{ $t("network.title") }}</h1>
       <DKSpinner :title="$t('loading')" />
     </div>
@@ -33,14 +37,17 @@ export default {
   data() {
     return {
       loading: false,
+      running: false,
     };
   },
   methods: {
     async runNmtui() {
       try {
         this.loading = true;
+        this.running = true;
         await invoke('run_nmtui');
         this.loading = false;
+        this.running = false;
         this.$router.back();
       } catch (e) {
         const { path } = this.$router.currentRoute.value;
