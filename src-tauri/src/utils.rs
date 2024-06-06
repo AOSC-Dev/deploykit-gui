@@ -11,7 +11,7 @@ use std::time::Instant;
 use url::Url;
 use x11rb::connection::Connection;
 use x11rb::protocol::xproto::{
-    AtomEnum, ClientMessageEvent, ConnectionExt, EventMask,
+    configure_window, AtomEnum, ClientMessageEvent, ConfigureWindowAux, ConnectionExt, EventMask, StackMode
 };
 
 const SPEEDTEST_FILE_CHECKSUM: &str =
@@ -235,16 +235,10 @@ pub fn pin_window(pin_pid: u32) -> Result<()> {
         .get_property(false, root_id, atom, AtomEnum::ANY, 0, u32::MAX)?
         .reply()?;
 
-    let windows = reply.value32().ok_or_eyre("illage reply")?;
+    let windows = reply.value32().ok_or_eyre("illage reply")?.collect::<Vec<_>>();
 
     let cookie = conn.intern_atom(true, b"_NET_WM_PID")?;
     let atom = cookie.reply()?.atom;
-
-    let pin_window_cookie = conn.intern_atom(true, b"_NET_WM_STATE_ABOVE")?;
-    let pin_window_atom = pin_window_cookie.reply()?.atom;
-
-    let window_state_cookie = conn.intern_atom(true, b"_NET_WM_STATE")?;
-    let window_state_atom = window_state_cookie.reply()?.atom;
 
     for window in windows {
         let pid = conn
@@ -252,18 +246,10 @@ pub fn pin_window(pin_pid: u32) -> Result<()> {
             .reply();
 
         if let Ok(pid) = pid {
-            let mut pid = pid.value32().ok_or_eyre("illage reply")?;
-            let pid = pid.next().ok_or_eyre("illage reply")?;
+            let pids = pid.value32().unwrap().collect::<Vec<_>>();
 
-            if pid == pin_pid {
-                let event = ClientMessageEvent::new(
-                    32,
-                    window,
-                    window_state_atom,
-                    [1u32, window_state_atom, pin_window_atom, 0, 1],
-                );
-
-                conn.send_event(false, window, EventMask::NO_EVENT, event)?;
+            if pids.contains(&pin_pid) {
+                configure_window(&conn, window, &ConfigureWindowAux::new().stack_mode(StackMode::ABOVE))?;
             }
         }
     }

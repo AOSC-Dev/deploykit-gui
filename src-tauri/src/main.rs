@@ -21,6 +21,7 @@ use std::process;
 use std::process::Command;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
+use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
 use sysinfo::System;
@@ -226,14 +227,30 @@ impl Serialize for DeploykitGuiError {
 async fn gparted() -> TauriResult<()> {
     let mut process = Command::new("gparted").spawn()?;
 
-    let mut system = System::new();
-    system.refresh_all();
+    let exit = Arc::new(AtomicBool::new(false));
+    let ec = exit.clone();
 
-    for process in system.processes_by_name("gpartedbin") {
-        pin_window(process.pid().as_u32())?;
-    }
+    thread::spawn(move || -> Result<()> {
+        let mut system = System::new();
+        loop {
+            if ec.load(Ordering::Relaxed) {
+                break;
+            }
+
+            system.refresh_all();
+
+            for process in system.processes_by_name("gpartedbin") {
+                pin_window(process.pid().as_u32())?;
+            }
+
+            thread::sleep(Duration::from_millis(100));
+        }
+
+        Ok(())
+    });
 
     process.wait()?;
+    exit.store(true, Ordering::Relaxed);
 
     Ok(())
 }
