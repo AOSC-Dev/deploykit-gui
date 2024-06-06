@@ -103,9 +103,9 @@
         "r1": "Analyzing your system...",
         "p1": "Please select your AOSC OS system partition. To make changes to your partitions, select the \"Manage partitions...\" button below.",
         "p2": "It seems like you have an empty or new storage device. Installer can help you create a standard partition scheme based on your storage configuration, as you press \"Next,\" installer will partition your storage device based on the following specifications.",
-        "p3": "If you would like to partition the storage device yourself, please press the \"Manage partitions with GParted\" button below.",
+        "p3": "If you would like to partition the storage device yourself, please press the \"Manage partitions...\" button below.",
         "p4": "Installer can help you create a standard partition scheme based on your storage configuration, as you press \"Next,\" installer will partition your storage device based on the following specifications.",
-        "b1": "Manage partitions with GParted",
+        "b1": "Manage partitions...",
         "b2": "Partition for me",
         "l1": "Create a {0} EFI System Partition.",
         "l2": "Create a {0} AOSC OS System Partition.",
@@ -114,7 +114,7 @@
         "e3": "The combination of {bootmode} and {table} is not supported.",
         "e4": "The unit does not have an EFI partition to continue the installation.",
         "e5": "This partitioned table type is not supported: {table}",
-        "r2": "Waiting on you to finish partitioning..."
+        "r2": "Waiting on you to finish partitioning...\nIf you are stuck, please try and strike Alt-Tab to bring up the GParted window and close it when you are done."
     },
     "esp": {
         "title": "ESP Partition",
