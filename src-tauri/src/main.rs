@@ -23,6 +23,7 @@ use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
 use std::thread;
 use std::time::Duration;
+use sysinfo::System;
 use tauri::api::dialog;
 use tauri::Manager;
 use tauri::State;
@@ -224,8 +225,14 @@ impl Serialize for DeploykitGuiError {
 #[tauri::command]
 async fn gparted() -> TauriResult<()> {
     let mut process = Command::new("gparted").spawn()?;
-    let id = process.id();
-    pin_window(id)?;
+
+    let mut system = System::new();
+    system.refresh_all();
+
+    for process in system.processes_by_name("gpartedbin") {
+        pin_window(process.pid().as_u32())?;
+    }
+
     process.wait()?;
 
     Ok(())
