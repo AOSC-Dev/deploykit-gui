@@ -16,7 +16,7 @@
         "rescue-and-recovery": "救援与恢复",
         "rescue-and-recovery-p1": "进入系统救援工作区",
         "reboot-title": "重启",
-        "reboot-p1": "退出 LiveKit 并重启您的设备"
+        "reboot-p1": "退出并重启您的设备"
     },
     "network": {
         "title": "网络连接",
@@ -26,7 +26,7 @@
     },
     "variant": {
         "title": "系统版本",
-        "p1": "请选择您希望安装的系统版本。",
+        "p1": "请选择您希望安装的系统版本。个人桌面设备可选用带有完整体验的桌面版系统。",
         "l1": "正在获取系统发行信息…"
     },
     "error": {
