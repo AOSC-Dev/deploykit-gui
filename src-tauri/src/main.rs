@@ -223,7 +223,7 @@ impl Serialize for DeploykitGuiError {
 }
 
 #[tauri::command]
-async fn gparted(state: State<'_, DkState<'_>>) -> TauriResult<()> {
+async fn gparted() -> TauriResult<()> {
     let mut process = Command::new("gparted").spawn()?;
     let mut system = System::new();
 
@@ -236,7 +236,7 @@ async fn gparted(state: State<'_, DkState<'_>>) -> TauriResult<()> {
         }
 
         if !pids.is_empty() {
-            pin_window(&pids, state.process_id)?;
+            pin_window(&pids)?;
             break;
         }
     }
@@ -635,7 +635,7 @@ async fn reset_progress_status(state: State<'_, DkState<'_>>) -> TauriResult<()>
 }
 
 #[tauri::command]
-async fn run_nmtui(state: State<'_, DkState<'_>>) -> TauriResult<()> {
+async fn run_nmtui() -> TauriResult<()> {
     let process = Command::new("mate-terminal")
         .arg("--command")
         .arg("nmtui")
@@ -643,7 +643,7 @@ async fn run_nmtui(state: State<'_, DkState<'_>>) -> TauriResult<()> {
         .spawn()?;
 
     let id = process.id();
-    pin_window(&[id], state.process_id)?; 
+    pin_window(&[id])?; 
 
     Ok(())
 }
@@ -668,7 +668,6 @@ struct DkState<'a> {
     recipe: Mutex<Option<Recipe>>,
     recipe_i18n: Mutex<Option<HashMap<String, Value>>>,
     proxy: DeploykitProxy<'a>,
-    process_id: u32,
 }
 
 async fn init() -> Result<DeploykitProxy<'static>> {
@@ -698,8 +697,6 @@ async fn main() {
     info!("Git version: {}", env!("VERGEN_GIT_DESCRIBE"));
 
     let proxy = init().await;
-
-    let process_id = std::process::id();
 
     match proxy {
         Ok(p) => {
@@ -774,8 +771,7 @@ async fn main() {
                     recipe: Mutex::new(None),
                     recipe_i18n: Mutex::new(None),
                     proxy: p,
-                    process_id,
-                })
+\                })
                 .invoke_handler(tauri::generate_handler![
                     set_config,
                     list_devices,

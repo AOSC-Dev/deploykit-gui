@@ -225,7 +225,7 @@ pub fn is_efi() -> bool {
     Path::new(efi_path).exists()
 }
 
-pub fn pin_window(pin_pids: &[u32], main_pid: u32) -> Result<()> {
+pub fn pin_window(pin_pids: &[u32]) -> Result<()> {
     let mut fined = false;
 
     while !fined {
@@ -256,28 +256,9 @@ pub fn pin_window(pin_pids: &[u32], main_pid: u32) -> Result<()> {
         let sticky_window = conn.intern_atom(true, b"_NET_WM_STATE_STICKY")?;
         let sticky_window = sticky_window.reply()?.atom;
 
-        let mut main_window = None;
-
-        for window in &windows {
+        for window in windows {
             let pid = conn
-                .get_property(false, *window, atom, AtomEnum::ANY, 0, u32::MAX)?
-                .reply();
-
-            if let Ok(pid) = pid {
-                let pids = pid
-                    .value32()
-                    .ok_or_eyre("illage reply")?
-                    .collect::<Vec<_>>();
-
-                if pids.iter().any(|x| x == &main_pid) {
-                    main_window = Some(window);
-                }
-            }
-        }
-
-        for window in &windows {
-            let pid = conn
-                .get_property(false, *window, atom, AtomEnum::ANY, 0, u32::MAX)?
+                .get_property(false, window, atom, AtomEnum::ANY, 0, u32::MAX)?
                 .reply();
 
             if let Ok(pid) = pid {
@@ -291,7 +272,7 @@ pub fn pin_window(pin_pids: &[u32], main_pid: u32) -> Result<()> {
 
                     let event = ClientMessageEvent::new(
                         32,
-                        *window,
+                        window,
                         window_state_atom,
                         [1, pin_window_atom, sticky_window, 0, 0],
                     );
@@ -304,6 +285,7 @@ pub fn pin_window(pin_pids: &[u32], main_pid: u32) -> Result<()> {
                         EventMask::SUBSTRUCTURE_REDIRECT | EventMask::SUBSTRUCTURE_NOTIFY,
                         event,
                     )?;
+
                     conn.sync()?;
                 }
             }
