@@ -771,7 +771,7 @@ async fn main() {
                     recipe: Mutex::new(None),
                     recipe_i18n: Mutex::new(None),
                     proxy: p,
-\                })
+                })
                 .invoke_handler(tauri::generate_handler![
                     set_config,
                     list_devices,
