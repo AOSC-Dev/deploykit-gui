@@ -95,7 +95,7 @@ async function checkDisk(obj, device) {
     const { path } = obj.$router.currentRoute.value;
 
     obj.$router.replace({
-      path: `/error/${encodeURIComponent(e)}`,
+      path: `/error/${encodeURIComponent(JSON.stringify(e))}`,
       query: { openGparted: true, currentRoute: path },
     });
   }

@@ -46,7 +46,7 @@ export default {
         invoke('auto_partition', { dev: this.config.device.path }).catch(
           (e) => {
             this.$router.replace({
-              path: `/error/${encodeURIComponent(e)}`,
+              path: `/error/${encodeURIComponent(JSON.stringify(e))}`,
               query: { openGparted: true, currentRoute: '/partitions' },
             });
           },
@@ -73,7 +73,7 @@ export default {
         });
       } catch (e) {
         this.$router.replace({
-          path: `/error/${encodeURIComponent(e)}`,
+          path: `/error/${encodeURIComponent(JSON.stringify(e))}`,
           query: { openGparted: true, currentRoute: '/partitions' },
         });
       }

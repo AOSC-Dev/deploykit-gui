@@ -47,7 +47,7 @@ export default {
       const { path } = this.$router.currentRoute.value;
 
       this.$router.replace({
-        path: `/error/${encodeURIComponent(e)}`,
+        path: `/error/${encodeURIComponent(JSON.stringify(e))}`,
         query: { currentRoute: path },
       });
     }
