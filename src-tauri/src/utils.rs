@@ -305,15 +305,6 @@ pub fn pin_window(pin_pids: &[u32], main_pid: u32) -> Result<()> {
                         event,
                     )?;
                     conn.sync()?;
-
-                    // 从 deploykit-gui 窗口中置顶
-                    conn.send_event(
-                        false,
-                        *main_window.ok_or_eyre("Failed to get main window id")?,
-                        EventMask::SUBSTRUCTURE_REDIRECT | EventMask::SUBSTRUCTURE_NOTIFY,
-                        event,
-                    )?;
-                    conn.sync()?;
                 }
             }
         }
