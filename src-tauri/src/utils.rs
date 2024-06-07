@@ -11,8 +11,10 @@ use std::time::Instant;
 use url::Url;
 use x11rb::connection::Connection;
 use x11rb::protocol::xproto::{
-    configure_window, AtomEnum, ConfigureWindowAux, ConnectionExt, StackMode
+    AtomEnum, ClientMessageEvent,
+    ConnectionExt as ConnectionExtB, EventMask
 };
+use x11rb::wrapper::ConnectionExt;
 
 const SPEEDTEST_FILE_CHECKSUM: &str =
     "557284748e7fd375d015b2cb71180ff9bf340fbef601da7c4e113ab2dc9f2836";
@@ -224,32 +226,62 @@ pub fn is_efi() -> bool {
     Path::new(efi_path).exists()
 }
 
-pub fn pin_window(pin_pid: u32) -> Result<()> {
-    let (conn, screen_num) = x11rb::connect(None).unwrap();
-    let screen = &conn.setup().roots[screen_num];
-    let root_id = screen.root;
-    let cookie = conn.intern_atom(true, b"_NET_CLIENT_LIST")?;
-    let atom = cookie.reply()?.atom;
 
-    let reply = conn
-        .get_property(false, root_id, atom, AtomEnum::ANY, 0, u32::MAX)?
-        .reply()?;
+pub fn pin_window(pin_pids: &[u32]) -> Result<()> {
+    let mut fined = false;
 
-    let windows = reply.value32().ok_or_eyre("illage reply")?.collect::<Vec<_>>();
+    while !fined {
+        let (conn, screen_num) = x11rb::connect(None).unwrap();
+        let screen = &conn.setup().roots[screen_num];
+        let root_id = screen.root;
+        let cookie = conn.intern_atom(true, b"_NET_CLIENT_LIST")?;
+        let atom = cookie.reply()?.atom;
 
-    let cookie = conn.intern_atom(true, b"_NET_WM_PID")?;
-    let atom = cookie.reply()?.atom;
+        let reply = conn
+            .get_property(false, root_id, atom, AtomEnum::ANY, 0, u32::MAX)?
+            .reply()?;
 
-    for window in windows {
-        let pid = conn
-            .get_property(false, window, atom, AtomEnum::ANY, 0, u32::MAX)?
-            .reply();
+        let windows = reply.value32().ok_or_eyre("illage reply")?.collect::<Vec<_>>();
 
-        if let Ok(pid) = pid {
-            let pids = pid.value32().unwrap().collect::<Vec<_>>();
+        let cookie = conn.intern_atom(true, b"_NET_WM_PID")?;
+        let atom = cookie.reply()?.atom;
 
-            if pids.contains(&pin_pid) {
-                configure_window(&conn, window, &ConfigureWindowAux::new().stack_mode(StackMode::ABOVE))?;
+        let pin_window_cookie = conn.intern_atom(true, b"_NET_WM_STATE_ABOVE")?;
+        let pin_window_atom = pin_window_cookie.reply()?.atom;
+
+        let window_state_cookie = conn.intern_atom(true, b"_NET_WM_STATE")?;
+        let window_state_atom = window_state_cookie.reply()?.atom;
+
+        for window in windows {
+            let pid = conn
+                .get_property(false, window, atom, AtomEnum::ANY, 0, u32::MAX)?
+                .reply();
+
+            if let Ok(pid) = pid {
+                let pids = pid.value32().ok_or_eyre("illage reply")?.collect::<Vec<_>>();
+
+                if pids.iter().any(|x| pin_pids.contains(x)) {
+                    fined = true;
+
+                    dbg!(window);
+
+                    let event = ClientMessageEvent::new(
+                        32,
+                        window,
+                        window_state_atom,
+                        [1, pin_window_atom, 0, 0, 0],
+                    );
+
+                    // https://github.com/psychon/x11rb/discussions/929
+                    conn.send_event(
+                        false,
+                        root_id,
+                        EventMask::SUBSTRUCTURE_REDIRECT | EventMask::SUBSTRUCTURE_NOTIFY,
+                        event,
+                    )?;
+
+                    conn.sync()?;
+                }
             }
         }
     }

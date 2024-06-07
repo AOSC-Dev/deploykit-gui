@@ -21,7 +21,6 @@ use std::process;
 use std::process::Command;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
-use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
 use sysinfo::System;
@@ -226,31 +225,23 @@ impl Serialize for DeploykitGuiError {
 #[tauri::command]
 async fn gparted() -> TauriResult<()> {
     let mut process = Command::new("gparted").spawn()?;
+    let mut system = System::new();
 
-    let exit = Arc::new(AtomicBool::new(false));
-    let ec = exit.clone();
+    loop {
+        system.refresh_all();
 
-    thread::spawn(move || -> Result<()> {
-        let mut system = System::new();
-        loop {
-            if ec.load(Ordering::Relaxed) {
-                break;
-            }
-
-            system.refresh_all();
-
-            for process in system.processes_by_name("gpartedbin") {
-                pin_window(process.pid().as_u32())?;
-            }
-
-            thread::sleep(Duration::from_millis(100));
+        let mut pids = vec![];
+        for process in system.processes_by_name("gpartedbin") {
+            pids.push(process.pid().as_u32());
         }
 
-        Ok(())
-    });
+        if !pids.is_empty() {
+            pin_window(&pids)?;
+            break;
+        }
+    }
 
     process.wait()?;
-    exit.store(true, Ordering::Relaxed);
 
     Ok(())
 }
@@ -652,7 +643,7 @@ async fn run_nmtui() -> TauriResult<()> {
         .spawn()?;
 
     let id = process.id();
-    pin_window(id)?;
+    pin_window(&[id])?;
 
     Ok(())
 }
