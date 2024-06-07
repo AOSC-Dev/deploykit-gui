@@ -11,8 +11,7 @@ use std::time::Instant;
 use url::Url;
 use x11rb::connection::Connection;
 use x11rb::protocol::xproto::{
-    AtomEnum, ClientMessageEvent,
-    ConnectionExt as ConnectionExtB, EventMask
+    AtomEnum, ClientMessageEvent, ConnectionExt as ConnectionExtB, EventMask,
 };
 use x11rb::wrapper::ConnectionExt;
 
@@ -226,8 +225,7 @@ pub fn is_efi() -> bool {
     Path::new(efi_path).exists()
 }
 
-
-pub fn pin_window(pin_pids: &[u32]) -> Result<()> {
+pub fn pin_window(pin_pids: &[u32], main_pid: u32) -> Result<()> {
     let mut fined = false;
 
     while !fined {
@@ -241,7 +239,10 @@ pub fn pin_window(pin_pids: &[u32]) -> Result<()> {
             .get_property(false, root_id, atom, AtomEnum::ANY, 0, u32::MAX)?
             .reply()?;
 
-        let windows = reply.value32().ok_or_eyre("illage reply")?.collect::<Vec<_>>();
+        let windows = reply
+            .value32()
+            .ok_or_eyre("illage reply")?
+            .collect::<Vec<_>>();
 
         let cookie = conn.intern_atom(true, b"_NET_WM_PID")?;
         let atom = cookie.reply()?.atom;
@@ -252,34 +253,66 @@ pub fn pin_window(pin_pids: &[u32]) -> Result<()> {
         let window_state_cookie = conn.intern_atom(true, b"_NET_WM_STATE")?;
         let window_state_atom = window_state_cookie.reply()?.atom;
 
-        for window in windows {
+        let sticky_window = conn.intern_atom(true, b"_NET_WM_STATE_STICKY")?;
+        let sticky_window = sticky_window.reply()?.atom;
+
+        let mut main_window = None;
+
+        for window in &windows {
             let pid = conn
-                .get_property(false, window, atom, AtomEnum::ANY, 0, u32::MAX)?
+                .get_property(false, *window, atom, AtomEnum::ANY, 0, u32::MAX)?
                 .reply();
 
             if let Ok(pid) = pid {
-                let pids = pid.value32().ok_or_eyre("illage reply")?.collect::<Vec<_>>();
+                let pids = pid
+                    .value32()
+                    .ok_or_eyre("illage reply")?
+                    .collect::<Vec<_>>();
+
+                if pids.iter().any(|x| x == &main_pid) {
+                    main_window = Some(window);
+                }
+            }
+        }
+
+        for window in &windows {
+            let pid = conn
+                .get_property(false, *window, atom, AtomEnum::ANY, 0, u32::MAX)?
+                .reply();
+
+            if let Ok(pid) = pid {
+                let pids = pid
+                    .value32()
+                    .ok_or_eyre("illage reply")?
+                    .collect::<Vec<_>>();
 
                 if pids.iter().any(|x| pin_pids.contains(x)) {
                     fined = true;
 
-                    dbg!(window);
-
                     let event = ClientMessageEvent::new(
                         32,
-                        window,
+                        *window,
                         window_state_atom,
-                        [1, pin_window_atom, 0, 0, 0],
+                        [1, pin_window_atom, sticky_window, 0, 0],
                     );
 
                     // https://github.com/psychon/x11rb/discussions/929
+                    // 从 WM 中置顶
                     conn.send_event(
                         false,
                         root_id,
                         EventMask::SUBSTRUCTURE_REDIRECT | EventMask::SUBSTRUCTURE_NOTIFY,
                         event,
                     )?;
+                    conn.sync()?;
 
+                    // 从 deploykit-gui 窗口中置顶
+                    conn.send_event(
+                        false,
+                        *main_window.ok_or_eyre("Failed to get main window id")?,
+                        EventMask::SUBSTRUCTURE_REDIRECT | EventMask::SUBSTRUCTURE_NOTIFY,
+                        event,
+                    )?;
                     conn.sync()?;
                 }
             }
