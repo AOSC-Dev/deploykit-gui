@@ -240,6 +240,15 @@ export default {
       const { size } = this.partitions[this.selected];
 
       if (size < this.sqfs_size) {
+        if (
+          this.efiError
+          || this.otherError
+          || this.unsupportedTable
+          || !this.rightCombine
+          || this.lvmError
+        ) {
+          return;
+        }
         this.error_msg = this.$t('part.e1', {
           size: Math.ceil(this.sqfs_size / 1024 / 1024 / 1024),
         });
