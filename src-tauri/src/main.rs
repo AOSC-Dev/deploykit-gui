@@ -230,19 +230,30 @@ async fn gparted(state: State<'_, DkState<'_>>) -> TauriResult<()> {
     loop {
         system.refresh_all();
 
+        // `GParted` 本身会自己 spawn 出好几个真正的图形程序 `gpartedbin`
+        // 我们不知道哪个是真正的窗口
+        // 找到这些进程
         let mut pids = vec![];
         for process in system.processes_by_name("gpartedbin") {
             pids.push(process.pid().as_u32());
         }
 
         if !pids.is_empty() {
+            // 把 dkgui 的 `alwaysOnTop` 属性关掉
+            // 让将来只有 GParted 是置顶（above）属性
             control_window_above(&[state.process_id], false)?;
+
+            // 设置 GParted 为置顶（above）属性
             control_window_above(&pids, true)?;
+
             break;
         }
     }
 
     process.wait()?;
+
+    // 现在，GParted 已经退出
+    // 我们需要重新把 dkgui 的置顶（above）属性加回来
     control_window_above(&[state.process_id], true)?;
 
     Ok(())
