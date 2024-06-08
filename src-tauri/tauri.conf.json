@@ -28,11 +28,15 @@
     "windows": [
       {
         "fullscreen": false,
-        "resizable": true,
+        "resizable": false,
         "decorations": false,
         "title": "deploykit-gui",
         "width": 1024,
-        "height": 768
+        "height": 768,
+        "minWidth": 1024,
+        "minHeight": 768,
+        "maxWidth": 1024,
+        "maxHeight": 768
       }
     ],
     "cli": {
