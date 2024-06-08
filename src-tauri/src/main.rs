@@ -14,7 +14,6 @@ use rand::thread_rng;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
-use utils::control_dkgui_above;
 use std::collections::HashMap;
 use std::io;
 use std::io::ErrorKind;
@@ -44,7 +43,7 @@ use tracing_subscriber::Layer;
 use utils::candidate_sqfs;
 use utils::get_mirror_speed_score;
 use utils::is_efi;
-use utils::pin_window;
+use utils::control_window_above;
 use utils::Mirror;
 use utils::Recipe;
 use utils::Squashfs;
@@ -237,14 +236,14 @@ async fn gparted(state: State<'_, DkState<'_>>) -> TauriResult<()> {
         }
 
         if !pids.is_empty() {
-            control_dkgui_above(state.process_id, false)?;
-            pin_window(&pids)?;
+            control_window_above(&[state.process_id], false)?;
+            control_window_above(&pids, true)?;
             break;
         }
     }
 
     process.wait()?;
-    control_dkgui_above(state.process_id, true)?;
+    control_window_above(&[state.process_id], true)?;
 
     Ok(())
 }
@@ -646,10 +645,10 @@ async fn run_nmtui(state: State<'_, DkState<'_>>) -> TauriResult<()> {
         .spawn()?;
 
     let id = process.id();
-    control_dkgui_above(state.process_id, false)?;
-    pin_window(&[id])?; 
+    control_window_above(&[state.process_id], false)?;
+    control_window_above(&[id], true)?; 
     process.wait()?;
-    control_dkgui_above(state.process_id, true)?;
+    control_window_above(&[state.process_id], true)?;
 
     Ok(())
 }
