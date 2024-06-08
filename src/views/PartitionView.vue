@@ -68,6 +68,24 @@ async function checkDisk(obj, device) {
             break;
         }
 
+        try {
+          const isLvmDevice = await invoke('is_lvm_device', {
+            disk: device.path,
+          }).data;
+
+          if (isLvmDevice) {
+            o.error_msg = o.$t('part.e6');
+            o.lvmError = true;
+          }
+        } catch (err) {
+          const { path } = obj.$router.currentRoute.value;
+
+          obj.$router.replace({
+            path: `/error/${encodeURIComponent(JSON.stringify(e))}`,
+            query: { openGparted: true, currentRoute: path },
+          });
+        }
+
         if (o.is_efi) {
           const espParts = await invoke('find_all_esp_parts');
           if (espParts.length === 0) {
@@ -120,6 +138,7 @@ export default {
       rightCombine: false,
       efiError: false,
       unsupportedTable: false,
+      lvmError: false,
       otherError: false,
     };
   },
@@ -188,6 +207,7 @@ export default {
         !this.rightCombine
         || this.efiError
         || this.unsupportedTable
+        || this.lvmError
         || this.otherError
       ) {
         return false;
@@ -238,6 +258,7 @@ export default {
         this.rightCombine
         && !this.efiError
         && !this.unsupportedTable
+        && !this.lvmError
         && !this.otherError
       ) {
         this.error_msg = '';

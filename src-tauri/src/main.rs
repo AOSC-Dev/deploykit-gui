@@ -41,9 +41,9 @@ use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::EnvFilter;
 use tracing_subscriber::Layer;
 use utils::candidate_sqfs;
+use utils::control_window_above;
 use utils::get_mirror_speed_score;
 use utils::is_efi;
-use utils::control_window_above;
 use utils::Mirror;
 use utils::Recipe;
 use utils::Squashfs;
@@ -88,6 +88,7 @@ trait Deploykit {
     async fn reset_progress_status(&self) -> zResult<String>;
     async fn sync_disk(&self) -> zResult<String>;
     async fn sync_and_reboot(&self) -> zResult<String>;
+    async fn is_lvm_device(&self, dev: &str) -> zResult<String>;
 }
 
 #[derive(Debug, Deserialize)]
@@ -116,6 +117,7 @@ enum DbusMethod<'a> {
     ResetProgressStatus,
     SyncDisk,
     SyncAndReboot,
+    IsLvmDevice(&'a str),
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -171,6 +173,7 @@ impl Dbus {
             DbusMethod::ResetProgressStatus => proxy.reset_progress_status().await?,
             DbusMethod::SyncDisk => proxy.sync_disk().await?,
             DbusMethod::SyncAndReboot => proxy.sync_and_reboot().await?,
+            DbusMethod::IsLvmDevice(dev) => proxy.is_lvm_device(dev).await?,
         };
 
         let res = Self::try_from(s)?;
@@ -448,6 +451,14 @@ async fn find_all_esp_parts(state: State<'_, DkState<'_>>) -> TauriResult<Value>
     Ok(res.data)
 }
 
+#[tauri::command]
+async fn is_lvm_device(state: State<'_, DkState<'_>>, dev: &str) -> TauriResult<Value> {
+    let proxy = &state.proxy;
+    let res = Dbus::run(proxy, DbusMethod::IsLvmDevice(dev)).await?;
+
+    Ok(res.data)
+}
+
 #[tauri::command(async)]
 async fn cancel_install_and_exit(
     state: State<'_, DkState<'_>>,
@@ -657,7 +668,7 @@ async fn run_nmtui(state: State<'_, DkState<'_>>) -> TauriResult<()> {
 
     let id = process.id();
     control_window_above(&[state.process_id], false)?;
-    control_window_above(&[id], true)?; 
+    control_window_above(&[id], true)?;
     process.wait()?;
     control_window_above(&[state.process_id], true)?;
 
@@ -818,7 +829,8 @@ async fn main() {
                     is_debug,
                     run_nmtui,
                     set_locale,
-                    get_arch_name
+                    get_arch_name,
+                    is_lvm_device,
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");
