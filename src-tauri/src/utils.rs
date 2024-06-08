@@ -294,3 +294,62 @@ pub fn pin_window(pin_pids: &[u32]) -> Result<()> {
 
     Ok(())
 }
+
+pub fn control_dkgui_above(process_id: u32, enable: bool) -> Result<()> {
+    let (conn, screen_num) = x11rb::connect(None).unwrap();
+    let screen = &conn.setup().roots[screen_num];
+    let root_id = screen.root;
+    let cookie = conn.intern_atom(true, b"_NET_CLIENT_LIST")?;
+    let atom = cookie.reply()?.atom;
+
+    let reply = conn
+        .get_property(false, root_id, atom, AtomEnum::ANY, 0, u32::MAX)?
+        .reply()?;
+
+    let windows = reply
+        .value32()
+        .ok_or_eyre("illage reply")?
+        .collect::<Vec<_>>();
+
+    let cookie = conn.intern_atom(true, b"_NET_WM_PID")?;
+    let atom = cookie.reply()?.atom;
+
+    let pin_window_cookie = conn.intern_atom(true, b"_NET_WM_STATE_ABOVE")?;
+    let pin_window_atom = pin_window_cookie.reply()?.atom;
+
+    let window_state_cookie = conn.intern_atom(true, b"_NET_WM_STATE")?;
+    let window_state_atom = window_state_cookie.reply()?.atom;
+
+    for window in windows {
+        let pid = conn
+            .get_property(false, window, atom, AtomEnum::ANY, 0, u32::MAX)?
+            .reply();
+
+        if let Ok(pid) = pid {
+            let pids = pid
+                .value32()
+                .ok_or_eyre("illage reply")?
+                .collect::<Vec<_>>();
+
+            if pids.contains(&process_id) {
+                let event = ClientMessageEvent::new(
+                    32,
+                    window,
+                    window_state_atom,
+                    [if enable { 1 } else { 0 }, pin_window_atom, 0, 0, 0],
+                );
+
+                conn.send_event(
+                    false,
+                    root_id,
+                    EventMask::SUBSTRUCTURE_REDIRECT | EventMask::SUBSTRUCTURE_NOTIFY,
+                    event,
+                )?;
+
+                conn.sync()?;
+            }
+        }
+    }
+
+    Ok(())
+}

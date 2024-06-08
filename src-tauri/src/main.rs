@@ -14,6 +14,7 @@ use rand::thread_rng;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
+use utils::control_dkgui_above;
 use std::collections::HashMap;
 use std::io;
 use std::io::ErrorKind;
@@ -223,7 +224,7 @@ impl Serialize for DeploykitGuiError {
 }
 
 #[tauri::command]
-async fn gparted() -> TauriResult<()> {
+async fn gparted(state: State<'_, DkState<'_>>) -> TauriResult<()> {
     let mut process = Command::new("gparted").spawn()?;
     let mut system = System::new();
 
@@ -236,12 +237,14 @@ async fn gparted() -> TauriResult<()> {
         }
 
         if !pids.is_empty() {
+            control_dkgui_above(state.process_id, false)?;
             pin_window(&pids)?;
             break;
         }
     }
 
     process.wait()?;
+    control_dkgui_above(state.process_id, true)?;
 
     Ok(())
 }
@@ -635,15 +638,18 @@ async fn reset_progress_status(state: State<'_, DkState<'_>>) -> TauriResult<()>
 }
 
 #[tauri::command]
-async fn run_nmtui() -> TauriResult<()> {
-    let process = Command::new("mate-terminal")
+async fn run_nmtui(state: State<'_, DkState<'_>>) -> TauriResult<()> {
+    let mut process = Command::new("mate-terminal")
         .arg("--command")
         .arg("nmtui")
         .arg("--disable-factory") // 让 mate-terminal 不要去 fork 自己
         .spawn()?;
 
     let id = process.id();
+    control_dkgui_above(state.process_id, false)?;
     pin_window(&[id])?; 
+    process.wait()?;
+    control_dkgui_above(state.process_id, true)?;
 
     Ok(())
 }
@@ -668,6 +674,7 @@ struct DkState<'a> {
     recipe: Mutex<Option<Recipe>>,
     recipe_i18n: Mutex<Option<HashMap<String, Value>>>,
     proxy: DeploykitProxy<'a>,
+    process_id: u32,
 }
 
 async fn init() -> Result<DeploykitProxy<'static>> {
@@ -697,6 +704,8 @@ async fn main() {
     info!("Git version: {}", env!("VERGEN_GIT_DESCRIBE"));
 
     let proxy = init().await;
+
+    let process_id = std::process::id();
 
     match proxy {
         Ok(p) => {
@@ -771,6 +780,7 @@ async fn main() {
                     recipe: Mutex::new(None),
                     recipe_i18n: Mutex::new(None),
                     proxy: p,
+                    process_id,
                 })
                 .invoke_handler(tauri::generate_handler![
                     set_config,
