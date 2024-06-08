@@ -10,7 +10,7 @@
         "sr-help": "请注意：安装过程中可能会调用外部工具，而这些外部工具可能没有屏幕阅读器支持（如用于分区的 GParted），到时您可能需要寻求帮助。在这些步骤，安装程序将以“在此之前，请寻求帮助”一句提示您寻求帮助。"
     },
     "desktop-or-install": {
-        "title": "意欲何为？",
+        "title": "君欲何为？",
         "install-system-title": "安装 AOSC OS",
         "install-system-p1": "在你的设备上安装及配置 AOSC OS",
         "rescue-and-recovery": "救援与恢复",
