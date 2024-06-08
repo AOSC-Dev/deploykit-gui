@@ -27,8 +27,9 @@
     },
     "windows": [
       {
-        "fullscreen": true,
+        "fullscreen": false,
         "resizable": true,
+        "decorations": false,
         "title": "deploykit-gui",
         "width": 1024,
         "height": 768
