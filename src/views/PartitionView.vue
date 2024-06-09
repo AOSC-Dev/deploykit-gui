@@ -269,6 +269,7 @@ export default {
         && !this.unsupportedTable
         && !this.lvmError
         && !this.otherError
+        && size >= this.sqfs_size
       ) {
         this.error_msg = '';
       }
