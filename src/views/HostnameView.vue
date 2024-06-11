@@ -39,7 +39,7 @@ export default {
   methods: {
     validate() {
       if (this.name === '') {
-        this.err_msg = this.$t('host.bad');
+        this.err_msg = this.$t('host.empty');
         this.nameEmpty = true;
         return false;
       }
