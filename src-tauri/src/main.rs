@@ -4,8 +4,8 @@
 use axum::http::HeaderValue;
 use axum::http::Method;
 use axum::Router;
-use eyre::eyre;
 use eyre::ContextCompat;
+use eyre::OptionExt;
 use eyre::Result;
 use parser::list_zoneinfo;
 use parser::ZoneInfo;
@@ -644,7 +644,7 @@ async fn i18n_recipe(state: State<'_, DkState<'_>>, locale: &str) -> TauriResult
         "zh-CN" | "zh-TW" => map.get("zh-CN"),
         _ => map.get("en"),
     }
-    .ok_or_else(|| eyre!("Failed to get language value in i18n file"))?
+    .ok_or_eyre("Failed to get language value in i18n file")?
     .to_owned();
 
     Ok(value)
