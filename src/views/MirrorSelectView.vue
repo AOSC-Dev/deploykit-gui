@@ -24,7 +24,7 @@ export default {
   inject: ['config', 'humanSize'],
   data() {
     return {
-      mirrors: [],
+      mirrors: this.config.mirrors ? this.config.mirrors : [],
       loading: false,
       selected: null,
       recipeI18n: {},
@@ -68,13 +68,20 @@ export default {
   },
   async created() {
     try {
-      const data = await invoke('get_recipe');
+      let mirrors;
+      if (!this.config.mirrors) {
+        const data = await invoke('get_recipe');
+        mirrors = data.mirrors;
+      } else {
+        mirrors = this.config.mirrors;
+      }
+
       const recipeI18n = await invoke('i18n_recipe', {
         locale: this.config.locale.id,
       });
       this.recipeI18n = recipeI18n;
 
-      const mirrors = covertMirrorsListToUiString(data.mirrors, recipeI18n);
+      mirrors = covertMirrorsListToUiString(mirrors, recipeI18n);
       this.mirrors = mirrors;
 
       if (this.config.mirror) {

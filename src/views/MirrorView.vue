@@ -11,6 +11,6 @@ import DKBottomSteps from '@/components/DKBottomSteps.vue';
         {{ $t("mirror.b1") }}
       </button>
     </section>
+    <DKBottomSteps/>
   </div>
-  <DKBottomSteps />
 </template>

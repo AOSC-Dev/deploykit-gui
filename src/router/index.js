@@ -5,6 +5,7 @@ import ErrorView from '@/views/ErrorView.vue';
 import HostnameView from '@/views/HostnameView.vue';
 import UserView from '@/views/UserView.vue';
 import ConfirmView from '@/views/ConfirmView.vue';
+import MirrorView from '@/views/MirrorView.vue';
 import SwapFileView from '@/views/SwapFileView.vue';
 import LocaleView from '@/views/LocaleView.vue';
 import MirrorSelectView from '@/views/MirrorSelectView.vue';
@@ -17,6 +18,7 @@ import EspPartitionView from '@/views/EspPartitionView.vue';
 import WelcomeView from '@/views/WelcomeView.vue';
 import AutoPartView from '@/views/AutoPartView.vue';
 import PartitionProgressView from '@/views/PartitionProgressView.vue';
+import MirrorProgressView from '@/views/MirrorProgressView.vue';
 import NetworkView from '../views/NetworkView.vue';
 
 const router = createRouter({
@@ -115,6 +117,18 @@ const router = createRouter({
       path: '/variants',
       name: 'variants',
       component: VariantView,
+      meta: { steps: 0, next: '/mirrors' },
+    },
+    {
+      path: '/mirrors',
+      name: 'mirrors',
+      component: MirrorView,
+      meta: { steps: 0, next: '/mirrorsprogress' },
+    },
+    {
+      path: '/mirrorsprogress',
+      name: 'mirrorsprogress',
+      component: MirrorProgressView,
       meta: { steps: 0, next: '/mirrors-sel' },
     },
     {
