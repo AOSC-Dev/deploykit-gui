@@ -6,6 +6,9 @@ import stringWidth from 'string-width';
 export default {
   props: {
     list: Array,
+    volume: Number,
+    muted: Boolean,
+    playing: Boolean,
   },
   data() {
     return {
@@ -18,7 +21,7 @@ export default {
     },
     stop() {
       const fadeInterval = setInterval(() => {
-        if (this.$refs.plyr.player.volume <= 0) {
+        if (this.$refs.plyr.player.volume <= 0 || this.muted) {
           clearInterval(fadeInterval);
           this.$refs.plyr.player.pause();
         }
@@ -27,7 +30,8 @@ export default {
     },
   },
   mounted() {
-    this.$refs.plyr.player.volume = 0.3;
+    this.$refs.plyr.player.volume = this.volume;
+    this.$refs.plyr.player.muted = this.muted;
     this.$refs.plyr.player.on('ended', () => {
       this.currentIndex += 1;
       if (this.currentIndex >= this.$props.list.length) {
@@ -45,6 +49,19 @@ export default {
         ],
       };
       this.$refs.plyr.player.play();
+    });
+
+    this.$refs.plyr.player.on('volumechange', () => {
+      this.$emit('update:volume', this.$refs.plyr.player.volume);
+      this.$emit('update:muted', this.$refs.plyr.player.muted);
+    });
+
+    this.$refs.plyr.player.on('playing', () => {
+      this.$emit('update:playing', true);
+    });
+
+    this.$refs.plyr.player.on('pause', () => {
+      this.$emit('update:playing', false);
     });
   },
 };

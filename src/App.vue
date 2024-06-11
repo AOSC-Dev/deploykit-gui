@@ -25,6 +25,9 @@ export default {
       can_quit: true,
       isInstall: false,
       playList: [],
+      volume: 0.3,
+      muted: false,
+      playing: true,
     };
   },
   computed: {
@@ -226,7 +229,16 @@ export default {
         <nav :class="nav_menu_bold(3)">{{ $t("d.nav-3") }}</nav>
       </div>
       <div v-if="page_number >= 2">
-        <AudioPlayer ref="player" :list="playList"></AudioPlayer>
+        <AudioPlayer
+          ref="player"
+          :list="playList"
+          :volume="volume"
+          :muted="muted"
+          :playing="playing"
+          @update:playing="(v) => (playing = v)"
+          @update:volume="(v) => (volume = v)"
+          @update:muted="(v) => (muted = v)"
+        ></AudioPlayer>
       </div>
     </template>
   </DKLayout>
