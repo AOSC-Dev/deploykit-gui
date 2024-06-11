@@ -49,7 +49,8 @@ export default {
 
       if (isDebug) {
         this.config.device = {
-          path: '/dev/loop20',
+          model: 'Test Driver',
+          path: '/dev/loop30',
           size: '11451400000000',
         };
         this.$router.replace('/partitions');
