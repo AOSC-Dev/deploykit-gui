@@ -5,7 +5,6 @@ import DKBottomRightButtons from '@/components/DKBottomRightButtons.vue';
 import DKBottomActions from '@/components/DKBottomActions.vue';
 import { invoke } from '@tauri-apps/api';
 import DKSpinner from '@/components/DKSpinner.vue';
-import DKBody from '../components/DKBody.vue';
 </script>
 
 <script>
