@@ -88,14 +88,6 @@ export default {
         this.lightup += 1;
       }, 210);
     },
-
-    // Something to do before playing
-    // handleBeforePlay(next) {
-    //   // There are a few things you can do here...
-    //   this.currentAudioName = this.audioList[this.$refs.audioPlayer.currentPlayIndex].name;
-
-    //   next(); // Start playing
-    // },
     on_lang_selected(id) {
       this.current_lang = id.toLowerCase();
       if (id === 'en') {
