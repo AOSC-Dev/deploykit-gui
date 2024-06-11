@@ -45,8 +45,18 @@ export default {
   },
   async created() {
     try {
-      const devices = await invoke('list_devices');
-      this.devices = devices;
+      const isDebug = await invoke('is_debug');
+
+      if (isDebug) {
+        this.config.device = {
+          path: '/dev/loop20',
+          size: '11451400000000',
+        };
+        this.$router.replace('/partitions');
+      } else {
+        const devices = await invoke('list_devices');
+        this.devices = devices;
+      }
 
       const v = this.config.variant;
       const squashfsInfo = await invoke('get_squashfs_info', {

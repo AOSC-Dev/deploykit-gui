@@ -133,7 +133,7 @@ export default {
           type="text"
           v-model="user"
           :class="name_style"
-          @blur="validate_user"
+          @input="validate_user"
         />
         <label for="pwd" :class="pwd_style">{{ $t("user.l2") }}</label>
         <input

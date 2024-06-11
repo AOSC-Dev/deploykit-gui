@@ -21,6 +21,8 @@ export default {
       name: this.config.hostname,
       generated_name: null,
       err_msg: '',
+      nameError: false,
+      nameEmpty: false,
     };
   },
   mounted() {
@@ -29,12 +31,25 @@ export default {
       this.name = this.generated_name;
     }
   },
+  computed: {
+    name_style() {
+      return this.nameError || this.nameEmpty ? 'error-msg' : '';
+    },
+  },
   methods: {
     validate() {
-      if (!/^[a-zA-Z0-9-]+$/.test(this.name)) {
+      if (this.name === '') {
         this.err_msg = this.$t('host.bad');
+        this.nameEmpty = true;
         return false;
       }
+      if (!/^[a-zA-Z0-9-]+$/.test(this.name)) {
+        this.err_msg = this.$t('host.bad');
+        this.nameError = true;
+        return false;
+      }
+      this.nameError = false;
+      this.nameEmpty = false;
       this.err_msg = '';
       return true;
     },
@@ -57,8 +72,10 @@ export default {
           type="text"
           name="hostname"
           v-model="name"
+          :class="name_style"
           @focus="on_focus"
           @keyup.enter="() => {}"
+          @input="validate"
         />
       </div>
       <p class="error-msg">{{ err_msg }}</p>

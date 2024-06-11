@@ -45,7 +45,8 @@
     "host": {
         "title": "Hostname",
         "p1": "Please input your desired hostname. This is otherwise known as a device name used for identification. Your hostname may only consist letters a-z, numbers 0-9, and dashes (\"-\").",
-        "bad": "Hostname contains invalid characters."
+        "bad": "Hostname contains invalid characters.",
+        "empty": "hostname cannot be empty."
     },
     "abort": {
         "title": "Abort?",
