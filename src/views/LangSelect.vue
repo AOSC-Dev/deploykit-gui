@@ -4,6 +4,8 @@ import DKListSelect from '@/components/DKListSelect.vue';
 import DKBottomRightButtons from '@/components/DKBottomRightButtons.vue';
 import DKBottomActions from '@/components/DKBottomActions.vue';
 import { invoke } from '@tauri-apps/api';
+import DKSpinner from '@/components/DKSpinner.vue';
+import DKBody from '../components/DKBody.vue';
 </script>
 
 <script>
@@ -17,6 +19,7 @@ export default {
       current_lang: 'zh-cn',
       displayData: langData.map((v) => ({ body: v.lang })),
       selection: 0,
+      loading: false,
     };
   },
   computed: {
@@ -34,6 +37,7 @@ export default {
   async mounted() {
     const isInstall = await invoke('is_skip');
     if (isInstall) {
+      this.loading = true;
       const lang = await invoke('read_locale');
       const locale = this.langData.find((v) => v.locale === lang);
       this.$emit('update:lang', locale.id);
@@ -46,7 +50,10 @@ export default {
 </script>
 
 <template>
-  <DKLayout :class="'lang-' + langData[selection].id.toLowerCase()">
+  <DKLayout
+    :class="'lang-' + langData[selection].id.toLowerCase()"
+    v-if="!loading"
+  >
     <section style="max-height: 65vh; overflow-y: scroll; margin-top: 5vh">
       <DKListSelect
         :options="displayData"
@@ -82,6 +89,10 @@ export default {
       </div>
     </template>
   </DKLayout>
+  <div class="loading" v-else>
+    <h1>{{ $t("loading") }}</h1>
+    <DKSpinner :title="$t('loading')" />
+  </div>
 </template>
 
 <style scoped></style>
