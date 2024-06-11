@@ -12,7 +12,6 @@ export default {
       this.$emit('update:install');
     },
     async exit() {
-      await invoke('set_locale', { locale: this.config.locale.locale });
       await invoke('cancel_install_and_exit', { resetConfig: false });
     },
     async reboot() {

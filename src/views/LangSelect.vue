@@ -3,6 +3,7 @@ import DKLayout from '@/components/DKLayout.vue';
 import DKListSelect from '@/components/DKListSelect.vue';
 import DKBottomRightButtons from '@/components/DKBottomRightButtons.vue';
 import DKBottomActions from '@/components/DKBottomActions.vue';
+import { invoke } from '@tauri-apps/api';
 </script>
 
 <script>
@@ -27,6 +28,7 @@ export default {
     select(idx) {
       this.$emit('update:lang', this.langData[idx].id);
       this.config.locale = this.langData[idx];
+      invoke('set_locale', { locale: this.config.locale.locale });
     },
   },
 };
