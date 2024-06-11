@@ -114,7 +114,7 @@ export default {
       this.progressDetail = progress;
     },
   },
-  mounted() {
+  async mounted() {
     window.addEventListener('contextmenu', (event) => {
       event.preventDefault();
     });

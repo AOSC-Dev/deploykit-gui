@@ -31,6 +31,17 @@ export default {
       invoke('set_locale', { locale: this.config.locale.locale });
     },
   },
+  async mounted() {
+    const isInstall = await invoke('is_skip');
+    if (isInstall) {
+      const lang = await invoke('read_locale');
+      const locale = this.langData.find((v) => v.locale === lang);
+      this.$emit('update:lang', locale.id);
+      this.config.locale = locale;
+      invoke('set_locale', { locale: this.config.locale.locale });
+      this.$router.replace('/');
+    }
+  },
 };
 </script>
 

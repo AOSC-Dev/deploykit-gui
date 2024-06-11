@@ -15,6 +15,7 @@ use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
 use std::collections::HashMap;
+use std::env;
 use std::io;
 use std::io::ErrorKind;
 use std::process;
@@ -676,6 +677,11 @@ async fn run_nmtui(state: State<'_, DkState<'_>>) -> TauriResult<()> {
 }
 
 #[tauri::command]
+async fn read_locale() -> String {
+    env::var("LANG").unwrap_or_else(|_| String::from("en_US.UTF-8"))
+}
+
+#[tauri::command]
 fn set_locale(locale: &str) {
     if let Err(e) = set_locale_inner(locale) {
         eprintln!("{e}");
@@ -831,6 +837,7 @@ async fn main() {
                     set_locale,
                     get_arch_name,
                     is_lvm_device,
+                    read_locale
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");
