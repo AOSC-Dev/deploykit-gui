@@ -1,7 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use axum::http::HeaderValue;
 use axum::http::Method;
 use axum::Router;
 use eyre::ContextCompat;
@@ -14,6 +13,7 @@ use rand::thread_rng;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
+use tower_http::cors::Any;
 use std::collections::HashMap;
 use std::env;
 use std::io;
@@ -774,7 +774,8 @@ async fn main() {
 
                         let axum_app = Router::new().nest_service("/", serve_dir).layer(
                             CorsLayer::new()
-                                .allow_origin("*".parse::<HeaderValue>().unwrap())
+                                .allow_origin(Any)
+                                .allow_headers(Any)
                                 .allow_methods([Method::GET]),
                         );
 
