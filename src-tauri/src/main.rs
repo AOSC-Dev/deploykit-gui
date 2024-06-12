@@ -63,6 +63,7 @@ mod utils;
 static SKIP_DESKTOP_OR_INSTALL: AtomicBool = AtomicBool::new(false);
 const BGM_LIST: &[u8] = include_bytes!("../bgm.json");
 static IS_BASE_SQFS: AtomicBool = AtomicBool::new(false);
+const DEFAULT_LANG: &str = "en_US.UTF-8";
 
 #[proxy(
     interface = "io.aosc.Deploykit1",
@@ -227,8 +228,11 @@ impl Serialize for DeploykitGuiError {
 }
 
 #[tauri::command]
-async fn gparted(state: State<'_, DkState<'_>>) -> TauriResult<()> {
-    let mut process = Command::new("gparted").spawn()?;
+async fn gparted(state: State<'_, DkState<'_>>, lang: Option<&str>) -> TauriResult<()> {
+    let mut process = Command::new("gparted")
+        .env("LANG", lang.unwrap_or(DEFAULT_LANG))
+        .spawn()?;
+
     let mut system = System::new();
 
     loop {
@@ -660,11 +664,12 @@ async fn reset_progress_status(state: State<'_, DkState<'_>>) -> TauriResult<()>
 }
 
 #[tauri::command]
-async fn run_nmtui(state: State<'_, DkState<'_>>) -> TauriResult<()> {
+async fn run_nmtui(state: State<'_, DkState<'_>>, lang: Option<&str>) -> TauriResult<()> {
     let mut process = Command::new("mate-terminal")
         .arg("--command")
         .arg("nmtui")
         .arg("--disable-factory") // 让 mate-terminal 不要去 fork 自己
+        .env("LANG", lang.unwrap_or(DEFAULT_LANG))
         .spawn()?;
 
     let id = process.id();
@@ -678,7 +683,7 @@ async fn run_nmtui(state: State<'_, DkState<'_>>) -> TauriResult<()> {
 
 #[tauri::command]
 async fn read_locale() -> String {
-    env::var("LANG").unwrap_or_else(|_| String::from("en_US.UTF-8"))
+    env::var("LANG").unwrap_or_else(|_| String::from(DEFAULT_LANG))
 }
 
 #[tauri::command]

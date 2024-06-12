@@ -176,7 +176,7 @@ export default {
     launch_gparted() {
       this.loading = true;
       this.gparted = true;
-      invoke('gparted').then(() => {
+      invoke('gparted', { lang: this.config.locale.locale }).then(() => {
         invoke('is_debug').then((res) => {
           let device;
 
