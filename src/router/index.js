@@ -105,13 +105,13 @@ const router = createRouter({
       path: '/autopart',
       name: 'autopart',
       component: AutoPartView,
-      props: (route) => ({ ...route.query, ...route.params }),
       meta: { steps: 0, next: '/partprogress' },
     },
     {
       path: '/partprogress',
       name: 'part_progress',
       component: PartitionProgressView,
+      props: (route) => ({ ...route.query, ...route.params }),
       meta: { steps: 0 },
     },
     {

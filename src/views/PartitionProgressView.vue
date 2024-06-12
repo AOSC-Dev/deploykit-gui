@@ -43,7 +43,7 @@ export default {
     };
   },
   async created() {
-    if (!this.autoPart) {
+    if (this.autoPart) {
       this.loading = true;
       try {
         invoke('auto_partition', { dev: this.config.device.path }).catch(

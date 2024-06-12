@@ -10,6 +10,7 @@ export default {
     can_proceed: { type: Boolean, default: true },
     no_previous: Boolean,
     replace: Boolean,
+    query: Object,
   },
   methods: {
     proceed() {
@@ -18,9 +19,15 @@ export default {
       }
       if (this.trigger) this.trigger(this);
       if (this.replace) {
-        this.$router.replace(this.$router.currentRoute.value.meta.next);
+        this.$router.replace({
+          path: this.$router.currentRoute.value.meta.next,
+          query: this.query,
+        });
       } else {
-        this.$router.push(this.$router.currentRoute.value.meta.next);
+        this.$router.push({
+          path: this.$router.currentRoute.value.meta.next,
+          query: this.query,
+        });
       }
     },
   },

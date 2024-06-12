@@ -11,6 +11,7 @@ export default {
     no_previous: Boolean,
     can_proceed: { type: Boolean, default: true },
     replace: Boolean,
+    query: Object,
   },
 };
 </script>
@@ -23,6 +24,7 @@ export default {
       :no_previous="no_previous"
       :can_proceed="can_proceed"
       :replace="replace"
+      :query="query"
     />
   </DKBottomActions>
 </template>

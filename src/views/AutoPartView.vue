@@ -66,7 +66,10 @@ export default {
     </div>
   </DKBody>
   <DKBottomActions v-if="!loading">
-    <DKBottomSteps :replace="true" :trigger="autoPart"></DKBottomSteps>
+    <DKBottomSteps
+      :replace="true"
+      :query="{ autoPart: true }"
+    ></DKBottomSteps>
   </DKBottomActions>
 </template>
 
