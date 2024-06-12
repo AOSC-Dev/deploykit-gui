@@ -87,6 +87,7 @@ export default {
         await handleEFI(this);
       } else {
         this.loading = false;
+        this.$router.replace('/users');
       }
     }
   },
