@@ -111,7 +111,7 @@ const router = createRouter({
       path: '/partprogress',
       name: 'part_progress',
       component: PartitionProgressView,
-      meta: { steps: 0, next: '/users' },
+      meta: { steps: 0 },
     },
     {
       path: '/variants',

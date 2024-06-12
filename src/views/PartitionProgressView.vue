@@ -78,14 +78,12 @@ export default {
         });
       }
       this.loading = false;
-      this.$router.replace('/users');
     } else {
       this.loading = true;
       if (this.config.is_efi && !this.config.efi_partition) {
         await handleEFI(this);
       } else {
         this.loading = false;
-        this.$router.replace('/users');
       }
     }
   },
