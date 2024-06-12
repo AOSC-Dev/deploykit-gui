@@ -15,9 +15,6 @@ use x11rb::protocol::xproto::{
 };
 use x11rb::wrapper::ConnectionExt;
 
-const SPEEDTEST_FILE_CHECKSUM: &str =
-    "1e2a82e7babb443b2b26b61ce5dd2bd25b06b30422b42ee709fddd2cc3ffe231";
-
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Recipe {
     variants: Value,
@@ -166,14 +163,14 @@ pub fn handle_serde_config(s: &str) -> Result<InstallConfig> {
     Ok(serde_json::from_str(s)?)
 }
 
-pub async fn get_mirror_speed_score(mirror_url: &str, client: &Client) -> Result<f32, eyre::Error> {
+pub async fn get_mirror_speed_score(mirror_url: &str, client: &Client, sha256: &str) -> Result<f32, eyre::Error> {
     let download_url = Url::parse(mirror_url)?.join("../.repotest")?;
     let timer = Instant::now();
     let file = client.get(download_url).send().await?.bytes().await?;
     let mut hasher = Sha256::new();
     hasher.write_all(&file)?;
 
-    if hex::encode(hasher.finalize()) == SPEEDTEST_FILE_CHECKSUM {
+    if hex::encode(hasher.finalize()) == sha256 {
         let result_time = timer.elapsed().as_secs_f32();
         return Ok(result_time);
     }

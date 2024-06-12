@@ -13,7 +13,6 @@ use rand::thread_rng;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
-use tower_http::cors::Any;
 use std::collections::HashMap;
 use std::env;
 use std::io;
@@ -31,6 +30,7 @@ use tauri::State;
 use tauri::Window;
 use tokio::sync::Mutex;
 use tokio::time::sleep;
+use tower_http::cors::Any;
 use tower_http::cors::CorsLayer;
 use tower_http::services::ServeDir;
 use tracing::debug;
@@ -208,6 +208,8 @@ enum DeploykitGuiError {
     AutoPartitionFailed { err: DkError },
     #[error("Failed to run DkApi")]
     DkApi { err: DkError },
+    #[error(transparent)]
+    Reqwest(#[from] reqwest::Error),
 }
 
 impl Serialize for DeploykitGuiError {
@@ -498,7 +500,7 @@ async fn cancel_install_and_exit(
 }
 
 #[tauri::command]
-async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> Vec<Mirror> {
+async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> TauriResult<Vec<Mirror>> {
     let mut speedtest_mirror = vec![];
 
     let client = reqwest::Client::builder()
@@ -507,10 +509,24 @@ async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> Vec<Mirror> {
         .build()
         .unwrap();
 
+    let sha256 = client
+        .get("https://repo.aosc.io/.repotest.sha256sum")
+        .send()
+        .await?
+        .error_for_status()?
+        .text()
+        .await?;
+
+    let sha256 = sha256
+        .split_whitespace()
+        .next()
+        .ok_or_eyre("Failed to get sha256sum string")?;
+
     let mut task = vec![];
     for mirror in &mirrors {
-        task.push(get_mirror_speed_score(&mirror.url, &client))
+        task.push(get_mirror_speed_score(&mirror.url, &client, sha256))
     }
+
     let results = futures::future::join_all(task).await;
     for (index, result) in results.into_iter().enumerate() {
         debug!("{:?}: {result:?}", &mirrors[index]);
@@ -518,6 +534,7 @@ async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> Vec<Mirror> {
             speedtest_mirror.push((mirrors[index].loc_tr.to_owned(), score));
         }
     }
+
     speedtest_mirror.sort_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap());
     let mut new_mirrors = vec![];
     for (name, score) in speedtest_mirror {
@@ -530,7 +547,7 @@ async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> Vec<Mirror> {
         new_mirrors.push(mirror);
     }
 
-    new_mirrors
+    Ok(new_mirrors)
 }
 
 #[tauri::command]
