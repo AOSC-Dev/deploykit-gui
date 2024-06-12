@@ -370,7 +370,10 @@ export default {
       >
         <img src="@/../assets/drive-harddisk-root-symbolic.svg" height="18" />
       </DKStripButton>
-      <DKStripButton @click="$router.push('/autopart')" :text="$t('part.b2')">
+      <DKStripButton
+        @click="$router.push({ path: '/autopart', query: { autoPart: true } })"
+        :text="$t('part.b2')"
+      >
         <img src="@/../assets/drive-harddisk-root-symbolic.svg" height="18" />
       </DKStripButton>
     </DKBottomActions>

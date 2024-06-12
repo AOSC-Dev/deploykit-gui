@@ -105,6 +105,7 @@ const router = createRouter({
       path: '/autopart',
       name: 'autopart',
       component: AutoPartView,
+      props: (route) => ({ ...route.query, ...route.params }),
       meta: { steps: 0, next: '/partprogress' },
     },
     {

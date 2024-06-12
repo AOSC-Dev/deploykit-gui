@@ -34,13 +34,16 @@ async function handleEFI(obj) {
 
 export default {
   inject: ['config'],
+  props: {
+    autoPart: Boolean,
+  },
   data() {
     return {
       loading: false,
     };
   },
   async created() {
-    if (!this.config.partition) {
+    if (!this.autoPart) {
       this.loading = true;
       try {
         invoke('auto_partition', { dev: this.config.device.path }).catch(
