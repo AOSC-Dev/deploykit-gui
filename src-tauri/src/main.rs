@@ -503,7 +503,7 @@ async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> Vec<Mirror> {
 
     let client = reqwest::Client::builder()
         .user_agent("deploykit")
-        .timeout(Duration::from_secs(10))
+        .timeout(Duration::from_secs(60))
         .build()
         .unwrap();
 

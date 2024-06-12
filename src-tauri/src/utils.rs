@@ -16,7 +16,7 @@ use x11rb::protocol::xproto::{
 use x11rb::wrapper::ConnectionExt;
 
 const SPEEDTEST_FILE_CHECKSUM: &str =
-    "557284748e7fd375d015b2cb71180ff9bf340fbef601da7c4e113ab2dc9f2836";
+    "1e2a82e7babb443b2b26b61ce5dd2bd25b06b30422b42ee709fddd2cc3ffe231";
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Recipe {
