@@ -19,13 +19,13 @@ export default {
       selectedLocale: langData.findIndex(
         (v) => v.locale === this.config.locale.locale,
       ),
-      rtcTimezone: this.config.rtc_as_localtime === false ? 1 : 0,
+      rtcTimezone: '0',
       selectedTimezone: 0,
     };
   },
   methods: {
     save_config() {
-      this.config.rtc_as_localtime = this.rtcTimezone === '0';
+      this.config.rtc_as_localtime = this.rtcTimezone === '1';
       this.config.timezone = this.timezones[this.selectedTimezone];
       this.config.locale = langData[this.selectedLocale];
     },
@@ -41,6 +41,16 @@ export default {
       if (this.config.timezone) {
         this.selectedTimezone = this.timezones.findIndex(
           (v) => v.text === this.config.timezone.text,
+        );
+      }
+
+      if (this.config.rtc_as_localtime !== null) {
+        this.rtcTimezone = this.config.rtc_as_localtime ? '1' : '0';
+      }
+
+      if (this.config.locale) {
+        this.selectedLocale = langData.findIndex(
+          (v) => v.locale === this.config.locale.locale,
         );
       }
     } catch (e) {
