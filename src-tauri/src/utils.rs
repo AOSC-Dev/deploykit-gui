@@ -7,9 +7,9 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sha2::{Digest, Sha256};
-use tauri::async_runtime::spawn_blocking;
 use std::io::Write;
 use std::time::Instant;
+use tauri::async_runtime::spawn_blocking;
 use url::Url;
 use x11rb::connection::Connection;
 use x11rb::protocol::xproto::{
@@ -143,10 +143,7 @@ pub fn get_download_info(config: &InstallConfig) -> Result<DownloadInfo> {
     })
 }
 
-pub fn candidate_sqfs(
-    mut sqfs: Vec<Squashfs>,
-    url: &str,
-) -> Result<(Squashfs, String)> {
+pub fn candidate_sqfs(mut sqfs: Vec<Squashfs>, url: &str) -> Result<(Squashfs, String)> {
     sqfs.sort_by(|a, b| b.date.cmp(&a.date));
 
     let candidate = sqfs
@@ -155,7 +152,6 @@ pub fn candidate_sqfs(
         .to_owned()
         .to_owned();
 
-    // let mirror = &config.mirror.url;
     let url = format!("{}{}", url, candidate.path);
 
     Ok((candidate, url))
@@ -165,7 +161,11 @@ pub fn handle_serde_config(s: &str) -> Result<InstallConfig> {
     Ok(serde_json::from_str(s)?)
 }
 
-pub async fn get_mirror_speed_score(mirror_url: &str, client: &Client, sha256: Arc<String>) -> Result<f32> {
+pub async fn get_mirror_speed_score(
+    mirror_url: &str,
+    client: &Client,
+    sha256: Arc<String>,
+) -> Result<f32> {
     let download_url = Url::parse(mirror_url)?.join("../.repotest")?;
     let timer = Instant::now();
     let file = client.get(download_url).send().await?.bytes().await?;
