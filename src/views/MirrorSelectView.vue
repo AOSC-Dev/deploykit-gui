@@ -55,13 +55,13 @@ export default {
         });
       }
     },
-    calc(n) {
-      if (typeof n !== 'number') {
+    calc(time) {
+      if (typeof time !== 'number') {
         return '';
       }
 
-      const fileSize = 1;
-      const speed = fileSize / n;
+      const fileSize = 10;
+      const speed = fileSize / time;
 
       return `${speed.toFixed(2)}MiB/s`;
     },

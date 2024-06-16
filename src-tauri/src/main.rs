@@ -21,6 +21,7 @@ use std::process;
 use std::process::Command;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
+use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
 use sysinfo::System;
@@ -517,14 +518,18 @@ async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> TauriResult<Vec<Mirror>> {
         .text()
         .await?;
 
-    let sha256 = sha256
-        .split_whitespace()
-        .next()
-        .ok_or_eyre("Failed to get sha256sum string")?;
+    let sha256 = Arc::new(
+        sha256
+            .split_whitespace()
+            .next()
+            .ok_or_eyre("Failed to get sha256sum string")?
+            .to_owned(),
+    );
 
     let mut task = vec![];
+
     for mirror in &mirrors {
-        task.push(get_mirror_speed_score(&mirror.url, &client, sha256))
+        task.push(get_mirror_speed_score(&mirror.url, &client, sha256.clone()))
     }
 
     let results = futures::future::join_all(task).await;

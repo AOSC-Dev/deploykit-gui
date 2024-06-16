@@ -1,11 +1,13 @@
 use std::collections::HashMap;
 use std::path::Path;
+use std::sync::Arc;
 
 use eyre::{eyre, OptionExt, Result};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sha2::{Digest, Sha256};
+use tauri::async_runtime::spawn_blocking;
 use std::io::Write;
 use std::time::Instant;
 use url::Url;
@@ -144,7 +146,7 @@ pub fn get_download_info(config: &InstallConfig) -> Result<DownloadInfo> {
 pub fn candidate_sqfs(
     mut sqfs: Vec<Squashfs>,
     url: &str,
-) -> Result<(Squashfs, String), eyre::Error> {
+) -> Result<(Squashfs, String)> {
     sqfs.sort_by(|a, b| b.date.cmp(&a.date));
 
     let candidate = sqfs
@@ -163,15 +165,18 @@ pub fn handle_serde_config(s: &str) -> Result<InstallConfig> {
     Ok(serde_json::from_str(s)?)
 }
 
-pub async fn get_mirror_speed_score(mirror_url: &str, client: &Client, sha256: &str) -> Result<f32, eyre::Error> {
+pub async fn get_mirror_speed_score(mirror_url: &str, client: &Client, sha256: Arc<String>) -> Result<f32> {
     let download_url = Url::parse(mirror_url)?.join("../.repotest")?;
     let timer = Instant::now();
     let file = client.get(download_url).send().await?.bytes().await?;
-    let mut hasher = Sha256::new();
-    hasher.write_all(&file)?;
+    let result_time = timer.elapsed().as_secs_f32();
+    let checksum = spawn_blocking(move || -> Result<bool> {
+        let mut hasher = Sha256::new();
+        hasher.write_all(&file)?;
+        Ok(hex::encode(hasher.finalize()) == *sha256)
+    });
 
-    if hex::encode(hasher.finalize()) == sha256 {
-        let result_time = timer.elapsed().as_secs_f32();
+    if checksum.await?? {
         return Ok(result_time);
     }
 
