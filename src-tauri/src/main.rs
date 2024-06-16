@@ -29,7 +29,7 @@ use tauri::api::dialog;
 use tauri::Manager;
 use tauri::State;
 use tauri::Window;
-use tokio::sync::Mutex;
+use tokio::sync::OnceCell;
 use tokio::time::sleep;
 use tower_http::cors::Any;
 use tower_http::cors::CorsLayer;
@@ -396,16 +396,13 @@ fn get_arch_name() -> TauriResult<&'static str> {
 
 #[tauri::command]
 async fn get_recipe(state: State<'_, DkState<'_>>) -> TauriResult<Recipe> {
-    let mut lock = state.recipe.lock().await;
+    let res = state
+        .recipe
+        .get_or_try_init(|| async { utils::get_recpie().await })
+        .await?
+        .to_owned();
 
-    match &*lock {
-        Some(r) => Ok(r.to_owned()),
-        None => {
-            let recipe = utils::get_recpie().await?;
-            *lock = Some(recipe.clone());
-            Ok(recipe)
-        }
-    }
+    Ok(res)
 }
 
 #[tauri::command]
@@ -655,17 +652,10 @@ fn is_skip() -> bool {
 
 #[tauri::command]
 async fn i18n_recipe(state: State<'_, DkState<'_>>, locale: &str) -> TauriResult<Value> {
-    let mut lock = state.recipe_i18n.lock().await;
-
-    let map = match &*lock {
-        Some(r) => r.to_owned(),
-        None => {
-            let recipe = utils::get_i18n_file().await?;
-            *lock = Some(recipe.clone());
-
-            recipe
-        }
-    };
+    let map = state
+        .recipe_i18n
+        .get_or_try_init(|| async { utils::get_i18n_file().await })
+        .await?;
 
     let value = match locale {
         "zh-CN" | "zh-TW" => map.get("zh-CN"),
@@ -725,8 +715,8 @@ fn set_locale_inner(locale: &str) -> io::Result<()> {
 }
 
 struct DkState<'a> {
-    recipe: Mutex<Option<Recipe>>,
-    recipe_i18n: Mutex<Option<HashMap<String, Value>>>,
+    recipe: OnceCell<Recipe>,
+    recipe_i18n: OnceCell<HashMap<String, Value>>,
     proxy: DeploykitProxy<'a>,
     process_id: u32,
 }
@@ -832,8 +822,8 @@ async fn main() {
                     Ok(())
                 })
                 .manage(DkState {
-                    recipe: Mutex::new(None),
-                    recipe_i18n: Mutex::new(None),
+                    recipe: OnceCell::new(),
+                    recipe_i18n: OnceCell::new(),
                     proxy: p,
                     process_id,
                 })
