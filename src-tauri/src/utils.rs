@@ -3,6 +3,7 @@ use std::path::Path;
 use std::sync::Arc;
 
 use eyre::{eyre, OptionExt, Result};
+use faster_hex::hex_string;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -173,7 +174,7 @@ pub async fn get_mirror_speed_score(
     let checksum = spawn_blocking(move || -> Result<bool> {
         let mut hasher = Sha256::new();
         hasher.write_all(&file)?;
-        Ok(hex::encode(hasher.finalize()) == *sha256)
+        Ok(hex_string(&hasher.finalize()) == *sha256)
     });
 
     if checksum.await?? {
