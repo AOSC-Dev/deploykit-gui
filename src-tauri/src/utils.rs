@@ -165,7 +165,7 @@ pub fn handle_serde_config(s: &str) -> Result<InstallConfig> {
 pub async fn get_mirror_speed_score(
     mirror_url: &str,
     client: &Client,
-    sha256: Arc<String>,
+    sha256: Arc<str>,
 ) -> Result<f32> {
     let download_url = Url::parse(mirror_url)?.join("../.repotest")?;
     let timer = Instant::now();

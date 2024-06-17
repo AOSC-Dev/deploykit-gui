@@ -515,12 +515,11 @@ async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> TauriResult<Vec<Mirror>> {
         .text()
         .await?;
 
-    let sha256 = Arc::new(
+    let sha256: Arc<str> = Arc::from(
         sha256
             .split_whitespace()
             .next()
-            .ok_or_eyre("Failed to get sha256sum string")?
-            .to_owned(),
+            .ok_or_eyre("Failed to get sha256sum string")?,
     );
 
     let mut task = vec![];
