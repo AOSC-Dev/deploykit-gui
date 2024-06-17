@@ -407,9 +407,9 @@ async fn get_recipe(state: State<'_, DkState<'_>>) -> TauriResult<Recipe> {
 
 #[tauri::command]
 fn get_squashfs_info(v: Variant, url: &str) -> TauriResult<Squashfs> {
-    let c = candidate_sqfs(v.squashfs, url)?;
+    let c = candidate_sqfs(v.squashfs.iter().collect(), url)?;
 
-    Ok(c.0)
+    Ok(c.0.to_owned())
 }
 
 #[tauri::command]

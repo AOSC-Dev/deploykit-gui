@@ -120,18 +120,17 @@ pub struct Timezone {
     pub data: String,
 }
 
-pub struct DownloadInfo {
+pub struct DownloadInfo<'a> {
     pub url: String,
-    pub checksum: String,
-    pub name: String,
+    pub checksum: &'a str,
+    pub name: &'a str,
 }
 
-pub fn get_download_info(config: &InstallConfig) -> Result<DownloadInfo> {
+pub fn get_download_info<'a>(config: &'a InstallConfig) -> Result<DownloadInfo<'a>> {
     let sqfs = config
         .variant
         .squashfs
-        .clone()
-        .into_iter()
+        .iter()
         .filter(|x| get_arch_name().map(|arch| arch == x.arch).unwrap_or(false))
         .collect::<Vec<_>>();
 
@@ -139,19 +138,20 @@ pub fn get_download_info(config: &InstallConfig) -> Result<DownloadInfo> {
 
     Ok(DownloadInfo {
         url,
-        checksum: candidate.sha256sum.to_owned(),
-        name: config.variant.name.to_string(),
+        checksum: candidate.sha256sum.as_str(),
+        name: config.variant.name.as_str(),
     })
 }
 
-pub fn candidate_sqfs(mut sqfs: Vec<Squashfs>, url: &str) -> Result<(Squashfs, String)> {
+pub fn candidate_sqfs<'a>(
+    mut sqfs: Vec<&'a Squashfs>,
+    url: &str,
+) -> Result<(&'a Squashfs, String)> {
     sqfs.sort_by(|a, b| b.date.cmp(&a.date));
 
     let candidate = sqfs
         .first()
-        .ok_or_else(|| eyre!("Variant squashfs is empty"))?
-        .to_owned()
-        .to_owned();
+        .ok_or_else(|| eyre!("Variant squashfs is empty"))?;
 
     let url = format!("{}{}", url, candidate.path);
 
