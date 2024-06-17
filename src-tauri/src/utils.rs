@@ -24,8 +24,7 @@ pub struct Recipe {
     mirrors: Value,
 }
 
-pub async fn get_recpie() -> Result<Recipe> {
-    let client = Client::builder().user_agent("deploykit").build()?;
+pub async fn get_recpie(client: &Client) -> Result<Recipe> {
     let recipe = client
         .get("https://releases.aosc.io/manifest/recipe.json")
         .send()
@@ -37,8 +36,7 @@ pub async fn get_recpie() -> Result<Recipe> {
     Ok(recipe)
 }
 
-pub async fn get_i18n_file() -> Result<HashMap<String, Value>> {
-    let client = Client::builder().user_agent("deploykit").build()?;
+pub async fn get_i18n_file(client: &Client) -> Result<HashMap<String, Value>> {
     let recipe = client
         .get("https://releases.aosc.io/manifest/recipe-i18n.json")
         .send()

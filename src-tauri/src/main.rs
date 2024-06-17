@@ -10,6 +10,7 @@ use parser::list_zoneinfo;
 use parser::ZoneInfo;
 use rand::prelude::SliceRandom;
 use rand::thread_rng;
+use reqwest::Client;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
@@ -396,9 +397,10 @@ fn get_arch_name() -> TauriResult<&'static str> {
 
 #[tauri::command]
 async fn get_recipe(state: State<'_, DkState<'_>>) -> TauriResult<Recipe> {
+    let client = &state.http_client;
     let res = state
         .recipe
-        .get_or_try_init(|| async { utils::get_recpie().await })
+        .get_or_try_init(|| async { utils::get_recpie(client).await })
         .await?
         .to_owned();
 
@@ -651,9 +653,10 @@ fn is_skip() -> bool {
 
 #[tauri::command]
 async fn i18n_recipe(state: State<'_, DkState<'_>>, locale: &str) -> TauriResult<Value> {
+    let client = &state.http_client;
     let map = state
         .recipe_i18n
-        .get_or_try_init(|| async { utils::get_i18n_file().await })
+        .get_or_try_init(|| async { utils::get_i18n_file(client).await })
         .await?;
 
     let value = match locale {
@@ -718,6 +721,7 @@ struct DkState<'a> {
     recipe_i18n: OnceCell<HashMap<String, Value>>,
     proxy: DeploykitProxy<'a>,
     process_id: u32,
+    http_client: Client,
 }
 
 async fn init() -> Result<DeploykitProxy<'static>> {
@@ -825,6 +829,7 @@ async fn main() {
                     recipe_i18n: OnceCell::new(),
                     proxy: p,
                     process_id,
+                    http_client: Client::builder().user_agent("deploykit").build().unwrap(),
                 })
                 .invoke_handler(tauri::generate_handler![
                     set_config,
