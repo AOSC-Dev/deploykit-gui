@@ -45,7 +45,7 @@ export default {
       try {
         this.loading = true;
         this.running = true;
-        await invoke('run_nmtui', { lang: this.config.locale.locale });
+        await invoke('run_nmtui');
         this.loading = false;
         this.running = false;
         this.$router.back();
