@@ -36,12 +36,14 @@ export default {
         selected = null;
         this.show_dropdown = true;
         this.user_input = '';
+        this.$emit('update:selected', index);
       } else {
         selected = this.filtered_options[index];
+        const i = this.options.findIndex((v) => v === selected);
         this.show_dropdown = false;
         this.user_input = selected.text;
+        this.$emit('update:selected', i);
       }
-      this.$emit('update:selected', index);
     },
     edit_selection() {
       this.$emit('update:selected', null);

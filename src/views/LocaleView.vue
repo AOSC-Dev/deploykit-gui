@@ -20,7 +20,7 @@ export default {
         (v) => v.locale === this.config.locale.locale,
       ),
       rtcTimezone: '0',
-      selectedTimezone: 0,
+      selectedTimezone: null,
     };
   },
   methods: {
@@ -42,6 +42,8 @@ export default {
         this.selectedTimezone = this.timezones.findIndex(
           (v) => v.text === this.config.timezone.text,
         );
+      } else {
+        this.selectedTimezone = 0;
       }
 
       if (this.config.rtc_as_localtime !== null) {

@@ -70,7 +70,8 @@ export default {
         </i18n-t>
         <ul>
           <i18n-t keypath="confirm.l7" tag="li">
-            <span class="emphasis">{{ $t("confirm.l7-1") }}</span>
+            <span v-if="!config.rtc_as_localtime" class="emphasis">{{ $t("confirm.l7-1") }}</span>
+            <span v-else class="emphasis">{{ $t("confirm.l7-2") }}</span>
           </i18n-t>
         </ul>
       </ul>
