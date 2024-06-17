@@ -126,7 +126,7 @@ pub struct DownloadInfo<'a> {
     pub name: &'a str,
 }
 
-pub fn get_download_info<'a>(config: &'a InstallConfig) -> Result<DownloadInfo<'a>> {
+pub fn get_download_info(config: &InstallConfig) -> Result<DownloadInfo<'_>> {
     let sqfs = config
         .variant
         .squashfs
@@ -148,11 +148,7 @@ pub fn candidate_sqfs<'a>(
     url: &str,
 ) -> Result<(&'a Squashfs, String)> {
     sqfs.sort_by(|a, b| b.date.cmp(&a.date));
-
-    let candidate = sqfs
-        .first()
-        .ok_or_else(|| eyre!("Variant squashfs is empty"))?;
-
+    let candidate = sqfs.first().ok_or_eyre("Variant squashfs is empty")?;
     let url = format!("{}{}", url, candidate.path);
 
     Ok((candidate, url))
