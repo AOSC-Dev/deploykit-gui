@@ -5,6 +5,7 @@ use std::sync::Arc;
 use eyre::{eyre, OptionExt, Result};
 use faster_hex::hex_string;
 use reqwest::Client;
+use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sha2::{Digest, Sha256};
@@ -24,28 +25,26 @@ pub struct Recipe {
     mirrors: Value,
 }
 
+#[inline]
 pub async fn get_recpie(client: &Client) -> Result<Recipe> {
-    let recipe = client
-        .get("https://releases.aosc.io/manifest/recipe.json")
-        .send()
-        .await?
-        .error_for_status()?
-        .json::<Recipe>()
-        .await?;
-
-    Ok(recipe)
+    get(client, "https://releases.aosc.io/manifest/recipe.json").await
 }
 
+#[inline]
 pub async fn get_i18n_file(client: &Client) -> Result<HashMap<String, Value>> {
-    let recipe = client
-        .get("https://releases.aosc.io/manifest/recipe-i18n.json")
+    get(client, "https://releases.aosc.io/manifest/recipe-i18n.json").await
+}
+
+async fn get<T: DeserializeOwned>(client: &Client, url: &str) -> Result<T> {
+    let res: T = client
+        .get(url)
         .send()
         .await?
         .error_for_status()?
         .json()
         .await?;
 
-    Ok(recipe)
+    Ok(res)
 }
 
 #[derive(Deserialize)]
