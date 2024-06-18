@@ -35,6 +35,11 @@ export default {
         this.hide = false;
       }, 200);
     },
+    click() {
+      this.next_slide();
+      clearInterval(this.timer);
+      this.timer = setInterval(this.next_slide, 15000);
+    },
   },
   mounted() {
     this.current_slide = {
@@ -53,7 +58,7 @@ export default {
 </script>
 
 <template>
-  <div :class="'slide-show' + (hide ? ' hidden' : '')" @click="next_slide">
+  <div :class="'slide-show' + (hide ? ' hidden' : '')" @click="click">
     <h1>{{ current_slide.title }}</h1>
     <article>
       <p v-for="(para, index) in current_slide.paras" v-bind:key="index">
