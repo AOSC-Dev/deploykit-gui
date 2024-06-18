@@ -1,17 +1,12 @@
 use std::collections::HashMap;
 use std::path::Path;
-use std::sync::Arc;
 
-use eyre::{eyre, OptionExt, Result};
-use faster_hex::hex_string;
+use eyre::{OptionExt, Result};
 use reqwest::Client;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use sha2::{Digest, Sha256};
-use std::io::Write;
 use std::time::Instant;
-use tauri::async_runtime::spawn_blocking;
 use url::Url;
 use x11rb::connection::Connection;
 use x11rb::protocol::xproto::{
@@ -102,6 +97,7 @@ pub struct Mirror {
     pub loc_tr: String,
     pub url: String,
     pub score: Option<f32>,
+    pub downloaded_size: Option<usize>,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -155,29 +151,21 @@ pub fn handle_serde_config(s: &str) -> Result<InstallConfig> {
     Ok(serde_json::from_str(s)?)
 }
 
-pub async fn get_mirror_speed_score(
-    mirror_url: &str,
-    client: &Client,
-    sha256: Arc<str>,
-) -> Result<f32> {
+pub async fn get_mirror_speed_score(mirror_url: &str, client: &Client) -> Result<(f32, usize)> {
     let download_url = Url::parse(mirror_url)?.join("../.repotest")?;
     let timer = Instant::now();
-    let file = client.get(download_url).send().await?.bytes().await?;
-    let result_time = timer.elapsed().as_secs_f32();
-    let checksum = spawn_blocking(move || -> Result<bool> {
-        let mut hasher = Sha256::new();
-        hasher.write_all(&file)?;
-        Ok(hex_string(&hasher.finalize()) == *sha256)
-    });
+    let mut resp = client.get(download_url).send().await?;
+    resp.error_for_status_ref()?;
 
-    if checksum.await?? {
-        return Ok(result_time);
+    let mut download_len = 0;
+
+    while let Ok(Some(chunk)) = resp.chunk().await {
+        download_len += chunk.len();
     }
 
-    Err(eyre!(
-        "Installer failed benchmark {}, please check your network connection!",
-        mirror_url
-    ))
+    let result_time = timer.elapsed().as_secs_f32();
+
+    Ok((result_time, download_len))
 }
 
 // AOSC OS specific architecture mapping for ppc64

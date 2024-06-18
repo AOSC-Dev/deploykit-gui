@@ -834,7 +834,6 @@ version = "0.5.4"
 dependencies = [
  "axum",
  "eyre",
- "faster-hex",
  "futures",
  "libc",
  "nom",
@@ -842,7 +841,6 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
- "sha2",
  "sysinfo",
  "tauri",
  "tauri-build",
@@ -1056,15 +1054,6 @@ checksum = "7cd915d99f24784cdc19fd37ef22b97e3ff0ae756c7e492e9fbfe897d61e2aec"
 dependencies = [
  "indenter",
  "once_cell",
-]
-
-[[package]]
-name = "faster-hex"
-version = "0.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a2a2b11eda1d40935b26cf18f6833c526845ae8c41e58d09af6adeb6f0269183"
-dependencies = [
- "serde",
 ]
 
 [[package]]

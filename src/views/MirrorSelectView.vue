@@ -55,13 +55,12 @@ export default {
         });
       }
     },
-    calc(time) {
+    calc(time, fileSize) {
       if (typeof time !== 'number') {
         return '';
       }
 
-      const fileSize = 10;
-      const speed = fileSize / time;
+      const speed = fileSize / 1024 / 1024 / time;
 
       return `${speed.toFixed(2)}MiB/s`;
     },
@@ -123,7 +122,7 @@ export default {
                   {{ option.nameTr ? option.nameTr : option.name }}</b
                 ></span
               >
-              <span>{{ calc(option.score) }}</span>
+              <span>{{ calc(option.score, option.downloaded_size) }}</span>
             </div>
           </template>
         </DKListSelect>

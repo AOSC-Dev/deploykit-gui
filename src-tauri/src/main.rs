@@ -22,7 +22,6 @@ use std::process;
 use std::process::Command;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
-use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
 use sysinfo::System;
@@ -509,25 +508,10 @@ async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> TauriResult<Vec<Mirror>> {
         .build()
         .unwrap();
 
-    let sha256 = client
-        .get("https://repo.aosc.io/.repotest.sha256sum")
-        .send()
-        .await?
-        .error_for_status()?
-        .text()
-        .await?;
-
-    let sha256: Arc<str> = Arc::from(
-        sha256
-            .split_whitespace()
-            .next()
-            .ok_or_eyre("Failed to get sha256sum string")?,
-    );
-
     let mut task = vec![];
 
     for mirror in &mirrors {
-        task.push(get_mirror_speed_score(&mirror.url, &client, sha256.clone()))
+        task.push(get_mirror_speed_score(&mirror.url, &client));
     }
 
     let results = futures::future::join_all(task).await;
@@ -538,15 +522,22 @@ async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> TauriResult<Vec<Mirror>> {
         }
     }
 
-    speedtest_mirror.sort_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap());
+    speedtest_mirror.sort_unstable_by(|(_, a), (_, b)| {
+        let a = a.1 as f32 / a.0;
+        let b = b.1 as f32 / b.0;
+        b.partial_cmp(&a).unwrap()
+    });
+
     let mut new_mirrors = vec![];
-    for (name, score) in speedtest_mirror {
+    for (name, (score, download_size)) in speedtest_mirror {
         let mut mirror = mirrors
             .iter()
             .find(|x| x.loc_tr == name)
             .unwrap()
             .to_owned();
+
         mirror.score = Some(score);
+        mirror.downloaded_size = Some(download_size);
         new_mirrors.push(mirror);
     }
 
@@ -624,7 +615,7 @@ async fn auto_partition(
                 Err(v) => {
                     return Err(DeploykitGuiError::AutoPartitionFailed {
                         err: serde_json::from_value(v.clone())?,
-                    })
+                    });
                 }
                 Ok(_) => {
                     window.emit("auto_partition_progress", &data).unwrap();
