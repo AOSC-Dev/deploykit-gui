@@ -1,4 +1,6 @@
 use std::collections::HashMap;
+use std::fs;
+use std::os::unix::fs::MetadataExt;
 use std::path::Path;
 
 use eyre::{OptionExt, Result};
@@ -14,20 +16,68 @@ use x11rb::protocol::xproto::{
 };
 use x11rb::wrapper::ConnectionExt;
 
+const LOCAL_RECIPE: &str = "/manifest/recipe.json";
+const LOCAL_RECIPE_I18N: &str = "/manifest/recipe-i18n.json";
+
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Recipe {
     variants: Value,
     mirrors: Value,
 }
 
-#[inline]
-pub async fn get_recpie(client: &Client) -> Result<Recipe> {
+pub fn is_local_recipe() -> bool {
+    Path::new(LOCAL_RECIPE).is_file()
+}
+
+pub async fn get_recipe_local() -> Result<Recipe> {
+    let content = tokio::fs::read_to_string(LOCAL_RECIPE).await?;
+    let recipe: Recipe = serde_json::from_str(&content)?;
+
+    Ok(recipe)
+}
+
+pub async fn get_recipe_i18n_local() -> Result<HashMap<String, Value>> {
+    let content = tokio::fs::read_to_string(LOCAL_RECIPE_I18N).await?;
+    let res: HashMap<String, Value> = serde_json::from_str(&content)?;
+
+    Ok(res)
+}
+
+pub async fn get_recipe(client: &Client) -> Result<Recipe> {
+    if is_local_recipe() {
+        return get_recipe_local().await;
+    }
+
+    get_recpie_online(client).await
+}
+
+pub async fn get_i18n_file(client: &Client) -> Result<HashMap<String, Value>> {
+    if is_local_recipe() {
+        return get_recipe_i18n_local().await;
+    }
+
+    get_i18n_file_online(client).await
+}
+
+pub async fn get_recpie_online(client: &Client) -> Result<Recipe> {
     get(client, "https://releases.aosc.io/manifest/recipe.json").await
 }
 
-#[inline]
-pub async fn get_i18n_file(client: &Client) -> Result<HashMap<String, Value>> {
+pub async fn get_i18n_file_online(client: &Client) -> Result<HashMap<String, Value>> {
+    let local_recipe = Path::new("/manifest/recipe-i18n.json");
+    if local_recipe.is_file() {
+        let content = std::fs::read_to_string(local_recipe)?;
+        let res: HashMap<String, Value> = serde_json::from_str(&content)?;
+        return Ok(res);
+    }
+
     get(client, "https://releases.aosc.io/manifest/recipe-i18n.json").await
+}
+
+pub fn get_offline_sysroot_size(variant: &str) -> u64 {
+    fs::metadata(Path::new("/run/livekit/sysroots").join(variant))
+        .map(|x| x.size())
+        .unwrap_or(1)
 }
 
 async fn get<T: DeserializeOwned>(client: &Client, url: &str) -> Result<T> {
@@ -46,7 +96,7 @@ async fn get<T: DeserializeOwned>(client: &Client, url: &str) -> Result<T> {
 pub struct InstallConfig {
     pub locale: Locale,
     pub variant: Variant,
-    mirror: Mirror,
+    mirror: Option<Mirror>,
     pub partition: Partition,
     pub efi_partition: Option<Partition>,
     pub user: String,
@@ -56,6 +106,7 @@ pub struct InstallConfig {
     pub rtc_as_localtime: bool,
     pub timezone: Timezone,
     pub swapfile: SwapFile,
+    pub is_offline_install: bool,
 }
 
 #[derive(Deserialize)]
@@ -127,7 +178,7 @@ pub fn get_download_info(config: &InstallConfig) -> Result<DownloadInfo<'_>> {
         .filter(|x| get_arch_name().map(|arch| arch == x.arch).unwrap_or(false))
         .collect::<Vec<_>>();
 
-    let (candidate, url) = candidate_sqfs(sqfs, &config.mirror.url)?;
+    let (candidate, url) = candidate_sqfs(sqfs, &config.mirror.as_ref().unwrap().url)?;
 
     Ok(DownloadInfo {
         url,

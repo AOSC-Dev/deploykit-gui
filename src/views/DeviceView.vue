@@ -60,12 +60,18 @@ export default {
       }
 
       const v = this.config.variant;
-      const squashfsInfo = await invoke('get_squashfs_info', {
-        v,
-        url: this.config.mirror.url,
-      });
 
-      let requireSize = squashfsInfo.downloadSize + squashfsInfo.instSize;
+      let requireSize;
+      if (!this.config.is_offline_install) {
+        const squashfsInfo = await invoke('get_squashfs_info', {
+          v,
+          url: this.config.mirror.url,
+        });
+
+        requireSize = squashfsInfo.downloadSize + squashfsInfo.instSize;
+      } else {
+        requireSize = await invoke('get_size', { variant: this.config.variant.name });
+      }
 
       const isEFI = await invoke('is_efi_api');
 

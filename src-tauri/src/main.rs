@@ -46,6 +46,7 @@ use utils::candidate_sqfs;
 use utils::control_window_above;
 use utils::get_mirror_speed_score;
 use utils::is_efi;
+use utils::is_local_recipe;
 use utils::Mirror;
 use utils::Recipe;
 use utils::Squashfs;
@@ -284,32 +285,56 @@ fn list_timezone() -> TauriResult<Vec<ZoneInfo>> {
 }
 
 #[tauri::command]
+fn get_size(variant: &str) -> u64 {
+    utils::get_offline_sysroot_size(variant)
+}
+
+#[tauri::command]
 async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<()> {
     let proxy = &state.proxy;
     let config = handle_serde_config(config)?;
 
-    let DownloadInfo {
-        url,
-        checksum,
-        name,
-    } = get_download_info(&config)?;
+    let name = if !config.is_offline_install {
+        let DownloadInfo {
+            url,
+            checksum,
+            name,
+        } = get_download_info(&config)?;
+
+        let download_value = serde_json::json!({
+            "Http": {
+                "url": url,
+                "hash": checksum,
+            }
+        });
+
+        Dbus::run(
+            proxy,
+            DbusMethod::SetConfig("download", &download_value.to_string()),
+        )
+        .await?;
+
+        name
+    } else {
+        let variant = &config.variant.name;
+
+        let download_value = serde_json::json!({
+            "Dir": format!("/run/livekit/sysroots/{}", variant.to_lowercase())
+        });
+
+        Dbus::run(
+            proxy,
+            DbusMethod::SetConfig("download", &download_value.to_string()),
+        )
+        .await?;
+
+        variant
+    };
 
     if name == "Base" || name == "Server" {
         IS_BASE_SQFS.store(true, Ordering::Relaxed);
     }
 
-    let download_value = serde_json::json!({
-        "Http": {
-            "url": url,
-            "hash": checksum,
-        }
-    });
-
-    Dbus::run(
-        proxy,
-        DbusMethod::SetConfig("download", &download_value.to_string()),
-    )
-    .await?;
     Dbus::run(
         proxy,
         DbusMethod::SetConfig("locale", &config.locale.locale),
@@ -399,7 +424,7 @@ async fn get_recipe(state: State<'_, DkState<'_>>) -> TauriResult<Recipe> {
     let client = &state.http_client;
     let res = state
         .recipe
-        .get_or_try_init(|| async { utils::get_recpie(client).await })
+        .get_or_try_init(|| async { utils::get_recipe(client).await })
         .await?
         .to_owned();
 
@@ -698,6 +723,11 @@ fn set_locale(locale: &str) {
     }
 }
 
+#[tauri::command]
+fn is_offline_install() -> bool {
+    is_local_recipe()
+}
+
 fn set_locale_inner(locale: &str) -> io::Result<()> {
     Command::new("localectl")
         .arg("set-locale")
@@ -850,7 +880,9 @@ async fn main() {
                     set_locale,
                     get_arch_name,
                     is_lvm_device,
-                    read_locale
+                    read_locale,
+                    is_offline_install,
+                    get_size
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");

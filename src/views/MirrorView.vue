@@ -17,3 +17,14 @@ import DKBody from '@/components/DKBody.vue';
   </DKBody>
   <DKBottomSteps />
 </template>
+
+<script>
+export default {
+  inject: ['config'],
+  mounted() {
+    if (this.config.is_offline_install) {
+      this.$router.push('/device');
+    }
+  },
+};
+</script>

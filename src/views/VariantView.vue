@@ -29,6 +29,9 @@ export default {
     }
 
     try {
+      const isOfflineInstall = await invoke('is_offline_install');
+      this.config.is_offline_install = isOfflineInstall;
+
       const recipe = await invoke('get_recipe');
       const { variants } = recipe;
 
@@ -60,7 +63,15 @@ export default {
 
       this.loading = false;
     } catch (e) {
-      this.$router.push('/network');
+      if (this.config.is_offline_install) {
+        const { path } = this.$router.currentRoute.value;
+        this.$router.replace({
+          path: `/error/${encodeURIComponent(JSON.stringify(e))}`,
+          query: { currentRoute: path },
+        });
+      } else {
+        this.$router.push('/network');
+      }
     }
   },
 };

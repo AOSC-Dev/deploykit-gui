@@ -41,12 +41,16 @@ export default {
         ? 32 * 1024 * 1024 * 1024
         : recommendSwapSize;
 
-      const squashfsInfo = await invoke('get_squashfs_info', {
-        v: this.config.variant,
-        url: this.config.mirror.url,
-      });
-
-      const sqfsSize = squashfsInfo.downloadSize + squashfsInfo.instSize;
+      let sqfsSize;
+      if (!this.config.is_offline_install) {
+        const squashfsInfo = await invoke('get_squashfs_info', {
+          v: this.config.variant,
+          url: this.config.mirror.url,
+        });
+        sqfsSize = squashfsInfo.downloadSize + squashfsInfo.instSize;
+      } else {
+        sqfsSize = await invoke('get_size', { variant: this.config.variant.name });
+      }
 
       if (
         this.recommendSize

@@ -27,11 +27,16 @@ async function checkDisk(obj, device) {
     }
 
     const v = o.config.variant;
-    const squashfsInfo = await invoke('get_squashfs_info', {
-      v,
-      url: obj.config.mirror.url,
-    });
-    o.sqfs_size = squashfsInfo.downloadSize + squashfsInfo.instSize;
+
+    if (!o.config.is_offline_install) {
+      const squashfsInfo = await invoke('get_squashfs_info', {
+        v,
+        url: obj.config.mirror.url,
+      });
+      o.sqfs_size = squashfsInfo.downloadSize + squashfsInfo.instSize;
+    } else {
+      o.sqfs_size = await invoke('get_size', { variant: obj.config.variant.name });
+    }
 
     if (o.partitions.length !== 0) {
       o.new_disk = false;
