@@ -595,7 +595,7 @@ async fn sync_disk(state: State<'_, DkState<'_>>) -> TauriResult<()> {
 #[serde(tag = "status")]
 enum ProgressStatus {
     Pending,
-    Working { step: u8, progress: f64, v: usize },
+    Working { step: u8, progress: u8, v: usize },
     Error(Value),
     Finish,
 }
@@ -611,7 +611,7 @@ struct GuiProgress {
 struct GuiProgressStatus {
     c: u8,
     t: u8,
-    p: f64,
+    p: u8,
 }
 
 #[tauri::command]
