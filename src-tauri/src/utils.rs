@@ -16,8 +16,8 @@ use x11rb::protocol::xproto::{
 };
 use x11rb::wrapper::ConnectionExt;
 
-const LOCAL_RECIPE: &str = "/manifest/recipe.json";
-const LOCAL_RECIPE_I18N: &str = "/manifest/recipe-i18n.json";
+const LOCAL_RECIPE: &str = "/run/livekit/livemnt/manifest/recipe.json";
+const LOCAL_RECIPE_I18N: &str = "/run/livekit/livemnt/manifest/recipe-i18n.json";
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Recipe {
