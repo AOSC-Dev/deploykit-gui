@@ -28,6 +28,7 @@ export default {
       volume: 0.3,
       muted: false,
       playing: true,
+      curr: 0,
     };
   },
   computed: {
@@ -59,6 +60,10 @@ export default {
           || details.status === 'Finish')
       ) return '';
       const { status } = details;
+      if (this.curr !== status.c) {
+        this.curr = status.c;
+        this.progress += 6.25;
+      }
       return this.$t('install.status', {
         curr: status.c,
         total: status.t,
