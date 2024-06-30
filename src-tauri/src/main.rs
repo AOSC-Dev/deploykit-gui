@@ -14,6 +14,7 @@ use reqwest::Client;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
+use std::borrow::Cow;
 use std::collections::HashMap;
 use std::env;
 use std::io;
@@ -314,12 +315,12 @@ async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<
         )
         .await?;
 
-        name
+        Cow::Borrowed(name)
     } else {
-        let variant = &config.variant.name;
+        let variant = config.variant.dir_name.unwrap();
 
         let download_value = serde_json::json!({
-            "Dir": format!("/run/livekit/sysroots/{}", variant.to_lowercase())
+            "Dir": format!("/run/livekit/sysroots/{}", &variant)
         });
 
         Dbus::run(
@@ -328,7 +329,7 @@ async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<
         )
         .await?;
 
-        variant
+        Cow::Owned(variant)
     };
 
     if name == "Base" || name == "Server" {
