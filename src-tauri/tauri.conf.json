@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "deploykit-gui",
-    "version": "0.7.0"
+    "version": "0.7.1"
   },
   "tauri": {
     "allowlist": {
