@@ -122,6 +122,7 @@ pub struct Locale {
 #[derive(Deserialize)]
 pub struct Variant {
     pub name: String,
+    #[serde(rename = "dir-name")]
     pub dir_name: Option<String>,
     pub squashfs: Vec<Squashfs>,
 }
