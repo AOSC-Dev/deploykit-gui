@@ -32,6 +32,7 @@ export default {
   mounted() {
     this.$refs.plyr.player.volume = this.volume;
     this.$refs.plyr.player.muted = this.muted;
+    this.$refs.plyr.player.iconUrl = '/assets/plyr.svg';
     this.$refs.plyr.player.on('ended', () => {
       this.currentIndex += 1;
       if (this.currentIndex >= this.$props.list.length) {
