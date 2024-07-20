@@ -1,10 +1,9 @@
 import { createApp } from 'vue';
 import { createI18n } from 'vue-i18n';
-// import AudioPlayer from '@liripeng/vue-audio-player';
 import humanFormat from 'human-format';
 import VuePlyr from 'vue-plyr';
 import App from './App.vue';
-import router from './router';
+import router from './router/index.ts';
 
 import '@/../assets/vue-plyr.css';
 
@@ -20,11 +19,11 @@ const i18n = createI18n({
   fallbackLocale: 'en',
 });
 
-async function switchLocale(locale) {
+async function switchLocale(locale: string) {
   const msg = await import(`./locales/${locale}.json`);
   i18n.global.setLocaleMessage(locale, msg.default);
   i18n.global.locale.value = locale;
-  document.querySelector('html').setAttribute('lang', locale);
+  document.querySelector('html')?.setAttribute('lang', locale);
 }
 
 // provided functions in the global scope
@@ -33,7 +32,6 @@ app.provide('humanSize', humanFormat.bytes);
 
 app.use(router);
 app.use(i18n);
-// app.use(AudioPlayer);
 
 app.use(VuePlyr);
 

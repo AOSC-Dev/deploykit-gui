@@ -1,158 +1,32 @@
-<script setup>
+<script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import DKStripButton from '@/components/DKStripButton.vue';
 import DKBottomActions from '@/components/DKBottomActions.vue';
 import DKListSelect from '@/components/DKListSelect.vue';
 import DKSpinner from '@/components/DKSpinner.vue';
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
+import { defineComponent, inject } from 'vue';
 import DKBody from '../components/DKBody.vue';
+import {
+  Config,
+  Device,
+  IsLvmDeviceResp,
+  Partition,
+  SquashfsInfo,
+} from '../config.ts';
 </script>
 
-<script>
-async function checkDisk(obj, device) {
-  try {
-    const o = obj;
-    const req = await invoke('list_partitions', { dev: device.path });
-    const resp = req;
-    o.partitions = resp;
-
-    if (obj.config.partition) {
-      if (obj.partitions.length === 0) {
-        o.config.partition = null;
-      } else {
-        o.selected = o.partitions.findIndex(
-          (v) => v.path === o.config.partition.path,
-        );
-      }
-    }
-
-    const v = o.config.variant;
-
-    if (!o.config.is_offline_install) {
-      const squashfsInfo = await invoke('get_squashfs_info', {
-        v,
-        url: obj.config.mirror.url,
-      });
-      o.sqfs_size = squashfsInfo.downloadSize + squashfsInfo.instSize;
-    } else {
-      const info = await invoke('get_squashfs_info', { v });
-      o.sqfsSize = info.instSize * 1.25;
-    }
-
-    if (o.partitions.length !== 0) {
-      o.new_disk = false;
-
-      if (o.is_efi) {
-        try {
-          const espParts = await invoke('find_all_esp_parts');
-          if (espParts.length === 0) {
-            o.error_msg = o.$t('part.e4');
-            o.efiError = true;
-            return;
-          }
-          o.error_msg = '';
-          o.efiError = false;
-        } catch (e) {
-          const { path } = obj.$router.currentRoute.value;
-
-          obj.$router.replace({
-            path: `/error/${encodeURIComponent(JSON.stringify(e))}`,
-            query: { openGparted: true, currentRoute: path },
-          });
-        }
-      }
-
-      try {
-        await invoke('disk_is_right_combo', { disk: device.path });
-        o.rightCombine = true;
-      } catch (e) {
-        switch (e.data.t) {
-          case 'WrongCombine': {
-            const { bootmode, table } = e.data.data;
-            o.error_msg = o.$t('part.e3', {
-              bootmode,
-              table,
-            });
-            o.rightCombine = false;
-            break;
-          }
-          case 'UnsupportedTable': {
-            const { table } = e.data.data;
-            o.error_msg = o.$t('part.e5', { table });
-            o.unsupportedTable = true;
-            break;
-          }
-          case 'PartitionType': {
-            o.error_msg = e.message;
-            o.otherError = true;
-            break;
-          }
-          default: {
-            o.rightCombine = true;
-            o.unsupportedTable = false;
-            o.otherError = false;
-            o.error_msg = '';
-          }
-        }
-      }
-
-      try {
-        const isLvmDevice = await invoke('is_lvm_device', {
-          dev: device.path,
-        }).data;
-
-        if (isLvmDevice) {
-          o.error_msg = o.$t('part.e6');
-          o.lvmError = true;
-          return;
-        }
-      } catch (err) {
-        const { path } = obj.$router.currentRoute.value;
-
-        obj.$router.replace({
-          path: `/error/${encodeURIComponent(JSON.stringify(err))}`,
-          query: { openGparted: true, currentRoute: path },
-        });
-      }
-    } else {
-      o.new_disk = true;
-      o.rightCombine = true;
-      o.unsupportedTable = false;
-      o.otherError = false;
-      o.error_msg = '';
-
-      if (obj.is_efi) {
-        o.new_partition_size = Math.round(
-          (device.size - 512 * 1024 * 1024) / 1024 / 1024 / 1024,
-        );
-      } else {
-        o.new_partition_size = Math.round(device.size / 1024 / 1024 / 1024);
-      }
-    }
-  } catch (e) {
-    const { path } = obj.$router.currentRoute.value;
-
-    obj.$router.replace({
-      path: `/error/${encodeURIComponent(JSON.stringify(e))}`,
-      query: { openGparted: true, currentRoute: path },
-    });
-  }
-
-  const o = obj;
-  o.loading = false;
-}
-
-export default {
-  inject: ['config', 'humanSize'],
+<script lang="ts">
+export default defineComponent({
   data() {
     return {
-      selected: null,
+      selected: null as null | number,
       gparted: false,
-      partitions: [],
+      partitions: [] as Partition[],
       loading: true,
       error_msg: '',
-      sqfs_size: null,
-      new_partition_size: null,
+      sqfs_size: null as null | number,
+      new_partition_size: null as null | number,
       is_efi: false,
       new_disk: !this.partitions || this.partitions.length < 1,
       rightCombine: false,
@@ -160,6 +34,8 @@ export default {
       unsupportedTable: false,
       lvmError: false,
       otherError: false,
+      config: inject('config') as Config,
+      humanSize: inject('humanSize') as Function,
     };
   },
   computed: {
@@ -176,7 +52,147 @@ export default {
     },
   },
   methods: {
-    comment(comment) {
+    async checkDisk(device: Device) {
+      try {
+        const req = (await invoke('list_partitions', {
+          dev: device.path,
+        })) as Partition[];
+        const resp = req;
+        this.partitions = resp;
+
+        if (this.config.partition) {
+          if (this.partitions.length === 0) {
+            this.config.partition = null;
+          } else {
+            this.selected = this.partitions.findIndex(
+              (v) => v.path === this.config.partition?.path,
+            );
+          }
+        }
+
+        const v = this.config.variant;
+
+        if (!this.config.is_offline_install) {
+          const squashfsInfo = (await invoke('get_squashfs_info', {
+            v,
+            url: this.config.mirror?.url,
+          })) as SquashfsInfo;
+          this.sqfs_size = squashfsInfo.downloadSize + squashfsInfo.instSize;
+        } else {
+          const info = (await invoke('get_squashfs_info', {
+            v,
+          })) as SquashfsInfo;
+          this.sqfs_size = info.instSize * 1.25;
+        }
+
+        if (this.partitions.length !== 0) {
+          this.new_disk = false;
+
+          if (this.is_efi) {
+            try {
+              const espParts = (await invoke(
+                'find_all_esp_parts',
+              )) as Partition[];
+              if (espParts.length === 0) {
+                this.error_msg = this.$t('part.e4');
+                this.efiError = true;
+                return;
+              }
+              this.error_msg = '';
+              this.efiError = false;
+            } catch (e) {
+              const { path } = this.$router.currentRoute.value;
+
+              this.$router.replace({
+                path: `/error/${encodeURIComponent(JSON.stringify(e))}`,
+                query: { openGparted: 1, currentRoute: path },
+              });
+            }
+          }
+
+          try {
+            await invoke('disk_is_right_combo', { disk: device.path });
+            this.rightCombine = true;
+          } catch (e: any) {
+            switch (e.data.t) {
+              case 'WrongCombine': {
+                const { bootmode, table } = e.data.data;
+                this.error_msg = this.$t('part.e3', {
+                  bootmode,
+                  table,
+                });
+                this.rightCombine = false;
+                break;
+              }
+              case 'UnsupportedTable': {
+                const { table } = e.data.data;
+                this.error_msg = this.$t('part.e5', { table });
+                this.unsupportedTable = true;
+                break;
+              }
+              case 'PartitionType': {
+                this.error_msg = e.message;
+                this.otherError = true;
+                break;
+              }
+              default: {
+                this.rightCombine = true;
+                this.unsupportedTable = false;
+                this.otherError = false;
+                this.error_msg = '';
+              }
+            }
+          }
+
+          try {
+            const isLvmDevice = (
+              (await invoke('is_lvm_device', {
+                dev: device.path,
+              })) as IsLvmDeviceResp
+            ).data;
+
+            if (isLvmDevice) {
+              this.error_msg = this.$t('part.e6');
+              this.lvmError = true;
+              return;
+            }
+          } catch (err) {
+            const { path } = this.$router.currentRoute.value;
+
+            this.$router.replace({
+              path: `/error/${encodeURIComponent(JSON.stringify(err))}`,
+              query: { openGparted: 1, currentRoute: path },
+            });
+          }
+        } else {
+          this.new_disk = true;
+          this.rightCombine = true;
+          this.unsupportedTable = false;
+          this.otherError = false;
+          this.error_msg = '';
+
+          if (this.is_efi) {
+            this.new_partition_size = Math.round(
+              (device.size - 512 * 1024 * 1024) / 1024 / 1024 / 1024,
+            );
+          } else {
+            this.new_partition_size = Math.round(
+              device.size / 1024 / 1024 / 1024,
+            );
+          }
+        }
+      } catch (e) {
+        const { path } = this.$router.currentRoute.value;
+
+        this.$router.replace({
+          path: `/error/${encodeURIComponent(JSON.stringify(e))}`,
+          query: { openGparted: 1, currentRoute: path },
+        });
+      }
+
+      this.loading = false;
+    },
+    comment(comment: string) {
       switch (comment) {
         case 'esp':
           return this.$t('part.k1');
@@ -211,7 +227,7 @@ export default {
           }
 
           // 检查 GParted 之后分区表是否合法
-          checkDisk(this, device).then(() => {
+          this.checkDisk(device).then(() => {
             this.gparted = false;
             this.loading = false;
           });
@@ -237,6 +253,10 @@ export default {
         return false;
       }
 
+      if (this.selected === null || this.sqfs_size === null) {
+        return false;
+      }
+
       const { size } = this.partitions[this.selected];
 
       if (size < this.sqfs_size) {
@@ -246,10 +266,8 @@ export default {
         return false;
       }
 
-      if (
-        this.partitions[this.selected].fs_type
-        && !['ext4', 'xfs'].includes(this.partitions[this.selected].fs_type)
-      ) {
+      const fsType = this.partitions[this.selected].fs_type;
+      if (fsType !== null && !['ext4', 'xfs'].includes(fsType)) {
         this.error_msg = this.$t('part.e2');
         return false;
       }
@@ -257,6 +275,10 @@ export default {
       return true;
     },
     select() {
+      if (this.selected === null || this.sqfs_size === null) {
+        return;
+      }
+
       const { size } = this.partitions[this.selected];
 
       if (size < this.sqfs_size) {
@@ -275,10 +297,9 @@ export default {
         return;
       }
 
-      if (
-        this.partitions[this.selected].fs_type
-        && !['ext4', 'xfs'].includes(this.partitions[this.selected].fs_type)
-      ) {
+      const fsType = this.partitions[this.selected].fs_type;
+
+      if (fsType !== null && !['ext4', 'xfs'].includes(fsType)) {
         if (
           this.efiError
           || this.otherError
@@ -305,6 +326,10 @@ export default {
     },
     next() {
       if (!this.new_disk) {
+        if (this.selected === null || this.sqfs_size === null) {
+          return;
+        }
+
         this.config.partition = this.partitions[this.selected];
         if (!this.config.partition.fs_type) {
           this.config.partition.fs_type = 'ext4';
@@ -327,14 +352,14 @@ export default {
       device = this.config.device;
     }
 
-    const isEFI = await invoke('is_efi_api');
+    const isEFI = (await invoke('is_efi_api')) as boolean;
     this.is_efi = isEFI;
 
-    await checkDisk(this, device);
+    await this.checkDisk(device);
 
     this.loading = false;
   },
-};
+});
 </script>
 
 <template>

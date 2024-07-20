@@ -21,9 +21,11 @@ module.exports = {
       },
     },
   ],
+  parser: 'vue-eslint-parser',
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
+    parser: '@typescript-eslint/parser',
   },
   plugins: [
     'vue',
@@ -34,8 +36,9 @@ module.exports = {
     'import/resolver': {
       alias: {
         map: [['@', './src/']],
-        extensions: ['.js', '.vue'],
+        extensions: ['.js', '.vue', '.ts'],
       },
     },
+    'import/no-extraneous-dependencies': 'off',
   },
 };

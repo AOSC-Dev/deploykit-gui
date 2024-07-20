@@ -1,10 +1,11 @@
-<script setup>
+<script setup lang="ts">
 import DKBottomActions from '@/components/DKBottomActions.vue';
+import { defineComponent } from 'vue';
 import DKStepButtons from './DKStepButtons.vue';
 </script>
 
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   props: {
     trigger: Function,
     guard: Function,
@@ -13,7 +14,7 @@ export default {
     replace: Boolean,
     query: Object,
   },
-};
+});
 </script>
 
 <template>

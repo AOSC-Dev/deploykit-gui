@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { RouterView } from 'vue-router';
 import { listen } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api';
@@ -9,9 +9,11 @@ import DesktopOrInstall from '@/views/DesktopOrInstallView.vue';
 import AudioPlayer from '@/components/AudioPlayer.vue';
 </script>
 
-<script>
-export default {
-  inject: ['switchLocale'],
+<script lang="ts">
+import { defineComponent, inject } from 'vue';
+import { ProgressDetail } from './config.ts';
+
+export default defineComponent({
   data() {
     return {
       page_number: 0,
@@ -29,11 +31,12 @@ export default {
       muted: false,
       playing: true,
       curr: 0,
+      switchLocale: inject('switchLocale') as Function,
     };
   },
   computed: {
     eta_value() {
-      const details = this.progressDetail;
+      const details = this.progressDetail as ProgressDetail;
       if (details.eta_lo > 0) {
         return this.$t('d.eta-0', {
           time_lo: details.eta_lo,
@@ -48,7 +51,7 @@ export default {
       return '';
     },
     install_info() {
-      const details = this.progressDetail;
+      const details = this.progressDetail as ProgressDetail;
       if (
         Object.keys(details).length === 0
         || !Object.keys(details).includes('status')
@@ -60,15 +63,16 @@ export default {
           || details.status === 'Finish')
       ) return '';
       const { status } = details;
-      if (this.curr !== status.c) {
-        this.curr = status.c;
+      if (typeof (status) === 'string') return '';
+      if (this.curr !== status?.c) {
+        this.curr = status?.c as number;
         this.progress += 6.25;
       }
       return this.$t('install.status', {
-        curr: status.c,
-        total: status.t,
-        msg: this.$t(`install.i${status.c}`),
-        perc: status.p,
+        curr: status?.c,
+        total: status?.t,
+        msg: this.$t(`install.i${status?.c}`),
+        perc: status?.p,
       });
     },
   },
@@ -78,16 +82,16 @@ export default {
       if (path === '/finish') {
         this.$router.push({
           path: '/abort',
-          query: { done: true },
+          query: { done: 1 },
         });
       } else {
         this.$router.push('/abort');
       }
     },
-    nav_menu_bold(step) {
+    nav_menu_bold(step: number) {
       return this.page_number >= step ? 'active' : '';
     },
-    lightup_seq(step) {
+    lightup_seq(step: number) {
       return this.lightup >= step ? '' : 'hidden';
     },
     execute_lightup() {
@@ -96,7 +100,7 @@ export default {
         this.lightup += 1;
       }, 210);
     },
-    on_lang_selected(id) {
+    on_lang_selected(id: string) {
       this.current_lang = id.toLowerCase();
       if (id === 'en') {
         // default locale is always loaded before-hand
@@ -118,7 +122,7 @@ export default {
     onInstallDk() {
       this.isInstall = true;
     },
-    on_progress_update(progress) {
+    on_progress_update(progress: ProgressDetail) {
       this.progressDetail = progress;
     },
   },
@@ -129,7 +133,7 @@ export default {
 
     this.$router.beforeEach((to) => {
       if (to.name === 'error' || to.name === 'abort') return;
-      this.page_number = to.meta.steps;
+      this.page_number = to.meta.steps as number;
       this.progress = this.page_number * 25;
     });
   },
@@ -141,15 +145,15 @@ export default {
   async created() {
     let isStop = false;
     listen('progress', (event) => {
-      this.progressDetail = event.payload;
+      this.progressDetail = event.payload as ProgressDetail;
       const details = this.progressDetail;
-      const { status } = details;
+      const { status } = details as ProgressDetail;
       const { path } = this.$router.currentRoute.value;
 
       if (status === 'Finish') {
         this.$router.replace('/finish');
         if (!isStop) {
-          this.$refs.player.stop();
+          (this.$refs.player as any).stop();
           isStop = true;
         }
       } else if (status === 'Error' && path !== '/error' && path !== '/abort') {
@@ -166,11 +170,11 @@ export default {
       }
     });
 
-    const isInstall = await invoke('is_skip');
+    const isInstall = await invoke('is_skip') as boolean;
     this.isInstall = isInstall;
 
     try {
-      const playlist = await invoke('get_bgm_list');
+      const playlist = await invoke('get_bgm_list') as [];
       this.playList = playlist;
     } catch (e) {
       const { path } = this.$router.currentRoute.value;
@@ -180,7 +184,7 @@ export default {
       });
     }
   },
-};
+});
 </script>
 
 <template>
@@ -225,7 +229,7 @@ export default {
     :main_class="lightup_seq(1)"
     v-if="langSelected && isInstall"
   >
-    <RouterView @update:can_quit="(v) => (can_quit = v)" />
+    <RouterView @update:can_quit="(v: boolean) => (can_quit = v)" />
     <template #left>
       <div class="wrapper" :class="lightup_seq(1)">
         <nav :class="nav_menu_bold(0)">{{ $t("d.nav-0") }}</nav>
@@ -240,9 +244,9 @@ export default {
           :volume="volume"
           :muted="muted"
           :playing="playing"
-          @update:playing="(v) => (playing = v)"
-          @update:volume="(v) => (volume = v)"
-          @update:muted="(v) => (muted = v)"
+          @update:playing="(v: boolean) => (playing = v)"
+          @update:volume="(v: number) => (volume = v)"
+          @update:muted="(v: boolean) => (muted = v)"
         ></AudioPlayer>
       </div>
     </template>

@@ -1,12 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
+import { defineComponent, inject } from 'vue';
 import DKBody from '../components/DKBody.vue';
+import { Config } from '../config.ts';
 </script>
 
-<script>
-export default {
-  inject: ['config'],
+<script lang="ts">
+export default defineComponent({
   props: {
     part: String,
     part_fmt: String,
@@ -17,6 +18,11 @@ export default {
     timezone: String,
     rtc_utc: Boolean,
     rescue_size: Number,
+  },
+  data() {
+    return {
+      config: inject('config') as Config,
+    };
   },
   methods: {
     async set_config() {
@@ -32,7 +38,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <template>
@@ -43,11 +49,11 @@ export default {
       <ul>
         <i18n-t keypath="confirm.l1" tag="li">
           <template v-slot:path>
-            <span class="emphasis">{{ config.partition.path }}</span>
+            <span class="emphasis">{{ config.partition?.path }}</span>
           </template>
           <template v-slot:explain>
             <span class="emphasis">{{
-              $t("confirm.l1-1", { format: config.partition.fs_type })
+              $t("confirm.l1-1", { format: config.partition?.fs_type })
             }}</span>
           </template>
         </i18n-t>
@@ -56,7 +62,7 @@ export default {
             <span class="emphasis">{{ config.variant.title }}</span>
           </template>
           <template v-slot:mirror>
-            <span class="emphasis">{{ config.mirror.name }}</span>
+            <span class="emphasis">{{ config.mirror?.name }}</span>
           </template>
         </i18n-t>
         <i18n-t keypath="confirm.l4" tag="li">
@@ -70,7 +76,9 @@ export default {
         </i18n-t>
         <ul>
           <i18n-t keypath="confirm.l7" tag="li">
-            <span v-if="!config.rtc_as_localtime" class="emphasis">{{ $t("confirm.l7-1") }}</span>
+            <span v-if="!config.rtc_as_localtime" class="emphasis">{{
+              $t("confirm.l7-1")
+            }}</span>
             <span v-else class="emphasis">{{ $t("confirm.l7-2") }}</span>
           </i18n-t>
         </ul>

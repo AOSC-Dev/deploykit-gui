@@ -1,5 +1,17 @@
-<script>
-export default {
+<script setup lang="ts">
+</script>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+interface Option {
+  title: string,
+  disabled: boolean,
+  hl: boolean,
+  body: string,
+}
+
+export default defineComponent({
   props: {
     options: Array,
     selected: Number,
@@ -8,14 +20,14 @@ export default {
     click_fn: Function,
   },
   methods: {
-    select(index) {
+    select(index: number) {
       this.$emit('update:selected', index);
       if (this.click_fn) {
         this.click_fn(this);
       }
     },
   },
-};
+});
 </script>
 
 <template>
@@ -26,7 +38,7 @@ export default {
     ]"
   >
     <button
-      v-for="(option, index) in options"
+      v-for="(option, index) in options as Option[]"
       v-bind:key="option.title"
       :class="(index === selected ? 'selected ' : ' ') + 'button'"
       :disabled="option.disabled"

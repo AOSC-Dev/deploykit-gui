@@ -1,9 +1,11 @@
-<script setup>
+<script setup lang="ts">
 import DKBody from '@/components/DKBody.vue';
 import { invoke } from '@tauri-apps/api';
 import DKStripButton from '@/components/DKStripButton.vue';
 import DKBottomActions from '@/components/DKBottomActions.vue';
 import DKSpinner from '@/components/DKSpinner.vue';
+import { inject, defineComponent } from 'vue';
+import { Config } from '../config.ts';
 </script>
 
 <template>
@@ -32,11 +34,11 @@ import DKSpinner from '@/components/DKSpinner.vue';
   </DKBody>
 </template>
 
-<script>
-export default {
-  inject: ['config'],
+<script lang="ts">
+export default defineComponent({
   data() {
     return {
+      config: inject('config') as Config,
       loading: false,
       running: false,
     };
@@ -60,5 +62,5 @@ export default {
       }
     },
   },
-};
+});
 </script>

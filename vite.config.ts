@@ -3,12 +3,17 @@ import vue from '@vitejs/plugin-vue';
 import vueI18n from '@intlify/vite-plugin-vue-i18n';
 import path from 'path';
 import { fileURLToPath, URL } from 'url';
+import checker from 'vite-plugin-checker';
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
   plugins: [
     vue(),
     vueI18n({ include: path.resolve(__dirname, './src/locales/**') }),
+    checker({
+      // e.g. use TypeScript check
+      typescript: true,
+    }),
   ],
   resolve: {
     alias: {

@@ -1,9 +1,10 @@
-<script setup>
+<script setup lang="ts">
+import { defineComponent } from 'vue';
 import DKBottomRightButtons from './DKBottomRightButtons.vue';
 </script>
 
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   props: {
     trigger: Function,
     guard: Function,
@@ -20,18 +21,18 @@ export default {
       if (this.trigger) this.trigger(this);
       if (this.replace) {
         this.$router.replace({
-          path: this.$router.currentRoute.value.meta.next,
+          path: this.$router.currentRoute.value.meta.next as string,
           query: this.query,
         });
       } else {
         this.$router.push({
-          path: this.$router.currentRoute.value.meta.next,
+          path: this.$router.currentRoute.value.meta.next as string,
           query: this.query,
         });
       }
     },
   },
-};
+});
 </script>
 
 <template>

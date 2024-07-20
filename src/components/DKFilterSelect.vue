@@ -1,5 +1,12 @@
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+interface Option {
+  text: string;
+  data: string;
+}
+
+export default defineComponent({
   props: {
     default: Number,
     id: String,
@@ -19,27 +26,28 @@ export default {
       const currentInput = this.user_input.trim().toLowerCase();
       if (
         !currentInput
-        || this.options.filter((x) => x.text.toLowerCase() === currentInput)
-          .length !== 0
+        || (this.options as Option[]).filter(
+          (x) => x.text.toLowerCase() === currentInput,
+        ).length !== 0
       ) return this.options;
 
-      return this.options.filter(
+      return (this.options as Option[]).filter(
         (v) => v.text.toLowerCase().includes(currentInput)
           || v.data.toLowerCase().includes(currentInput),
       );
     },
   },
   methods: {
-    lock_selection(index) {
-      let selected;
+    lock_selection(index: number | null) {
+      let selected: Option | null;
       if (index === null) {
         selected = null;
         this.show_dropdown = true;
         this.user_input = '';
         this.$emit('update:selected', index);
       } else {
-        selected = this.filtered_options[index];
-        const i = this.options.findIndex((v) => v === selected);
+        selected = (this.filtered_options as Option[])[index];
+        const i = (this.options as Option[]).findIndex((v) => v === selected);
         this.show_dropdown = false;
         this.user_input = selected.text;
         this.$emit('update:selected', i);
@@ -50,7 +58,7 @@ export default {
       this.show_dropdown = true;
     },
   },
-};
+});
 </script>
 
 <template>
@@ -68,14 +76,14 @@ export default {
     </div>
     <div class="dropdown-gutter" v-if="show_dropdown">
       <a
-        v-for="(opt, index) in filtered_options"
+        v-for="(opt, index) in filtered_options as Option[]"
         v-bind:key="opt.text"
         @click="lock_selection(index)"
         @keyup.enter="lock_selection(index)"
         tabindex="0"
         >{{ opt.text }}</a
       >
-      <span class="placeholder" v-if="filtered_options.length < 1">{{
+      <span class="placeholder" v-if="(filtered_options as Option[]).length < 1">{{
         $t("empty")
       }}</span>
     </div>

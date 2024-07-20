@@ -1,23 +1,25 @@
-<script setup>
+<script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import DKListSelect from '@/components/DKListSelect.vue';
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
 import DKSpinner from '@/components/DKSpinner.vue';
+import { defineComponent, inject } from 'vue';
 import DKBody from '../components/DKBody.vue';
+import { Config, Recipe, Variant } from '../config.ts';
 </script>
 
-<script>
-export default {
-  inject: ['config'],
+<script lang="ts">
+export default defineComponent({
   data() {
     return {
       loading: true,
-      options: [],
-      selected: null,
+      options: [] as Variant[],
+      selected: null as null | number,
+      config: inject('config') as Config,
     };
   },
   async created() {
-    let arch;
+    let arch: string;
     try {
       arch = await invoke('get_arch_name');
     } catch (e) {
@@ -29,26 +31,26 @@ export default {
     }
 
     try {
-      const isOfflineInstall = await invoke('is_offline_install');
+      const isOfflineInstall = (await invoke('is_offline_install')) as boolean;
       this.config.is_offline_install = isOfflineInstall;
 
-      const recipe = await invoke('get_recipe');
+      const recipe = (await invoke('get_recipe')) as Recipe;
       const { variants } = recipe;
 
-      const recipeI18n = await invoke('i18n_recipe', {
+      const recipeI18n = (await invoke('i18n_recipe', {
         locale: this.config.locale.id,
-      });
+      })) as any;
 
       variants.forEach((item, index) => {
         const title = recipeI18n[item['name-tr']]
           ? recipeI18n[item['name-tr']]
-          : item.name;
-        variants[index].title = title;
+          : (item.name as string);
+        variants[index].title = title as string;
 
         const body = recipeI18n[item['description-tr']]
           ? recipeI18n[item['description-tr']]
-          : item.description;
-        variants[index].body = body;
+          : (item.description as string);
+        variants[index].body = body as string;
       });
 
       this.options = variants
@@ -74,7 +76,7 @@ export default {
       }
     }
   },
-};
+});
 </script>
 
 <template>
@@ -87,7 +89,7 @@ export default {
           :selected="selected"
           :options="options"
           :is_limit_height="true"
-          @update:selected="(v) => (selected = v)"
+          @update:selected="(v: number) => (selected = v)"
         />
       </section>
     </div>
@@ -97,7 +99,12 @@ export default {
     </div>
   </DKBody>
   <DKBottomSteps
-    :trigger="() => (config.variant = options[selected])"
+    :trigger="
+      () => {
+        if (selected === null) return;
+        config.variant = options[selected];
+      }
+    "
     :can_proceed="selected != null"
   />
 </template>
