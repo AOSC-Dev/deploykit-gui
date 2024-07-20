@@ -36,7 +36,7 @@ async function checkDisk(obj, device) {
       o.sqfs_size = squashfsInfo.downloadSize + squashfsInfo.instSize;
     } else {
       const info = await invoke('get_squashfs_info', { v });
-      o.sqfsSize = info.instSize;
+      o.sqfsSize = info.instSize * 1.25;
     }
 
     if (o.partitions.length !== 0) {

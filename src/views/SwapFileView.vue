@@ -49,17 +49,16 @@ export default {
         });
         sqfsSize = squashfsInfo.downloadSize + squashfsInfo.instSize;
       } else {
-        const info = await invoke('get_squashfs_info', { v: this.config.variant });
-        sqfsSize = info.instSize;
+        const info = await invoke('get_squashfs_info', {
+          v: this.config.variant,
+        });
+        sqfsSize = info.instSize * 1.25;
       }
 
-      if (
-        this.recommendSize
-        > this.config.partition.size - sqfsSize - 1024 * 1024 * 1024
-      ) {
+      if (this.recommendSize > this.config.partition.size - sqfsSize) {
         this.canRecommend = false;
         this.type = 1;
-        this.recommendSize = this.config.partition.size - sqfsSize - 1024 * 1024 * 1024;
+        this.recommendSize = this.config.partition.size - sqfsSize;
       }
 
       if (this.recommendSize < 0) {
