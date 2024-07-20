@@ -15,8 +15,7 @@ import { listen } from '@tauri-apps/api/event';
 async function handleEFI(obj) {
   const o = obj;
   try {
-    const espPartsRes = await invoke('find_all_esp_parts');
-    const espParts = espPartsRes.Ok;
+    const espParts = await invoke('find_all_esp_parts');
 
     if (espParts.length === 1 && !o.config.efi_partition) {
       const selectEFIPart = espParts[0];

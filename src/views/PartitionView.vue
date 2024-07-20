@@ -96,7 +96,7 @@ async function checkDisk(obj, device) {
       if (o.is_efi) {
         try {
           const espParts = await invoke('find_all_esp_parts');
-          if (espParts.Ok.length === 0) {
+          if (espParts.length === 0) {
             o.error_msg = o.$t('part.e4');
             o.efiError = true;
           }
