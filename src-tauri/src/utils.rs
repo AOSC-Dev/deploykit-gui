@@ -77,7 +77,7 @@ pub async fn get_i18n_file_online(client: &Client) -> Result<HashMap<String, Val
 pub fn get_offline_sysroot_size(variant: &str) -> u64 {
     fs::metadata(Path::new("/run/livekit/sysroots").join(variant))
         .map(|x| x.size())
-        .unwrap_or(1)
+        .expect(&format!("BUG: Failed to read variant dir size: {variant}"))
 }
 
 async fn get<T: DeserializeOwned>(client: &Client, url: &str) -> Result<T> {
