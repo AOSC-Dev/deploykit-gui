@@ -23,7 +23,7 @@ export default {
   inject: ['config'],
   mounted() {
     if (this.config.is_offline_install) {
-      this.$router.push('/device');
+      this.$router.replace('/device');
     }
   },
 };
