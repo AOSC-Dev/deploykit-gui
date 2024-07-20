@@ -61,6 +61,10 @@ export default {
         this.recommendSize = this.config.partition.size - sqfsSize - 1024 * 1024 * 1024;
       }
 
+      if (this.recommendSize < 0) {
+        this.recommendSize = 0;
+      }
+
       this.size = recommendSizeGiB(this.recommendSize);
 
       if (this.config.swapfile) {
