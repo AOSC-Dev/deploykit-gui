@@ -66,38 +66,47 @@ async function checkDisk(obj, device) {
             o.otherError = true;
             break;
           }
-          default:
+          default: {
             o.rightCombine = true;
             o.unsupportedTable = false;
             o.otherError = false;
-            this.error_msg = '';
-            break;
-        }
-
-        try {
-          const isLvmDevice = await invoke('is_lvm_device', {
-            disk: device.path,
-          }).data;
-
-          if (isLvmDevice) {
-            o.error_msg = o.$t('part.e6');
-            o.lvmError = true;
+            o.error_msg = '';
           }
-        } catch (err) {
+        }
+      }
+
+      try {
+        const isLvmDevice = await invoke('is_lvm_device', {
+          dev: device.path,
+        }).data;
+
+        if (isLvmDevice) {
+          o.error_msg = o.$t('part.e6');
+          o.lvmError = true;
+        }
+      } catch (err) {
+        const { path } = obj.$router.currentRoute.value;
+
+        obj.$router.replace({
+          path: `/error/${encodeURIComponent(JSON.stringify(err))}`,
+          query: { openGparted: true, currentRoute: path },
+        });
+      }
+
+      if (o.is_efi) {
+        try {
+          const espParts = await invoke('find_all_esp_parts');
+          if (espParts.Ok.length === 0) {
+            o.error_msg = o.$t('part.e4');
+            o.efiError = true;
+          }
+        } catch (e) {
           const { path } = obj.$router.currentRoute.value;
 
           obj.$router.replace({
             path: `/error/${encodeURIComponent(JSON.stringify(e))}`,
             query: { openGparted: true, currentRoute: path },
           });
-        }
-
-        if (o.is_efi) {
-          const espParts = await invoke('find_all_esp_parts');
-          if (espParts.length === 0) {
-            this.error_msg = this.$('part.e4');
-            this.efiError = true;
-          }
         }
       }
     } else {
