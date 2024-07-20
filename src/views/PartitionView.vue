@@ -274,6 +274,15 @@ export default {
         this.partitions[this.selected].fs_type
         && !['ext4', 'xfs'].includes(this.partitions[this.selected].fs_type)
       ) {
+        if (
+          this.efiError
+          || this.otherError
+          || this.unsupportedTable
+          || !this.rightCombine
+          || this.lvmError
+        ) {
+          return;
+        }
         this.error_msg = this.$t('part.e2');
         return;
       }
