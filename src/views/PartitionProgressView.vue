@@ -14,21 +14,34 @@ import { listen } from '@tauri-apps/api/event';
 <script>
 async function handleEFI(obj) {
   const o = obj;
-  const espParts = await invoke('find_all_esp_parts');
-  if (espParts.length === 1 && !o.config.efi_partition) {
-    const selectEFIPart = espParts[0];
-    if (selectEFIPart.parent_path !== o.config.device.path) {
+  try {
+    const espPartsRes = await invoke('find_all_esp_parts');
+    const espParts = espPartsRes.Ok;
+
+    if (espParts.length === 1 && !o.config.efi_partition) {
+      const selectEFIPart = espParts[0];
+      if (selectEFIPart.parent_path !== o.config.device.path) {
+        o.$router.replace(
+          `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
+        );
+      } else {
+        o.config.efi_partition = selectEFIPart;
+        o.$router.replace('/users');
+      }
+    } else if (espParts.length > 1 && !o.config.efi_partition) {
       o.$router.replace(`/esp/${encodeURIComponent(JSON.stringify(espParts))}`);
-    } else {
+    } else if (!o.config.efi_partition) {
+      const selectEFIPart = espParts[0];
       o.config.efi_partition = selectEFIPart;
       o.$router.replace('/users');
     }
-  } else if (espParts.length > 1 && !o.config.efi_partition) {
-    o.$router.replace(`/esp/${encodeURIComponent(JSON.stringify(espParts))}`);
-  } else if (!o.config.efi_partition) {
-    const selectEFIPart = espParts[0];
-    o.config.efi_partition = selectEFIPart;
-    o.$router.replace('/users');
+  } catch (e) {
+    const { path } = obj.$router.currentRoute.value;
+
+    obj.$router.replace({
+      path: `/error/${encodeURIComponent(JSON.stringify(e))}`,
+      query: { openGparted: true, currentRoute: path },
+    });
   }
 }
 
