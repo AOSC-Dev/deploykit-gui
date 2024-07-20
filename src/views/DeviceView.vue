@@ -70,7 +70,8 @@ export default {
 
         requireSize = squashfsInfo.downloadSize + squashfsInfo.instSize;
       } else {
-        requireSize = await invoke('get_size', { variant: this.config.variant.name });
+        const info = await invoke('get_squashfs_info', { v });
+        requireSize = info.instSize;
       }
 
       const isEFI = await invoke('is_efi_api');

@@ -1,6 +1,4 @@
 use std::collections::HashMap;
-use std::fs;
-use std::os::unix::fs::MetadataExt;
 use std::path::Path;
 
 use eyre::{OptionExt, Result};
@@ -72,12 +70,6 @@ pub async fn get_i18n_file_online(client: &Client) -> Result<HashMap<String, Val
     }
 
     get(client, "https://releases.aosc.io/manifest/recipe-i18n.json").await
-}
-
-pub fn get_offline_sysroot_size(variant: &str) -> u64 {
-    fs::metadata(Path::new("/run/livekit/sysroots").join(variant))
-        .map(|x| x.size())
-        .expect(&format!("BUG: Failed to read variant dir size: {variant}"))
 }
 
 async fn get<T: DeserializeOwned>(client: &Client, url: &str) -> Result<T> {
@@ -167,7 +159,7 @@ pub struct Timezone {
 }
 
 pub struct DownloadInfo<'a> {
-    pub url: String,
+    pub url: Option<String>,
     pub checksum: &'a str,
     pub name: &'a str,
 }
@@ -180,7 +172,7 @@ pub fn get_download_info(config: &InstallConfig) -> Result<DownloadInfo<'_>> {
         .filter(|x| get_arch_name().map(|arch| arch == x.arch).unwrap_or(false))
         .collect::<Vec<_>>();
 
-    let (candidate, url) = candidate_sqfs(sqfs, &config.mirror.as_ref().unwrap().url)?;
+    let (candidate, url) = candidate_sqfs(sqfs, config.mirror.as_ref().map(|x| x.url.as_str()))?;
 
     Ok(DownloadInfo {
         url,
@@ -191,13 +183,17 @@ pub fn get_download_info(config: &InstallConfig) -> Result<DownloadInfo<'_>> {
 
 pub fn candidate_sqfs<'a>(
     mut sqfs: Vec<&'a Squashfs>,
-    url: &str,
-) -> Result<(&'a Squashfs, String)> {
+    url: Option<&str>,
+) -> Result<(&'a Squashfs, Option<String>)> {
     sqfs.sort_by(|a, b| b.date.cmp(&a.date));
     let candidate = sqfs.first().ok_or_eyre("Variant squashfs is empty")?;
-    let url = format!("{}{}", url, candidate.path);
 
-    Ok((candidate, url))
+    let mut res_url = None;
+    if let Some(url) = url {
+        res_url = Some(format!("{}{}", url, candidate.path));
+    }
+
+    Ok((candidate, res_url))
 }
 
 pub fn handle_serde_config(s: &str) -> Result<InstallConfig> {

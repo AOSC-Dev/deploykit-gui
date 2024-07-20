@@ -49,7 +49,8 @@ export default {
         });
         sqfsSize = squashfsInfo.downloadSize + squashfsInfo.instSize;
       } else {
-        sqfsSize = await invoke('get_size', { variant: this.config.variant.name });
+        const info = await invoke('get_squashfs_info', { v: this.config.variant });
+        sqfsSize = info.instSize;
       }
 
       if (

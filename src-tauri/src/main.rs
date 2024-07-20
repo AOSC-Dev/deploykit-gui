@@ -286,11 +286,6 @@ fn list_timezone() -> TauriResult<Vec<ZoneInfo>> {
 }
 
 #[tauri::command]
-fn get_size(variant: &str) -> u64 {
-    utils::get_offline_sysroot_size(variant)
-}
-
-#[tauri::command]
 async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<()> {
     let proxy = &state.proxy;
     let config = handle_serde_config(config)?;
@@ -433,7 +428,7 @@ async fn get_recipe(state: State<'_, DkState<'_>>) -> TauriResult<Recipe> {
 }
 
 #[tauri::command]
-fn get_squashfs_info(v: Variant, url: &str) -> TauriResult<Squashfs> {
+fn get_squashfs_info(v: Variant, url: Option<&str>) -> TauriResult<Squashfs> {
     let c = candidate_sqfs(v.squashfs.iter().collect(), url)?;
 
     Ok(c.0.to_owned())
@@ -883,7 +878,6 @@ async fn main() {
                     is_lvm_device,
                     read_locale,
                     is_offline_install,
-                    get_size
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");
