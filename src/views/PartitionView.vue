@@ -62,7 +62,7 @@ export default defineComponent({
 
         if (this.config.partition) {
           if (this.partitions.length === 0) {
-            this.config.partition = null;
+            this.config.partition = undefined;
           } else {
             this.selected = this.partitions.findIndex(
               (v) => v.path === this.config.partition?.path,

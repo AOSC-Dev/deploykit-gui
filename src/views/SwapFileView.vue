@@ -60,7 +60,7 @@ export default defineComponent({
         sqfsSize = info.instSize * 1.25;
       }
 
-      if (this.config.partition === null) {
+      if (this.config.partition === undefined) {
         return;
       }
 

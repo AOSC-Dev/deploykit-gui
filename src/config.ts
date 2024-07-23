@@ -59,11 +59,13 @@ export interface IsLvmDeviceResp {
 export interface ProgressDetail {
   eta_lo: number;
   eta_hi: number;
-  status: string | null | {
-    c: number,
-    t: number,
-    p: number,
-  },
+  status?:
+    | string
+    | {
+        c: number;
+        t: number;
+        p: number;
+      };
 }
 
 export interface Config {
@@ -92,8 +94,8 @@ export interface Config {
   mirrors: Mirror[];
   is_offline_install: boolean;
   is_efi: boolean;
-  efi_partition: Partition | null;
-  partition: Partition | null;
+  efi_partition?: Partition;
+  partition?: Partition;
   swapfile: {
     size: number;
   };
