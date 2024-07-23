@@ -1,25 +1,43 @@
-<script setup>
+<script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import DKListSelect from '@/components/DKListSelect.vue';
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
+import { defineComponent, inject } from 'vue';
 import DKBody from '../components/DKBody.vue';
+import { Config } from '../config.ts';
 </script>
 
-<script>
-export default {
-  inject: ['config', 'humanSize'],
+<script lang="ts">
+interface Device {
+  model: string;
+  path: string;
+  size: number;
+}
+
+interface SquashfsInfo {
+  downloadSize: number;
+  instSize: number;
+}
+
+export default defineComponent({
+  inject: ['humanSize'],
   data() {
     return {
-      devices: [],
-      selected: null,
+      config: inject('config') as Config,
+      devices: [] as Device[],
+      selected: null as number | null,
       loading: true,
-      requireSize: null,
+      requireSize: null as number | null,
       err_msg: '',
+      humanSize: inject('humanSize') as Function,
     };
   },
   methods: {
     validate() {
-      if (this.requireSize > this.devices[this.selected].size) {
+      if (this.requireSize === null || this.selected == null) {
+        return false;
+      }
+      if (this.requireSize > (this.devices[this.selected] as Device).size) {
         this.err_msg = this.$t('device.e1', {
           size: Math.ceil(this.requireSize / 1024 / 1024 / 1024),
         });
@@ -31,7 +49,10 @@ export default {
       return true;
     },
     select() {
-      if (this.requireSize > this.devices[this.selected].size) {
+      if (this.requireSize === null || this.selected == null) {
+        return false;
+      }
+      if (this.requireSize > (this.devices[this.selected] as Device).size) {
         this.err_msg = this.$t('device.e1', {
           size: Math.ceil(this.requireSize / 1024 / 1024 / 1024),
         });
@@ -51,11 +72,11 @@ export default {
         this.config.device = {
           model: 'Test Driver',
           path: '/dev/loop30',
-          size: '11451400000000',
+          size: 11451400000000,
         };
         this.$router.replace('/partitions');
       } else {
-        const devices = await invoke('list_devices');
+        const devices = (await invoke('list_devices')) as Device[];
         this.devices = devices;
       }
 
@@ -63,14 +84,14 @@ export default {
 
       let requireSize;
       if (!this.config.is_offline_install) {
-        const squashfsInfo = await invoke('get_squashfs_info', {
+        const squashfsInfo = (await invoke('get_squashfs_info', {
           v,
-          url: this.config.mirror.url,
-        });
+          url: this.config.mirror?.url,
+        })) as SquashfsInfo;
 
         requireSize = squashfsInfo.downloadSize + squashfsInfo.instSize;
       } else {
-        const info = await invoke('get_squashfs_info', { v });
+        const info = (await invoke('get_squashfs_info', { v })) as SquashfsInfo;
         requireSize = info.instSize * 1.25;
       }
 
@@ -98,7 +119,7 @@ export default {
 
     this.loading = false;
   },
-};
+});
 </script>
 
 <template>
@@ -131,7 +152,14 @@ export default {
     </div>
   </DKBody>
   <DKBottomSteps
-    :trigger="() => (config.device = devices[selected])"
+    :trigger="
+      () => {
+        if (selected === null) {
+          return;
+        }
+        config.device = devices[selected];
+      }
+    "
     :can_proceed="selected != null"
     :guard="validate"
   />

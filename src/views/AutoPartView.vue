@@ -1,26 +1,32 @@
-<script setup>
+<script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import DKBottomActions from '@/components/DKBottomActions.vue';
 import DKSpinner from '@/components/DKSpinner.vue';
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
+import { defineComponent, inject } from 'vue';
+import { Config } from '../config.ts';
 import DKBody from '../components/DKBody.vue';
 </script>
 
-<script>
-export default {
-  inject: ['config', 'humanSize'],
+<script lang="ts">
+
+export default defineComponent({
   data() {
+    const config = inject('config') as Config;
+
     return {
       loading: false,
-      new_partition_size: null,
+      new_partition_size: null as number | null,
       isEFI: false,
+      config,
     };
   },
   async created() {
     const { device } = this.config;
+
     try {
       this.isEFI = await invoke('is_efi_api', {
-        dev: this.config.device.path,
+        dev: (this.config as Config).device.path,
       });
     } catch (e) {
       const { path } = this.$router.currentRoute.value;
@@ -39,7 +45,7 @@ export default {
       this.new_partition_size = Math.round(device.size / 1024 / 1024 / 1024);
     }
   },
-};
+});
 </script>
 
 <template>
@@ -60,9 +66,6 @@ export default {
     <div class="loading" v-else>
       <h1>{{ $t("part.title") }}</h1>
       <DKSpinner :title="$t('part.r1')" />
-    </div>
-    <div class="error-msg">
-      <p>{{ error_msg }}</p>
     </div>
   </DKBody>
   <DKBottomActions v-if="!loading">

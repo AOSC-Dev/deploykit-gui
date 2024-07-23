@@ -1,21 +1,24 @@
-<script setup>
+<script setup lang="ts">
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
+import { defineComponent, inject } from 'vue';
 import DKBody from '../components/DKBody.vue';
+import { Config } from '../config.ts';
 </script>
 
-<script>
-export default {
-  inject: ['config'],
+<script lang="ts">
+export default defineComponent({
   data() {
+    const config = inject('config') as Config;
     return {
-      user: this.config.user || '',
-      fullname: this.config.fullname || '',
+      user: config.user || '',
+      fullname: config.fullname || '',
       pwd: '',
       pwd2: '',
       error_msg: '',
       name_error: false,
       pwd_error: false,
       fullname_error: false,
+      config,
     };
   },
   computed: {
@@ -55,7 +58,7 @@ export default {
       this.fullname_error = false;
       return true;
     },
-    generateUsername(fullname) {
+    generateUsername(fullname: string) {
       const username = fullname.replace(' ', '').toLowerCase();
 
       let res = '';
@@ -108,7 +111,7 @@ export default {
       this.config.pwd = this.pwd;
     },
   },
-};
+});
 </script>
 
 <template>
@@ -117,7 +120,9 @@ export default {
       <h1>{{ $t("user.title") }}</h1>
       <p>{{ $t("user.p1") }}</p>
       <div class="form-layout">
-        <label for="fullname" :class="fullname_style">{{ $t("user.l4") }}</label>
+        <label for="fullname" :class="fullname_style">{{
+          $t("user.l4")
+        }}</label>
         <input
           id="fullname"
           name="fullname"

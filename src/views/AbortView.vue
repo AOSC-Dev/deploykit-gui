@@ -1,14 +1,16 @@
-<script setup>
+<script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import DKBottomActions from '@/components/DKBottomActions.vue';
 import DKStripButton from '@/components/DKStripButton.vue';
 import DKSpinner from '@/components/DKSpinner.vue';
 </script>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   props: {
-    done: Boolean,
+    done: Number,
   },
   data() {
     return {
@@ -16,7 +18,7 @@ export default {
     };
   },
   methods: {
-    async quit(resetConfig) {
+    async quit(resetConfig: boolean) {
       try {
         this.exiting = true;
         await invoke('cancel_install_and_exit', { resetConfig });
@@ -30,15 +32,15 @@ export default {
     },
   },
   async mounted() {
-    if (this.done) {
+    if (this.done === 1) {
       await invoke('cancel_install_and_exit', { resetConfig: true });
     }
   },
-};
+});
 </script>
 
 <template>
-  <div v-if="!exiting && !done">
+  <div v-if="!exiting && done !== 1">
     <h1>{{ $t("abort.title") }}</h1>
     <i18n-t keypath="abort.p1" tag="p">
       {{ $t("abort.p1-1") }}

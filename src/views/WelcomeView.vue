@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
 import DKBody from '../components/DKBody.vue';
 </script>

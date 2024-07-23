@@ -1,9 +1,9 @@
-<script setup>
+<!-- <script setup lang="ts">
 import DKListSelect from '@/components/DKListSelect.vue';
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
 </script>
 
-<script>
+<script lang="ts">
 export default {
   inject: ['config'],
   methods: {
@@ -86,4 +86,4 @@ export default {
 .error-msg {
   color: var(--dk-accent);
 }
-</style>
+</style> -->

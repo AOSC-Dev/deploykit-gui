@@ -1,29 +1,37 @@
-<script setup>
+<script setup lang="ts">
 import DKListSelect from '@/components/DKListSelect.vue';
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
+import { defineComponent, inject } from 'vue';
 import DKBody from '../components/DKBody.vue';
+import { Config } from '../config.ts';
 </script>
 
-<script>
-export default {
+<script lang="ts">
+
+export default defineComponent({
   props: {
     esps: String,
   },
-  inject: ['config', 'humanSize'],
   data() {
     return {
       esp_parts: [],
-      selected: null,
+      selected: null as number | null,
       loading: true,
       req_size: null,
       err_msg: '',
+      config: inject('config') as Config,
+      humanSize: inject('humanSize') as Function,
     };
   },
   async created() {
-    const esps = JSON.parse(decodeURIComponent(this.$props.esps));
-    this.esp_parts = esps;
+    if (this.$props.esps) {
+      const esps = JSON.parse(decodeURIComponent(this.$props.esps));
+      this.esp_parts = esps;
+    } else {
+      this.err_msg = this.$t('esp.error_msg');
+    }
   },
-};
+});
 </script>
 
 <template>
@@ -50,6 +58,9 @@ export default {
   <DKBottomSteps
     :trigger="
       () => {
+        if (selected === null) {
+          return;
+        }
         config.efi_partition = esp_parts[selected];
       }
     "

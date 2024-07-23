@@ -1,32 +1,42 @@
-<script setup>
+<script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import DKFilterSelect from '@/components/DKFilterSelect.vue';
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
 import DKBody from '@/components/DKBody.vue';
+import { defineComponent, inject } from 'vue';
+import { Config } from '../config.ts';
 </script>
 
-<script>
+<script lang="ts">
 import langData from '../lang_select.json';
 
-export default {
+interface Timezone {
+  text: string,
+  data: string,
+}
+
+export default defineComponent({
   props: {},
-  inject: ['config'],
   data() {
+    const config = inject('config') as Config;
     return {
       loading: true,
       locales: langData,
-      timezones: [],
+      timezones: [] as Timezone[],
       selectedLocale: langData.findIndex(
-        (v) => v.locale === this.config.locale.locale,
+        (v) => v.locale === config.locale.locale,
       ),
       rtcTimezone: '0',
-      selectedTimezone: null,
+      selectedTimezone: null as number | null,
+      config,
     };
   },
   methods: {
     save_config() {
       this.config.rtc_as_localtime = this.rtcTimezone === '1';
-      this.config.timezone = this.timezones[this.selectedTimezone];
+      if (this.selectedTimezone !== null) {
+        this.config.timezone = this.timezones[this.selectedTimezone];
+      }
       this.config.locale = langData[this.selectedLocale];
     },
     canProced() {
@@ -35,7 +45,7 @@ export default {
   },
   async created() {
     try {
-      const data = await invoke('list_timezone');
+      const data = await invoke('list_timezone') as Timezone[];
       this.timezones = data;
 
       if (this.config.timezone) {
@@ -66,7 +76,7 @@ export default {
 
     this.loading = false;
   },
-};
+});
 </script>
 
 <template>

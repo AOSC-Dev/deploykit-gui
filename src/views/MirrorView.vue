@@ -1,6 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
 import DKBody from '@/components/DKBody.vue';
+import { inject, defineComponent } from 'vue';
+import { Config } from '../config.ts';
 </script>
 
 <template>
@@ -18,13 +20,17 @@ import DKBody from '@/components/DKBody.vue';
   <DKBottomSteps />
 </template>
 
-<script>
-export default {
-  inject: ['config'],
+<script lang="ts">
+export default defineComponent({
+  data() {
+    return {
+      config: inject('config') as Config,
+    };
+  },
   mounted() {
     if (this.config.is_offline_install) {
       this.$router.replace('/device');
     }
   },
-};
+});
 </script>

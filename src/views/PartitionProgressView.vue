@@ -1,7 +1,9 @@
-<script setup>
+<script setup lang="ts">
 import DKSpinner from '@/components/DKSpinner.vue';
 import { invoke } from '@tauri-apps/api';
 import { listen } from '@tauri-apps/api/event';
+import { defineComponent, inject } from 'vue';
+import { Config, Partition } from '../config.ts';
 </script>
 
 <template>
@@ -11,40 +13,8 @@ import { listen } from '@tauri-apps/api/event';
   </div>
 </template>
 
-<script>
-async function handleEFI(obj) {
-  const o = obj;
-  try {
-    const espParts = await invoke('find_all_esp_parts');
-
-    if (espParts.length === 1 && !o.config.efi_partition) {
-      const selectEFIPart = espParts[0];
-      if (selectEFIPart.parent_path !== o.config.device.path) {
-        o.$router.replace(
-          `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
-        );
-      } else {
-        o.config.efi_partition = selectEFIPart;
-        o.$router.replace('/users');
-      }
-    } else if (espParts.length > 1 && !o.config.efi_partition) {
-      o.$router.replace(`/esp/${encodeURIComponent(JSON.stringify(espParts))}`);
-    } else if (!o.config.efi_partition) {
-      const selectEFIPart = espParts[0];
-      o.config.efi_partition = selectEFIPart;
-      o.$router.replace('/users');
-    }
-  } catch (e) {
-    const { path } = obj.$router.currentRoute.value;
-
-    obj.$router.replace({
-      path: `/error/${encodeURIComponent(JSON.stringify(e))}`,
-      query: { openGparted: true, currentRoute: path },
-    });
-  }
-}
-
-export default {
+<script lang="ts">
+export default defineComponent({
   inject: ['config'],
   props: {
     autoPart: Boolean,
@@ -52,7 +22,42 @@ export default {
   data() {
     return {
       loading: false,
+      config: inject('config') as Config,
     };
+  },
+  methods: {
+    async handleEFI() {
+      try {
+        const espParts = (await invoke('find_all_esp_parts')) as Partition[];
+
+        if (espParts.length === 1 && !this.config.efi_partition) {
+          const selectEFIPart = espParts[0];
+          if (selectEFIPart.parent_path !== this.config.device.path) {
+            this.$router.replace(
+              `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
+            );
+          } else {
+            this.config.efi_partition = selectEFIPart;
+            this.$router.replace('/users');
+          }
+        } else if (espParts.length > 1 && !this.config.efi_partition) {
+          this.$router.replace(
+            `/esp/${encodeURIComponent(JSON.stringify(espParts))}`,
+          );
+        } else if (!this.config.efi_partition) {
+          const selectEFIPart = espParts[0];
+          this.config.efi_partition = selectEFIPart;
+          this.$router.replace('/users');
+        }
+      } catch (e) {
+        const { path } = this.$router.currentRoute.value;
+
+        this.$router.replace({
+          path: `/error/${encodeURIComponent(JSON.stringify(e))}`,
+          query: { openGparted: 1, currentRoute: path },
+        });
+      }
+    },
   },
   async created() {
     if (this.autoPart) {
@@ -62,12 +67,13 @@ export default {
           (e) => {
             this.$router.replace({
               path: `/error/${encodeURIComponent(JSON.stringify(e))}`,
-              query: { openGparted: true, currentRoute: '/partitions' },
+              query: { openGparted: 1, currentRoute: '/partitions' },
             });
           },
         );
 
-        await listen('auto_partition_progress', (event) => {
+        // TODO: 完善类型
+        await listen('auto_partition_progress', (event: any) => {
           if (event.payload.status === 'Finish') {
             const parts = event.payload.res.Ok;
 
@@ -89,19 +95,19 @@ export default {
       } catch (e) {
         this.$router.replace({
           path: `/error/${encodeURIComponent(JSON.stringify(e))}`,
-          query: { openGparted: true, currentRoute: '/partitions' },
+          query: { openGparted: 1, currentRoute: '/partitions' },
         });
       }
       this.loading = false;
     } else {
       this.loading = true;
       if (this.config.is_efi && !this.config.efi_partition) {
-        await handleEFI(this);
+        await this.handleEFI();
       } else {
         this.loading = false;
         this.$router.replace('/users');
       }
     }
   },
-};
+});
 </script>

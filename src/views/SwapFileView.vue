@@ -1,18 +1,19 @@
-<script setup>
+<script setup lang="ts">
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
 import DKSpinner from '@/components/DKSpinner.vue';
 import DKBody from '@/components/DKBody.vue';
 </script>
 
-<script>
+<script lang="ts">
 import { invoke } from '@tauri-apps/api';
+import { defineComponent, inject } from 'vue';
+import { Config, SquashfsInfo } from '../config.ts';
 
-function recommendSizeGiB(recommendSize) {
+function recommendSizeGiB(recommendSize: number) {
   return Math.floor(recommendSize / 1073741824);
 }
 
-export default {
-  inject: ['config', 'humanSize'],
+export default defineComponent({
   computed: {
     max_size() {
       return 32;
@@ -29,12 +30,16 @@ export default {
       recommendSize: 0,
       loading: true,
       canRecommend: true,
+      config: inject('config') as Config,
+      humanSize: inject('humanSize') as Function,
     };
   },
   async created() {
     try {
-      const requireRamSize = await invoke('get_memory');
-      const recommendSwapSize = await invoke('get_recommend_swap_size');
+      const requireRamSize = (await invoke('get_memory')) as number;
+      const recommendSwapSize = (await invoke(
+        'get_recommend_swap_size',
+      )) as number;
 
       this.ramSize = requireRamSize;
       this.recommendSize = recommendSwapSize > 32 * 1024 * 1024 * 1024
@@ -43,16 +48,20 @@ export default {
 
       let sqfsSize;
       if (!this.config.is_offline_install) {
-        const squashfsInfo = await invoke('get_squashfs_info', {
+        const squashfsInfo = (await invoke('get_squashfs_info', {
           v: this.config.variant,
-          url: this.config.mirror.url,
-        });
+          url: this.config.mirror?.url,
+        })) as SquashfsInfo;
         sqfsSize = squashfsInfo.downloadSize + squashfsInfo.instSize;
       } else {
-        const info = await invoke('get_squashfs_info', {
+        const info = (await invoke('get_squashfs_info', {
           v: this.config.variant,
-        });
+        })) as SquashfsInfo;
         sqfsSize = info.instSize * 1.25;
+      }
+
+      if (this.config.partition === null) {
+        return;
       }
 
       if (this.recommendSize > this.config.partition.size - sqfsSize) {
@@ -82,7 +91,7 @@ export default {
 
     this.loading = false;
   },
-};
+});
 </script>
 
 <template>

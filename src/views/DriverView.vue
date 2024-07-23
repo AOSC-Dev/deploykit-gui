@@ -1,13 +1,19 @@
-<script setup>
+<script setup lang="ts">
 import DKListSelect from '@/components/DKListSelect.vue';
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
 </script>
 
-<script>
-export default {
-  inject: ['config'],
+<script lang="ts">
+import { defineComponent, inject } from 'vue';
+
+interface Config {
+  rescue: boolean
+}
+
+export default defineComponent({
   data() {
     return {
+      config: inject('config') as Config,
       options: [
         {
           title: this.$t('rescue.yes'),
@@ -24,7 +30,7 @@ export default {
   methods: {
     open_eula() {},
   },
-};
+});
 </script>
 
 <template>
@@ -45,7 +51,7 @@ export default {
       <DKListSelect
         :options="options"
         :selected="selected"
-        @update:selected="(v) => (selected = v)"
+        @update:selected="(v: number) => (selected = v)"
       />
     </section>
   </div>

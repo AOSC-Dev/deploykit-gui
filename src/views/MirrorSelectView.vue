@@ -1,33 +1,39 @@
-<script setup>
+<script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import DKBottomActions from '@/components/DKBottomActions.vue';
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
 import DKStripButton from '@/components/DKStripButton.vue';
 import DKListSelect from '@/components/DKListSelect.vue';
 import DKSpinner from '@/components/DKSpinner.vue';
+import { inject, defineComponent } from 'vue';
 import DKBody from '../components/DKBody.vue';
+import { Config, Mirror, Recipe } from '../config.ts';
 </script>
 
-<script>
-const covertMirrorsListToUiString = (m, recipeI18n) => {
+<script lang="ts">
+const covertMirrorsListToUiString = (
+  m: Mirror[],
+  recipeI18n: unknown,
+) => {
   const mirrors = m;
   mirrors.forEach((item, index) => {
-    mirrors[index].nameTr = recipeI18n[item['name-tr']];
-    mirrors[index].locTr = recipeI18n[item['loc-tr']];
+    mirrors[index].nameTr = (recipeI18n as any)[item['name-tr']] as string;
+    mirrors[index].locTr = (recipeI18n as any)[item['loc-tr']] as string;
     mirrors[index].score = item.score;
   });
 
   return mirrors;
 };
 
-export default {
-  inject: ['config', 'humanSize'],
+export default defineComponent({
   data() {
+    const config = inject('config') as Config;
     return {
-      mirrors: this.config.mirrors ? this.config.mirrors : [],
+      mirrors: config.mirrors ? config.mirrors : [],
       loading: false,
-      selected: null,
-      recipeI18n: {},
+      selected: null as number | null,
+      recipeI18n: new Map(),
+      config,
     };
   },
   watch: {
@@ -39,9 +45,9 @@ export default {
     async run_bench() {
       this.loading = true;
       try {
-        const m = await invoke('mirrors_speedtest', {
+        const m = (await invoke('mirrors_speedtest', {
           mirrors: this.mirrors,
-        });
+        })) as Mirror[];
         const mirrors = covertMirrorsListToUiString(m, this.recipeI18n);
 
         this.mirrors = mirrors;
@@ -55,7 +61,7 @@ export default {
         });
       }
     },
-    calc(time, fileSize) {
+    calc(time: number | undefined, fileSize: number) {
       if (typeof time !== 'number') {
         return '';
       }
@@ -69,23 +75,23 @@ export default {
     try {
       let mirrors;
       if (!this.config.mirrors) {
-        const data = await invoke('get_recipe');
+        const data = (await invoke('get_recipe')) as Recipe;
         mirrors = data.mirrors;
       } else {
         mirrors = this.config.mirrors;
       }
 
-      const recipeI18n = await invoke('i18n_recipe', {
+      const recipeI18n = (await invoke('i18n_recipe', {
         locale: this.config.locale.id,
-      });
+      })) as any;
       this.recipeI18n = recipeI18n;
 
-      mirrors = covertMirrorsListToUiString(mirrors, recipeI18n);
+      mirrors = covertMirrorsListToUiString(mirrors as Mirror[], recipeI18n);
       this.mirrors = mirrors;
 
       if (this.config.mirror) {
         this.selected = this.mirrors.findIndex(
-          (v) => v.name === this.config.mirror.name,
+          (v) => v.name === this.config.mirror?.name,
         );
       }
 
@@ -99,7 +105,7 @@ export default {
       });
     }
   },
-};
+});
 </script>
 
 <template>
@@ -140,7 +146,12 @@ export default {
     </DKBottomActions>
   </DKBody>
   <DKBottomSteps
-    :trigger="() => (config.mirror = mirrors[selected])"
+    :trigger="() => {
+      if (selected === null) {
+        return;
+      }
+      config.mirror = mirrors[selected];
+    }"
     :can_proceed="selected != null"
   />
 </template>

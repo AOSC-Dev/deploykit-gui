@@ -1,15 +1,16 @@
-<script>
+<script lang="ts">
 import { invoke } from '@tauri-apps/api';
+import { defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
   data() {
     return {
       current_slide: {
         title: this.$t('loading'),
-        body: '',
+        paras: [] as string[],
       },
       index: 0,
-      timer: null,
+      timer: undefined as number | undefined,
       slides: [
         { title: this.$t('slides.t1'), body: this.$t('slides.p1') },
         { title: this.$t('slides.t2'), body: this.$t('slides.p2') },
@@ -54,7 +55,7 @@ export default {
   beforeUnmount() {
     clearInterval(this.timer);
   },
-};
+});
 </script>
 
 <template>

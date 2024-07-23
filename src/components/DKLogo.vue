@@ -1,7 +1,9 @@
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue';
+
 const CJK_LANG = ['zh-CN', 'zh-TW', 'ja'];
 const INV_LANG = [''];
-export default {
+export default defineComponent({
   computed: {
     is_inverted() {
       return INV_LANG.includes(this.$i18n.locale);
@@ -10,7 +12,7 @@ export default {
       return CJK_LANG.includes(this.$i18n.locale) ? 'cjk' : '';
     },
   },
-};
+});
 </script>
 
 <template>

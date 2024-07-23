@@ -1,5 +1,7 @@
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   props: {
     title: String,
     can_cancel: Boolean,
@@ -9,7 +11,7 @@ export default {
       this.$emit('cancel');
     },
   },
-};
+});
 </script>
 
 <template>

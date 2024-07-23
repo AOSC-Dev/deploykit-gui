@@ -1,13 +1,14 @@
-<script setup>
+<script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import DKBottomActions from '@/components/DKBottomActions.vue';
 import DKBottomRightButtons from '@/components/DKBottomRightButtons.vue';
 import DKSpinner from '@/components/DKSpinner.vue';
+import { defineComponent } from 'vue';
 import DKBody from '../components/DKBody.vue';
 </script>
 
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   data() {
     return {
       exiting: false,
@@ -28,7 +29,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <template>

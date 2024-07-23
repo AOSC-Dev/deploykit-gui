@@ -1,9 +1,11 @@
-<script setup>
+<script setup lang="ts">
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
+import { defineComponent, inject } from 'vue';
 import DKBody from '../components/DKBody.vue';
+import { Config } from '../config.ts';
 </script>
 
-<script>
+<script lang="ts">
 function generateHostname() {
   let output = 'aosc-';
   const random = new Uint8Array(4);
@@ -14,12 +16,14 @@ function generateHostname() {
   return output;
 }
 
-export default {
-  inject: ['config'],
+export default defineComponent({
   data() {
+    const config = inject('config') as Config;
+
     return {
-      name: this.config.hostname,
-      generated_name: null,
+      config,
+      name: config.hostname,
+      generated_name: null as string | null,
       err_msg: '',
       nameError: false,
       nameEmpty: false,
@@ -54,10 +58,10 @@ export default {
       return true;
     },
     on_focus() {
-      if (this.name === this.generated_name) setTimeout(() => document.getElementById('hostname').select(), 150);
+      if (this.name === this.generated_name) setTimeout(() => (document.getElementById('hostname') as HTMLInputElement).select(), 150);
     },
   },
-};
+});
 </script>
 
 <template>

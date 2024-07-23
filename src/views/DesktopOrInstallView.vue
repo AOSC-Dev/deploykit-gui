@@ -1,12 +1,24 @@
-<script setup>
+<script setup lang="ts">
 import DKLayout from '@/components/DKLayout.vue';
 </script>
 
-<script>
+<script lang="ts">
 import { invoke } from '@tauri-apps/api';
+import { defineComponent, inject } from 'vue';
 
-export default {
-  inject: ['config'],
+interface Config {
+  locale: {
+    aosc: string,
+    inst: string,
+  }
+}
+
+export default defineComponent({
+  data() {
+    return {
+      config: inject('config') as Config,
+    };
+  },
   methods: {
     goInstall() {
       this.$emit('update:install');
@@ -18,7 +30,7 @@ export default {
       await invoke('reboot');
     },
   },
-};
+});
 </script>
 
 <template>
@@ -76,21 +88,13 @@ export default {
     <template #left>
       <div style="margin-top: 5vh;">
         <img />
-        <div style="line-height: 1" v-if="!is_inverted">
+        <div style="line-height: 1">
           <h1 style="font-size: 3rem; text-align: right; margin-bottom: 0;">
-            {{ config.locale["aosc"] }}
+            {{ config.locale.aosc }}
           </h1>
           <h2 style="font-size: 1.25rem; text-align: right">
-            {{ config.locale["inst"] }}
+            {{ config.locale.inst }}
           </h2>
-        </div>
-        <div style="line-height: 1" v-else>
-          <h2 style="font-size: 1.25rem; text-align: right">
-            {{ config.locale["inst"] }}
-          </h2>
-          <h1 style="font-size: 3rem; text-align: right">
-            {{ config.locale["aosc"] }}
-          </h1>
         </div>
       </div>
     </template>

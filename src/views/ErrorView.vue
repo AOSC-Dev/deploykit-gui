@@ -1,12 +1,13 @@
-<script>
+<script lang="ts">
 import { invoke } from '@tauri-apps/api';
 import DKBottomActions from '@/components/DKBottomActions.vue';
 import DKBottomRightButtons from '@/components/DKBottomRightButtons.vue';
+import { defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
   props: {
-    message: String,
-    openGparted: Boolean,
+    message: { type: String, required: true },
+    openGparted: Number,
     currentRoute: { type: String, required: true },
   },
   data() {
@@ -38,7 +39,7 @@ export default {
       this.$router.replace(this.$props.currentRoute);
     },
   },
-};
+});
 </script>
 
 <template>
@@ -50,7 +51,7 @@ export default {
     </div>
     <DKBottomActions>
       <DKBottomRightButtons>
-        <button class="button" v-if="openGparted" @click="launchGparted">
+        <button class="button" v-if="openGparted === 1" @click="launchGparted">
           {{ $t("part.b1") }}
         </button>
         <button class="button" @click="retry">
