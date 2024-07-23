@@ -267,7 +267,7 @@ export default defineComponent({
       }
 
       const fsType = this.partitions[this.selected].fs_type;
-      if (fsType !== null && !['ext4', 'xfs'].includes(fsType)) {
+      if (fsType !== undefined && !['ext4', 'xfs'].includes(fsType)) {
         this.error_msg = this.$t('part.e2');
         return false;
       }
@@ -299,7 +299,7 @@ export default defineComponent({
 
       const fsType = this.partitions[this.selected].fs_type;
 
-      if (fsType !== null && !['ext4', 'xfs'].includes(fsType)) {
+      if (fsType !== undefined && !['ext4', 'xfs'].includes(fsType)) {
         if (
           this.efiError
           || this.otherError

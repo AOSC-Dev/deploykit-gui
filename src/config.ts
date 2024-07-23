@@ -6,8 +6,8 @@ export interface Mirror {
   locTr: string;
   'loc-tr': string;
   url: string;
-  score: number | null;
-  downloaded_size: number | null;
+  score?: number;
+  downloaded_size?: number;
 }
 
 export interface Variant {
@@ -24,7 +24,7 @@ export interface Variant {
 }
 
 export interface Recipe {
-  mirrors: Mirror[] | null;
+  mirrors?: Mirror[];
   variants: Variant[];
 }
 
@@ -35,9 +35,9 @@ export interface Device {
 }
 
 export interface Partition {
-  path: string | null;
-  parent_path: string | null;
-  fs_type: string | null;
+  path?: string;
+  parent_path?: string;
+  fs_type?: string;
   size: number;
 }
 
@@ -68,7 +68,7 @@ export interface ProgressDetail {
 
 export interface Config {
   variant: Variant;
-  mirror: Mirror | null;
+  mirror?: Mirror;
   user: string;
   locale: {
     lang_english: string;
