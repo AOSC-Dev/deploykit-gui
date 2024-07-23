@@ -68,12 +68,12 @@ export default defineComponent({
       <div style="margin-top: 5vh">
         <img />
         <div style="line-height: 1">
-          <h2 style="font-size: 1.25rem; text-align: right">
-            {{ langData[selection]["inst"] }}
-          </h2>
-          <h1 style="font-size: 3rem; text-align: right">
-            {{ langData[selection]["aosc"] }}
+          <h1 style="font-size: 3rem; text-align: right; margin-bottom: 0;">
+            {{ config.locale.aosc }}
           </h1>
+          <h2 style="font-size: 1.25rem; text-align: right">
+            {{ config.locale.inst }}
+          </h2>
         </div>
       </div>
     </template>
