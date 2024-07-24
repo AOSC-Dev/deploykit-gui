@@ -11,7 +11,8 @@ edition = "2021"
 
 [build-dependencies]
 tauri-build = { version = "1.5", features = [] }
-vergen = { version = "8.3.1", features = ["build", "cargo", "git", "gitcl", "rustc", "si"] }
+vergen-gix = "1.0.0"
+vergen = "9"
 
 [dependencies]
 tauri = { version = "1.6", features = ["cli", "shell-open", "dialog-all"] }

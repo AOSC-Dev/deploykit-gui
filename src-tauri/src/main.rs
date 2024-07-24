@@ -765,7 +765,7 @@ async fn main() {
             .init();
     }
 
-    info!("Git version: {}", env!("VERGEN_GIT_DESCRIBE"));
+    info!("Git version: {}", env!("VERGEN_GIT_SHA"));
 
     let proxy = init().await;
 
