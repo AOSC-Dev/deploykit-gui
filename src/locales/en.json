@@ -232,5 +232,6 @@
     "sys-title": "AOSC OS Installer",
     "error1": "Internal Error: Inter-process communication was not successful: {msg}.",
     "error2": "Your system does not have the minimum required disk space available. Required: {r_size}, found: {f_size}.",
-    "error3": "Dear time traveller, unfortunately, the AOSC OS installer at this timeline only supports up to 8PiB of RAM. So please try limiting the RAM available to this system if possible."
+    "error3": "Dear time traveller, unfortunately, the AOSC OS installer at this timeline only supports up to 8PiB of RAM. So please try limiting the RAM available to this system if possible.",
+    "offline-media": "Offline Media"
 }
