@@ -11,14 +11,16 @@ import { Config, Mirror, Recipe } from '../config.ts';
 </script>
 
 <script lang="ts">
+type RecipeI18n = Record<string, string>;
+
 const covertMirrorsListToUiString = (
   m: Mirror[],
-  recipeI18n: unknown,
+  recipeI18n: RecipeI18n,
 ) => {
   const mirrors = m;
   mirrors.forEach((item, index) => {
-    mirrors[index].nameTr = (recipeI18n as any)[item['name-tr']] as string;
-    mirrors[index].locTr = (recipeI18n as any)[item['loc-tr']] as string;
+    mirrors[index].nameTr = recipeI18n[item['name-tr']];
+    mirrors[index].locTr = recipeI18n[item['loc-tr']];
     mirrors[index].score = item.score;
   });
 
@@ -32,7 +34,7 @@ export default defineComponent({
       mirrors: config.mirrors ? config.mirrors : [],
       loading: false,
       selected: null as number | null,
-      recipeI18n: new Map(),
+      recipeI18n: null as RecipeI18n | null,
       config,
     };
   },
@@ -48,6 +50,11 @@ export default defineComponent({
         const m = (await invoke('mirrors_speedtest', {
           mirrors: this.mirrors,
         })) as Mirror[];
+
+        if (this.recipeI18n === null) {
+          return;
+        }
+
         const mirrors = covertMirrorsListToUiString(m, this.recipeI18n);
 
         this.mirrors = mirrors;
@@ -83,7 +90,7 @@ export default defineComponent({
 
       const recipeI18n = (await invoke('i18n_recipe', {
         locale: this.config.locale.id,
-      })) as any;
+      })) as RecipeI18n;
       this.recipeI18n = recipeI18n;
 
       mirrors = covertMirrorsListToUiString(mirrors as Mirror[], recipeI18n);
