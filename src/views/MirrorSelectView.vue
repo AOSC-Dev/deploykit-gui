@@ -7,16 +7,13 @@ import DKListSelect from '@/components/DKListSelect.vue';
 import DKSpinner from '@/components/DKSpinner.vue';
 import { inject, defineComponent } from 'vue';
 import DKBody from '../components/DKBody.vue';
-import { Config, Mirror, Recipe } from '../config.ts';
+import {
+  Config, Mirror, Recipe, RecipeI18n,
+} from '../config.ts';
 </script>
 
 <script lang="ts">
-type RecipeI18n = Record<string, string>;
-
-const covertMirrorsListToUiString = (
-  m: Mirror[],
-  recipeI18n: RecipeI18n,
-) => {
+const covertMirrorsListToUiString = (m: Mirror[], recipeI18n: RecipeI18n) => {
   const mirrors = m;
   mirrors.forEach((item, index) => {
     mirrors[index].nameTr = recipeI18n[item['name-tr']];
@@ -153,12 +150,14 @@ export default defineComponent({
     </DKBottomActions>
   </DKBody>
   <DKBottomSteps
-    :trigger="() => {
-      if (selected === null) {
-        return;
+    :trigger="
+      () => {
+        if (selected === null) {
+          return;
+        }
+        config.mirror = mirrors[selected];
       }
-      config.mirror = mirrors[selected];
-    }"
+    "
     :can_proceed="selected != null"
   />
 </template>

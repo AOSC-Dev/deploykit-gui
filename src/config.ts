@@ -102,3 +102,5 @@ export interface Config {
   fullname: string;
   pwd: string;
 }
+
+export type RecipeI18n = Record<string, string>;

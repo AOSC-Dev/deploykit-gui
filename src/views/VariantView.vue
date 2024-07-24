@@ -5,7 +5,9 @@ import DKBottomSteps from '@/components/DKBottomSteps.vue';
 import DKSpinner from '@/components/DKSpinner.vue';
 import { defineComponent, inject } from 'vue';
 import DKBody from '../components/DKBody.vue';
-import { Config, Recipe, Variant } from '../config.ts';
+import {
+  Config, Recipe, RecipeI18n, Variant,
+} from '../config.ts';
 </script>
 
 <script lang="ts">
@@ -39,7 +41,7 @@ export default defineComponent({
 
       const recipeI18n = (await invoke('i18n_recipe', {
         locale: this.config.locale.id,
-      })) as any;
+      })) as RecipeI18n;
 
       variants.forEach((item, index) => {
         const title = recipeI18n[item['name-tr']]
