@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import stringWidth from 'string-width';
+import plyrSvg from '@/../assets/plyr.svg';
 </script>
 
 <script lang="ts">
@@ -41,7 +42,6 @@ export default defineComponent({
   mounted() {
     (this.$refs.plyr as any).player.volume = this.volume;
     (this.$refs.plyr as any).player.muted = this.muted;
-    (this.$refs.plyr as any).player.iconUrl = '@/../assets/plyr.svg';
     (this.$refs.plyr as any).player.on('ended', () => {
       this.currentIndex += 1;
       if (this.currentIndex >= this.bgmList.length) {
@@ -95,6 +95,7 @@ export default defineComponent({
       ref="plyr"
       :options="{
         controls: ['play', 'mute', 'volume'],
+        iconUrl: plyrSvg,
       }"
     >
       <audio controls playsinline autoplay>
