@@ -51,7 +51,7 @@ export default defineComponent({
     :class="'lang-' + langData[selection].id.toLowerCase()"
     v-if="!loading"
   >
-    <section style="max-height: 65vh; overflow-y: scroll; margin-top: 5vh">
+    <section style="min-height: 65vh; margin-top: 5vh">
       <DKListSelect
         :options="displayData"
         v-model:selected="selection"
