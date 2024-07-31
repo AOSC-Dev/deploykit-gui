@@ -141,7 +141,7 @@
     "user": {
         "title": "User Account",
         "p1": "Please enter and confirm your desired username and password. Please note that your username must start with a lower-cased alphabetical letter (a-z), and contain only lower-cased letters a-z, numbers 0-9, and dash (\"-\").",
-        "l1": "Username",
+        "l1": "UNIX Username",
         "l2": "Password",
         "l3": "Confirm Password",
         "l4": "Full name",
