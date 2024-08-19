@@ -25,6 +25,7 @@ use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
 use std::thread;
 use std::time::Duration;
+use sysinfo::Pid;
 use sysinfo::System;
 use tauri::api::dialog;
 use tauri::Manager;
@@ -234,11 +235,13 @@ impl Serialize for DeploykitGuiError {
 
 #[tauri::command]
 async fn gparted(state: State<'_, DkState<'_>>, lang: Option<&str>) -> TauriResult<()> {
-    let mut process = Command::new("gparted")
+    Command::new("gparted")
         .env("LANG", lang.unwrap_or(DEFAULT_LANG))
         .spawn()?;
 
     let mut system = System::new();
+
+    let mut pids = vec![];
 
     loop {
         system.refresh_all();
@@ -246,7 +249,6 @@ async fn gparted(state: State<'_, DkState<'_>>, lang: Option<&str>) -> TauriResu
         // `GParted` 本身会自己 spawn 出好几个真正的图形程序 `gpartedbin`
         // 我们不知道哪个是真正的窗口
         // 找到这些进程
-        let mut pids = vec![];
         for process in system.processes_by_name("gpartedbin") {
             pids.push(process.pid().as_u32());
         }
@@ -263,7 +265,18 @@ async fn gparted(state: State<'_, DkState<'_>>, lang: Option<&str>) -> TauriResu
         }
     }
 
-    process.wait()?;
+    loop {
+        system.refresh_all();
+
+        if pids
+            .iter()
+            .all(|x| system.process(Pid::from_u32(*x)).is_none())
+        {
+            break;
+        }
+
+        sleep(Duration::from_millis(100)).await;
+    }
 
     // 现在，GParted 已经退出
     // 我们需要重新把 dkgui 的置顶（above）属性加回来
@@ -828,13 +841,8 @@ async fn main() {
                         if let Ok(progress) = progress {
                             let data: Result<ProgressStatus, _> =
                                 serde_json::from_value(progress.data);
-                            if let Ok(data) = data {
-                                match data {
-                                    ProgressStatus::Error(_) | ProgressStatus::Finish => {
-                                        Dbus::run(&pcc, DbusMethod::ResetProgressStatus).await.ok();
-                                    }
-                                    _ => {}
-                                }
+                            if let Ok(ProgressStatus::Error(_) | ProgressStatus::Finish) = data {
+                                Dbus::run(&pcc, DbusMethod::ResetProgressStatus).await.ok();
                             }
                         }
                     });
