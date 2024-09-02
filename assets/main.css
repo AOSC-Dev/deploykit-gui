@@ -80,6 +80,7 @@ select:focus {
   appearance: none;
   border: 0;
   cursor: pointer;
+  outline-offset: -3px;
 
   background: var(--dk-button-color);
   color: #fff;
