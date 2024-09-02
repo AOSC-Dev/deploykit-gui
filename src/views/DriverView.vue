@@ -7,7 +7,7 @@ import DKBottomSteps from '@/components/DKBottomSteps.vue';
 import { defineComponent, inject } from 'vue';
 
 interface Config {
-  rescue: boolean
+  rescue: boolean;
 }
 
 export default defineComponent({

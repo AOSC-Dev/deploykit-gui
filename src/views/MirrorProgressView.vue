@@ -3,7 +3,6 @@ import DKSpinner from '@/components/DKSpinner.vue';
 import { invoke } from '@tauri-apps/api';
 import { inject, defineComponent } from 'vue';
 import { Config, Mirror } from '../config.ts';
-
 </script>
 
 <template>
@@ -14,9 +13,8 @@ import { Config, Mirror } from '../config.ts';
 </template>
 
 <script lang="ts">
-
 interface Recipe {
-  mirrors: Mirror[]
+  mirrors: Mirror[];
 }
 
 export default defineComponent({
@@ -31,7 +29,9 @@ export default defineComponent({
     try {
       const recipe = await invoke('get_recipe');
       const { mirrors } = recipe as Recipe;
-      const speedtest = await invoke('mirrors_speedtest', { mirrors }) as Mirror[];
+      const speedtest = (await invoke('mirrors_speedtest', {
+        mirrors,
+      })) as Mirror[];
       const sel = speedtest[0];
       this.config.mirrors = speedtest;
       this.config.mirror = sel;

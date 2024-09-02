@@ -59,9 +59,9 @@ export default defineComponent({
       return true;
     },
     generateUsername(fullname: string) {
-      let username: string = fullname.replace(' ', '').toLowerCase();
+      const username: string = fullname.replace(' ', '').toLowerCase();
 
-      let index = username.search(/\D/);
+      const index = username.search(/\D/);
       return index === -1 ? '' : username.slice(index);
     },
     validateCpassword() {
@@ -110,11 +110,11 @@ export default defineComponent({
 <template>
   <DKBody>
     <div>
-      <h1>{{ $t('user.title') }}</h1>
-      <p>{{ $t('user.p1') }}</p>
+      <h1>{{ $t("user.title") }}</h1>
+      <p>{{ $t("user.p1") }}</p>
       <div class="form-layout">
         <label for="fullname" :class="fullname_style">{{
-          $t('user.l4')
+          $t("user.l4")
         }}</label>
         <input
           id="fullname"
@@ -124,7 +124,7 @@ export default defineComponent({
           :class="fullname_style"
           @input="user = generateUsername(fullname)"
         />
-        <label for="username" :class="name_style">{{ $t('user.l1') }}</label>
+        <label for="username" :class="name_style">{{ $t("user.l1") }}</label>
         <input
           id="username"
           name="username"
@@ -133,7 +133,7 @@ export default defineComponent({
           :class="name_style"
           @input="validate_user"
         />
-        <label for="pwd" :class="pwd_style">{{ $t('user.l2') }}</label>
+        <label for="pwd" :class="pwd_style">{{ $t("user.l2") }}</label>
         <input
           id="pwd"
           name="pwd"
@@ -142,7 +142,7 @@ export default defineComponent({
           :class="pwd_style"
           @input="pwd2 = ''"
         />
-        <label for="pwd2" :class="pwd_style">{{ $t('user.l3') }}</label>
+        <label for="pwd2" :class="pwd_style">{{ $t("user.l3") }}</label>
         <input
           id="pwd2"
           name="pwd2"

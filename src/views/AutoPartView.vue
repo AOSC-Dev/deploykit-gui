@@ -9,7 +9,6 @@ import DKBody from '../components/DKBody.vue';
 </script>
 
 <script lang="ts">
-
 export default defineComponent({
   data() {
     const config = inject('config') as Config;
@@ -69,10 +68,7 @@ export default defineComponent({
     </div>
   </DKBody>
   <DKBottomActions v-if="!loading">
-    <DKBottomSteps
-      :replace="true"
-      :query="{ autoPart: true }"
-    ></DKBottomSteps>
+    <DKBottomSteps :replace="true" :query="{ autoPart: true }"></DKBottomSteps>
   </DKBottomActions>
 </template>
 

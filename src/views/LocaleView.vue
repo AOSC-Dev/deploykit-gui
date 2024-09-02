@@ -11,8 +11,8 @@ import { Config } from '../config.ts';
 import langData from '../lang_select.json';
 
 interface Timezone {
-  text: string,
-  data: string,
+  text: string;
+  data: string;
 }
 
 export default defineComponent({
@@ -45,7 +45,7 @@ export default defineComponent({
   },
   async created() {
     try {
-      const data = await invoke('list_timezone') as Timezone[];
+      const data = (await invoke('list_timezone')) as Timezone[];
       this.timezones = data;
 
       if (this.config.timezone) {

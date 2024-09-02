@@ -58,7 +58,12 @@ export default defineComponent({
       return true;
     },
     on_focus() {
-      if (this.name === this.generated_name) setTimeout(() => (document.getElementById('hostname') as HTMLInputElement).select(), 150);
+      if (this.name === this.generated_name) {
+        setTimeout(
+          () => (document.getElementById('hostname') as HTMLInputElement).select(),
+          150,
+        );
+      }
     },
   },
 });

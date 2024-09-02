@@ -7,7 +7,6 @@ import { Config } from '../config.ts';
 </script>
 
 <script lang="ts">
-
 export default defineComponent({
   props: {
     esps: String,

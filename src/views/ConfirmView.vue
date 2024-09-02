@@ -62,7 +62,9 @@ export default defineComponent({
             <span class="emphasis">{{ config.variant.title }}</span>
           </template>
           <template v-slot:mirror>
-            <span class="emphasis" v-if="config.mirror">{{ config.mirror.name }}</span>
+            <span class="emphasis" v-if="config.mirror">{{
+              config.mirror.name
+            }}</span>
             <span class="emphasis" v-else>{{ $t("offline-media") }}</span>
           </template>
         </i18n-t>
