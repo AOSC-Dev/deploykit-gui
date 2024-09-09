@@ -59,15 +59,15 @@ export default defineComponent({
       return true;
     },
     generateUsername(fullname: string) {
-      const username: string = fullname.replace(' ', '').toLowerCase();
+      const username = fullname.replace(' ', '').toLowerCase();
 
-      let englishAndNumbers = ''
+      let englishAndNumbers = '';
       username.split('').forEach((element) => {
         if (/^[a-z][a-z0-9-]*$/.test(element)) {
           englishAndNumbers += element;
         }
       });
-      let index = englishAndNumbers.search(/\D/)
+      const index = englishAndNumbers.search(/\D/);
       return index === -1 ? '' : englishAndNumbers.slice(index);
     },
     validateCpassword() {
