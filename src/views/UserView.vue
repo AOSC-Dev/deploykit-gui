@@ -61,8 +61,14 @@ export default defineComponent({
     generateUsername(fullname: string) {
       const username: string = fullname.replace(' ', '').toLowerCase();
 
-      const index = username.search(/\D/);
-      return index === -1 ? '' : username.slice(index);
+      let englishAndNumbers = ''
+      username.split('').forEach((element) => {
+        if (/^[a-z][a-z0-9-]*$/.test(element)) {
+          englishAndNumbers += element;
+        }
+      });
+      let index = englishAndNumbers.search(/\D/)
+      return index === -1 ? '' : englishAndNumbers.slice(index);
     },
     validateCpassword() {
       if (this.pwd2.length >= this.pwd.length) {
