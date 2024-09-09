@@ -17,6 +17,7 @@ use serde_json::Value;
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::env;
+use std::ffi::OsString;
 use std::io;
 use std::io::ErrorKind;
 use std::process;
@@ -249,7 +250,7 @@ async fn gparted(state: State<'_, DkState<'_>>, lang: Option<&str>) -> TauriResu
         // `GParted` 本身会自己 spawn 出好几个真正的图形程序 `gpartedbin`
         // 我们不知道哪个是真正的窗口
         // 找到这些进程
-        for process in system.processes_by_name("gpartedbin") {
+        for process in system.processes_by_name(&OsString::from("gpartedbin")) {
             pids.push(process.pid().as_u32());
         }
 

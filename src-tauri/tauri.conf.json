@@ -16,6 +16,9 @@
         "all": false,
         "open": true
       },
+      "window": {
+        "show": true
+      },
       "dialog": {
         "all": true, 
         "confirm": true, 
@@ -37,7 +40,8 @@
         "minHeight": 768,
         "maxWidth": 1024,
         "maxHeight": 768,
-        "alwaysOnTop": true
+        "alwaysOnTop": true,
+        "visible": false
       }
     ],
     "cli": {

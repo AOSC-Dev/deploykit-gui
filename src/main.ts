@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import { createI18n } from 'vue-i18n';
 import humanFormat from 'human-format';
 import VuePlyr from 'vue-plyr';
+import { appWindow } from '@tauri-apps/api/window';
 import App from './App.vue';
 import router from './router/index.ts';
 
@@ -12,6 +13,7 @@ import enMsg from './locales/en.json';
 import '../assets/main.css';
 
 const app = createApp(App);
+appWindow.show().then(() => {});
 
 const i18n = createI18n({
   legacy: false,
