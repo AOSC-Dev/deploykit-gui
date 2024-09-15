@@ -59,7 +59,6 @@ export default defineComponent({
       }
       if (
         this.name.startsWith('.')
-        || this.name.startsWith('_')
         || this.name.startsWith('-')
       ) {
         this.err_msg = this.$t('host.bad');
@@ -68,7 +67,6 @@ export default defineComponent({
       }
       if (
         this.name.endsWith('.')
-        || this.name.endsWith('_')
         || this.name.endsWith('-')
       ) {
         this.err_msg = this.$t('host.bad');
@@ -79,7 +77,6 @@ export default defineComponent({
         if (
           !/^[a-zA-Z0-9-]+$/.test(this.name[i])
           && this.name[i] !== '.'
-          && this.name[i] !== '_'
           && this.name[i] !== '-'
         ) {
           this.err_msg = this.$t('host.bad');
