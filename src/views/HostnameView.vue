@@ -47,11 +47,47 @@ export default defineComponent({
         this.nameEmpty = true;
         return false;
       }
-      if (!/^[a-zA-Z0-9-]+$/.test(this.name)) {
+      if (this.name.length > 64) {
         this.err_msg = this.$t('host.bad');
         this.nameError = true;
         return false;
       }
+      if (this.name.includes('..')) {
+        this.err_msg = this.$t('host.bad');
+        this.nameError = true;
+        return false;
+      }
+      if (
+        this.name.startsWith('.')
+        || this.name.startsWith('_')
+        || this.name.startsWith('-')
+      ) {
+        this.err_msg = this.$t('host.bad');
+        this.nameError = true;
+        return false;
+      }
+      if (
+        this.name.endsWith('.')
+        || this.name.endsWith('_')
+        || this.name.endsWith('-')
+      ) {
+        this.err_msg = this.$t('host.bad');
+        this.nameError = true;
+        return false;
+      }
+      for (let i = 0; i < this.name.length; i += 1) {
+        if (
+          !/^[a-zA-Z0-9-]+$/.test(this.name[i])
+          && this.name[i] !== '.'
+          && this.name[i] !== '_'
+          && this.name[i] !== '-'
+        ) {
+          this.err_msg = this.$t('host.bad');
+          this.nameError = true;
+          return false;
+        }
+      }
+
       this.nameError = false;
       this.nameEmpty = false;
       this.err_msg = '';
