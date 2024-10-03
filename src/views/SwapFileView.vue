@@ -5,7 +5,7 @@ import DKBody from '@/components/DKBody.vue';
 </script>
 
 <script lang="ts">
-import { invoke } from '@tauri-apps/api';
+import { invoke } from '@tauri-apps/api/core';
 import { defineComponent, inject } from 'vue';
 import { Config, SquashfsInfo } from '../config.ts';
 

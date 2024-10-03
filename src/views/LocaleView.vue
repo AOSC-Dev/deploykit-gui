@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { invoke } from '@tauri-apps/api';
+import { invoke } from '@tauri-apps/api/core';
 import DKFilterSelect from '@/components/DKFilterSelect.vue';
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
 import DKBody from '@/components/DKBody.vue';

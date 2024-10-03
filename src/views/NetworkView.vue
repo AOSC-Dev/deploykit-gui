@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import DKBody from '@/components/DKBody.vue';
-import { invoke } from '@tauri-apps/api';
+import { invoke } from '@tauri-apps/api/core';
 import DKStripButton from '@/components/DKStripButton.vue';
 import DKBottomActions from '@/components/DKBottomActions.vue';
 import DKSpinner from '@/components/DKSpinner.vue';

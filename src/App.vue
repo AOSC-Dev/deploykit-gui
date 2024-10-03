@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
 import { listen } from '@tauri-apps/api/event';
-import { invoke } from '@tauri-apps/api';
+import { invoke } from '@tauri-apps/api/core';
 import DKLogo from '@/components/DKLogo.vue';
 import LangSelect from '@/views/LangSelect.vue';
 import DKLayout from '@/components/DKLayout.vue';
