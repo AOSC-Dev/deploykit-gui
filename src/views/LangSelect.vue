@@ -3,7 +3,7 @@ import DKLayout from '@/components/DKLayout.vue';
 import DKListSelect from '@/components/DKListSelect.vue';
 import DKBottomRightButtons from '@/components/DKBottomRightButtons.vue';
 import DKBottomActions from '@/components/DKBottomActions.vue';
-import { invoke } from '@tauri-apps/api';
+import { invoke } from '@tauri-apps/api/core';
 import DKSpinner from '@/components/DKSpinner.vue';
 </script>
 

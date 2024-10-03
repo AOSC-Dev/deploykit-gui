@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { invoke } from '@tauri-apps/api';
+import { invoke } from '@tauri-apps/api/core';
 import DKBottomActions from '@/components/DKBottomActions.vue';
 import DKBottomRightButtons from '@/components/DKBottomRightButtons.vue';
 import DKSpinner from '@/components/DKSpinner.vue';

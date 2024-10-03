@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import DKSpinner from '@/components/DKSpinner.vue';
-import { invoke } from '@tauri-apps/api';
+import { invoke } from '@tauri-apps/api/core';
 import { inject, defineComponent } from 'vue';
 import { Config, Mirror } from '../config.ts';
 </script>
