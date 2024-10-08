@@ -10,9 +10,9 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@tauri-apps/api/core": "^2.0.0-rc.0",
-    "@tauri-apps/plugin-dialog": "~2.0.0-rc",
-    "@tauri-apps/plugin-shell": "~2.0.0-rc",
+    "@tauri-apps/api": "^2.0.0",
+    "@tauri-apps/plugin-dialog": "~2.0.0",
+    "@tauri-apps/plugin-shell": "~2.0.0",
     "human-format": "^1.2.0",
     "string-width": "^7.1.0",
     "vue": "^3.4.35",
