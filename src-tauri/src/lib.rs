@@ -742,6 +742,13 @@ fn is_offline_install() -> bool {
     is_local_recipe()
 }
 
+#[tauri::command]
+/// Skip the language selection menu if LANG is set from the boot menu.
+/// LANG will be C.UTF-8 if not chosen at boot.
+async fn is_lang_already_set() -> bool {
+    env::var("LANG").is_ok_and(|x| x != "C.UTF-8")
+}
+
 fn set_locale_inner(locale: &str) -> io::Result<()> {
     Command::new("localectl")
         .arg("set-locale")
@@ -893,6 +900,7 @@ pub async fn run() {
                     get_arch_name,
                     is_lvm_device,
                     read_locale,
+                    is_lang_already_set,
                     is_offline_install,
                 ])
                 .run(tauri::generate_context!())

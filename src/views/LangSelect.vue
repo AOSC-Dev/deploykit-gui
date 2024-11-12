@@ -32,7 +32,8 @@ export default defineComponent({
   },
   async mounted() {
     const isInstall = await invoke('is_skip');
-    if (isInstall) {
+    const isLangSet = await invoke('is_lang_already_set') as boolean;
+    if (isInstall || isLangSet) {
       this.loading = true;
       const lang = await invoke('read_locale');
       const locale = this.langData.find((v) => v.locale === lang);
