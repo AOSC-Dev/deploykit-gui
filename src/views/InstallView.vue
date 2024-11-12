@@ -39,7 +39,7 @@ export default defineComponent({
     click() {
       this.next_slide();
       clearInterval(this.timer);
-      this.timer = setInterval(this.next_slide, 15000);
+      this.timer = window.setInterval(this.next_slide, 15000);
     },
   },
   mounted() {
@@ -48,7 +48,7 @@ export default defineComponent({
       paras: this.slides[0].body.split('\n'),
     };
 
-    this.timer = setInterval(this.next_slide, 15000);
+    this.timer = window.setInterval(this.next_slide, 15000);
 
     invoke('start_install');
   },
