@@ -91,7 +91,7 @@
     "network": {
         "title": "Network Connection",
         "p1": "Your device does not appear to have be connected to the Internet. AOSC OS requires Internet connectivity to download system releases.",
-        "p2": "To connect to the Internet, select the \"Configure network ...\" button below, or use the close button on the top right to cancel installation.",
+        "p2": "To connect to the Internet, select the \"Configure network...\" button below, or use the close button on the top right to cancel installation.",
         "b1": "Configure network...",
         "r1": "Waiting on you to finish configuring the network connection..."
     },
