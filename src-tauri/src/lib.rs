@@ -277,9 +277,6 @@ async fn gparted(state: State<'_, DkState<'_>>, lang: Option<&str>) -> TauriResu
     // 我们需要重新把 dkgui 的置顶（above）属性加回来
     control_window_above(&[state.process_id], true)?;
 
-    dbg!(6);
-
-
     Ok(())
 }
 
