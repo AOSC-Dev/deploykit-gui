@@ -209,29 +209,34 @@ export default defineComponent({
       }
       return this.$t('part.k4', { other_os: comment });
     },
+    gparted_after() {
+      invoke('is_debug').then((res) => {
+        let device;
+
+        if (res) {
+          device = {
+            path: '/dev/loop30',
+            model: 'loop',
+            size: 50 * 1024 * 1024 * 1024,
+          };
+        } else {
+          device = this.config.device;
+        }
+
+        // 检查 GParted 之后分区表是否合法
+        this.checkDisk(device).then(() => {
+          this.gparted = false;
+          this.loading = false;
+        });
+      });
+    },
     launch_gparted() {
       this.loading = true;
       this.gparted = true;
       invoke('gparted', { lang: this.config.locale.locale }).then(() => {
-        invoke('is_debug').then((res) => {
-          let device;
-
-          if (res) {
-            device = {
-              path: '/dev/loop30',
-              model: 'loop',
-              size: 50 * 1024 * 1024 * 1024,
-            };
-          } else {
-            device = this.config.device;
-          }
-
-          // 检查 GParted 之后分区表是否合法
-          this.checkDisk(device).then(() => {
-            this.gparted = false;
-            this.loading = false;
-          });
-        });
+        this.gparted_after();
+      }).catch(() => {
+        this.gparted_after();
       });
     },
     validate() {

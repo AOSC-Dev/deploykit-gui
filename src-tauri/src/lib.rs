@@ -14,7 +14,6 @@ use reqwest::Client;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
-use tracing::error;
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::env;
@@ -28,7 +27,6 @@ use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
 use std::thread;
 use std::time::Duration;
-use sysinfo::Pid;
 use sysinfo::System;
 use tauri::Emitter;
 use tauri::Manager;
@@ -42,6 +40,7 @@ use tower_http::cors::Any;
 use tower_http::cors::CorsLayer;
 use tower_http::services::ServeDir;
 use tracing::debug;
+use tracing::error;
 use tracing::info;
 use tracing::level_filters::LevelFilter;
 use tracing_subscriber::fmt;
@@ -240,11 +239,13 @@ impl Serialize for DeploykitGuiError {
 
 #[tauri::command]
 async fn gparted(state: State<'_, DkState<'_>>, lang: Option<&str>) -> TauriResult<()> {
-    Command::new("gparted")
+    let mut process = Command::new("sudo")
+        .arg("/usr/libexec/gpartedbin")
         .env("LANG", lang.unwrap_or(DEFAULT_LANG))
         .spawn()?;
 
     let mut system = System::new();
+    system.refresh_processes(sysinfo::ProcessesToUpdate::All, true);
 
     let mut pids = vec![];
 
@@ -270,22 +271,14 @@ async fn gparted(state: State<'_, DkState<'_>>, lang: Option<&str>) -> TauriResu
         }
     }
 
-    loop {
-        system.refresh_all();
-
-        if pids
-            .iter()
-            .all(|x| system.process(Pid::from_u32(*x)).is_none())
-        {
-            break;
-        }
-
-        sleep(Duration::from_millis(100)).await;
-    }
+    process.wait().ok();
 
     // 现在，GParted 已经退出
     // 我们需要重新把 dkgui 的置顶（above）属性加回来
     control_window_above(&[state.process_id], true)?;
+
+    dbg!(6);
+
 
     Ok(())
 }
