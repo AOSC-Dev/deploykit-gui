@@ -502,8 +502,6 @@ async fn cancel_install_and_exit(
     let progress = Dbus::run(&state.proxy, DbusMethod::GetProgress).await?;
     let progress = serde_json::from_value::<ProgressStatus>(progress.data)?;
 
-    sleep(Duration::from_millis(50)).await;
-
     if let ProgressStatus::Working { .. } = progress {
         Dbus::run(&state.proxy, DbusMethod::CancelInstall).await?;
     }
