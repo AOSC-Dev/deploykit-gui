@@ -16,6 +16,7 @@ use serde::Serialize;
 use serde_json::Value;
 use std::borrow::Cow;
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::env;
 use std::ffi::OsString;
 use std::io;
@@ -25,6 +26,7 @@ use std::process::exit;
 use std::process::Command;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
+use std::sync::LazyLock;
 use std::thread;
 use std::time::Duration;
 use sysinfo::System;
@@ -72,6 +74,8 @@ static SKIP_DESKTOP_OR_INSTALL: AtomicBool = AtomicBool::new(false);
 const BGM_LIST: &[u8] = include_bytes!("../bgm.json");
 static IS_BASE_SQFS: AtomicBool = AtomicBool::new(false);
 const DEFAULT_LANG: &str = "en_US.UTF-8";
+static USERNAME_BLOCKLIST: LazyLock<HashSet<&str>> =
+    LazyLock::new(|| include_str!("../users").lines().collect::<HashSet<_>>());
 
 #[proxy(
     interface = "io.aosc.Deploykit1",
@@ -670,6 +674,11 @@ fn is_skip() -> bool {
 }
 
 #[tauri::command]
+async fn is_block_username(username: String) -> bool {
+    USERNAME_BLOCKLIST.contains(username.as_str())
+}
+
+#[tauri::command]
 async fn i18n_recipe(state: State<'_, DkState<'_>>, locale: &str) -> TauriResult<Value> {
     let client = &state.http_client;
     let map = state
@@ -781,6 +790,9 @@ pub async fn run() {
 
     info!("Git version: {}", env!("VERGEN_GIT_SHA"));
 
+    // 预热用户名黑名单
+    let _ = &*USERNAME_BLOCKLIST;
+
     let proxy = init().await;
 
     let process_id = std::process::id();
@@ -890,6 +902,7 @@ pub async fn run() {
                     read_locale,
                     is_lang_already_set,
                     is_offline_install,
+                    is_block_username,
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");
