@@ -27,7 +27,7 @@
   },
   "productName": "deploykit-gui",
   "mainBinaryName": "deploykit-gui",
-  "version": "0.9.1",
+  "version": "0.9.5",
   "app": {
     "windows": [
       {
