@@ -15,6 +15,7 @@ use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
 use std::borrow::Cow;
+use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::env;
@@ -37,6 +38,7 @@ use tauri::WebviewWindow;
 use tauri::Window;
 use tauri_plugin_cli::CliExt;
 use tokio::sync::OnceCell;
+use tokio::sync::SetError;
 use tokio::time::sleep;
 use tower_http::cors::Any;
 use tower_http::cors::CorsLayer;
@@ -222,6 +224,8 @@ enum DeploykitGuiError {
     DkApi { err: DkError },
     #[error(transparent)]
     Reqwest(#[from] reqwest::Error),
+    #[error(transparent)]
+    SetError(#[from] SetError<u64>),
 }
 
 impl Serialize for DeploykitGuiError {
@@ -440,7 +444,7 @@ async fn get_recipe(state: State<'_, DkState<'_>>) -> TauriResult<Recipe> {
 }
 
 #[tauri::command]
-fn get_squashfs_info(v: Variant, url: Option<&str>) -> TauriResult<Squashfs> {
+async fn get_squashfs_info(v: Variant, url: Option<&str>) -> TauriResult<Squashfs> {
     let c = candidate_sqfs(v.squashfs.iter().collect(), url)?;
 
     Ok(c.0.to_owned())
@@ -556,7 +560,8 @@ async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> TauriResult<Vec<Mirror>> {
     speedtest_mirror.sort_unstable_by(|(_, a), (_, b)| {
         let a = a.1 as f32 / a.0;
         let b = b.1 as f32 / b.0;
-        b.partial_cmp(&a).unwrap()
+
+        b.partial_cmp(&a).unwrap_or(Ordering::Equal)
     });
 
     let mut new_mirrors = vec![];
