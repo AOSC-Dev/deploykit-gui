@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import DKBottomSteps from '@/components/DKBottomSteps.vue';
 import { defineComponent, inject } from 'vue';
+import { invoke } from '@tauri-apps/api/core';
 import DKBody from '../components/DKBody.vue';
 import { Config } from '../config.ts';
 </script>
@@ -33,7 +34,7 @@ export default defineComponent({
     },
   },
   methods: {
-    validate_user() {
+    async validate_user() {
       const username = this.user.trimEnd();
       if (!username) {
         this.error_msg = this.$t('user.bad1');
@@ -42,6 +43,11 @@ export default defineComponent({
       }
       if (!/^[a-z][a-z0-9-]*$/.test(username)) {
         this.error_msg = this.$t('user.bad4');
+        this.name_error = true;
+        return false;
+      }
+      if (await invoke('is_block_username', { username })) {
+        this.error_msg = this.$t('user.bad6', { username });
         this.name_error = true;
         return false;
       }

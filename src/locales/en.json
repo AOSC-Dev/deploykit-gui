@@ -148,7 +148,9 @@
         "bad1": "The username cannot be empty.",
         "bad2": "The password cannot be empty.",
         "bad3": "The passwords do not match.",
-        "bad4": "Username contains invalid characters."
+        "bad4": "Username contains invalid characters.",
+        "bad5": "Full name contains invalid characters.",
+        "bad6": "{username} is a system reserved user name."
     },
     "confirm": {
         "title": "Pre-Flight Check",
