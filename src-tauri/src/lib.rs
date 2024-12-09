@@ -38,7 +38,6 @@ use tauri::WebviewWindow;
 use tauri::Window;
 use tauri_plugin_cli::CliExt;
 use tokio::sync::OnceCell;
-use tokio::sync::SetError;
 use tokio::time::sleep;
 use tower_http::cors::Any;
 use tower_http::cors::CorsLayer;
