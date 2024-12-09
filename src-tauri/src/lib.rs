@@ -15,7 +15,7 @@ use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
 use std::borrow::Cow;
-use std::cmp::Ordering;
+use std::cmp;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::env;
@@ -25,8 +25,8 @@ use std::io::ErrorKind;
 use std::process;
 use std::process::exit;
 use std::process::Command;
+use std::sync::atomic;
 use std::sync::atomic::AtomicBool;
-use std::sync::atomic::Ordering;
 use std::sync::LazyLock;
 use std::thread;
 use std::time::Duration;
@@ -224,8 +224,6 @@ enum DeploykitGuiError {
     DkApi { err: DkError },
     #[error(transparent)]
     Reqwest(#[from] reqwest::Error),
-    #[error(transparent)]
-    SetError(#[from] SetError<u64>),
 }
 
 impl Serialize for DeploykitGuiError {
@@ -344,7 +342,7 @@ async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<
     };
 
     if name == "Base" || name == "Server" {
-        IS_BASE_SQFS.store(true, Ordering::Relaxed);
+        IS_BASE_SQFS.store(true, atomic::Ordering::Relaxed);
     }
 
     Dbus::run(
@@ -561,7 +559,7 @@ async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> TauriResult<Vec<Mirror>> {
         let a = a.1 as f32 / a.0;
         let b = b.1 as f32 / b.0;
 
-        b.partial_cmp(&a).unwrap_or(Ordering::Equal)
+        b.partial_cmp(&a).unwrap_or(cmp::Ordering::Equal)
     });
 
     let mut new_mirrors = vec![];
@@ -675,7 +673,7 @@ async fn reboot(state: State<'_, DkState<'_>>) -> TauriResult<()> {
 
 #[tauri::command]
 fn is_skip() -> bool {
-    SKIP_DESKTOP_OR_INSTALL.load(Ordering::SeqCst)
+    SKIP_DESKTOP_OR_INSTALL.load(atomic::Ordering::SeqCst)
 }
 
 #[tauri::command]
@@ -820,7 +818,7 @@ pub async fn run() {
                                 .map(|x| x.occurrences != 0)
                                 .unwrap_or(false)
                             {
-                                SKIP_DESKTOP_OR_INSTALL.store(true, Ordering::SeqCst);
+                                SKIP_DESKTOP_OR_INSTALL.store(true, atomic::Ordering::SeqCst);
                             }
 
                             let resources_dir = matches.args.get("resource-dir").unwrap();
@@ -937,7 +935,7 @@ async fn progress_event(window: WebviewWindow, p: DeploykitProxy<'_>) -> TauriRe
         match data {
             ProgressStatus::Working { step, progress, .. } => {
                 if now_step == 0 {
-                    all = if IS_BASE_SQFS.load(Ordering::Relaxed) {
+                    all = if IS_BASE_SQFS.load(atomic::Ordering::Relaxed) {
                         24
                     } else {
                         31
@@ -947,7 +945,8 @@ async fn progress_event(window: WebviewWindow, p: DeploykitProxy<'_>) -> TauriRe
                 if step != now_step {
                     now_step = step;
                     if step != 1 {
-                        let (lo, hi) = calc_eta(step - 1, IS_BASE_SQFS.load(Ordering::Relaxed));
+                        let (lo, hi) =
+                            calc_eta(step - 1, IS_BASE_SQFS.load(atomic::Ordering::Relaxed));
                         if lo.is_none() {
                             all -= hi.unwrap_or(0) as i8;
                         } else {
