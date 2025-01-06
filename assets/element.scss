@@ -1,0 +1,30 @@
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+    $fill-color: (
+        'blank': #a2a2a230,
+    ),
+
+    $border-color: (
+        '': unset,
+    ),
+
+    $text-color: (
+        'regular': #ffffff,
+    ),
+
+    $select-option: (
+        'text-color': #303133,
+    ),
+
+    $font-size: (
+        'extra-large': unset,
+        'large': unset,
+        'medium': unset,
+        'base': unset,
+        'small': unset,
+        'extra-small': unset,
+    ),
+);
+
+// 如果只是按需导入，则可以忽略以下内容。
+// 如果你想导入所有样式:
+@use "element-plus/theme-chalk/src/index.scss" as *;

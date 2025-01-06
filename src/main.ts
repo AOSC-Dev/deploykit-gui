@@ -9,7 +9,8 @@ import router from './router/index.ts';
 import '@/../assets/vue-plyr.css';
 
 import enMsg from './locales/en.json';
-import 'element-plus/dist/index.css';
+// import 'element-plus/dist/index.css';
+import '../assets/element.scss';
 import '../assets/main.css';
 
 const app = createApp(App);

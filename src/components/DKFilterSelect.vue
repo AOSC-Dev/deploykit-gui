@@ -28,20 +28,21 @@ export default defineComponent({
 </script>
 
 <template>
-  <el-select
-    v-model="selected"
-    filterable
-    :filter-method="update_select()"
-    placeholder="Select"
-    style="width: 240px"
-  >
-    <el-option
-      v-for="item in opts"
-      :key="item.text"
-      :label="item.text"
-      :value="item.text"
-    />
-  </el-select>
+  <div class="filter-select">
+    <el-select
+      v-model="selected"
+      filterable
+      :filter-method="update_select()"
+      placeholder="Select"
+    >
+      <el-option
+        v-for="item in opts"
+        :key="item.text"
+        :label="item.text"
+        :value="item.text"
+      />
+    </el-select>
+  </div>
 </template>
 
 <style scoped>

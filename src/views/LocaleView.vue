@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { invoke } from '@tauri-apps/api/core';
-import DKFilterSelect from '@/components/DKFilterSelect.vue';
-import DKBottomSteps from '@/components/DKBottomSteps.vue';
-import DKBody from '@/components/DKBody.vue';
-import { defineComponent, inject } from 'vue';
-import { Config } from '../config.ts';
+import { invoke } from "@tauri-apps/api/core";
+import DKFilterSelect from "@/components/DKFilterSelect.vue";
+import DKBottomSteps from "@/components/DKBottomSteps.vue";
+import DKBody from "@/components/DKBody.vue";
+import { defineComponent, inject } from "vue";
+import { Config } from "../config.ts";
 </script>
 
 <script lang="ts">
-import langData from '../lang_select.json';
+import langData from "../lang_select.json";
 
 interface Timezone {
   text: string;
@@ -18,22 +18,22 @@ interface Timezone {
 export default defineComponent({
   props: {},
   data() {
-    const config = inject('config') as Config;
+    const config = inject("config") as Config;
     return {
       loading: true,
       locales: langData,
       timezones: [] as Timezone[],
       selectedLocale: langData.findIndex(
-        (v) => v.locale === config.locale.locale,
+        (v) => v.locale === config.locale.locale
       ),
-      rtcTimezone: '0',
+      rtcTimezone: "0",
       selectedTimezone: null as number | null,
       config,
     };
   },
   methods: {
     save_config() {
-      this.config.rtc_as_localtime = this.rtcTimezone === '1';
+      this.config.rtc_as_localtime = this.rtcTimezone === "1";
       if (this.selectedTimezone !== null) {
         this.config.timezone = this.timezones[this.selectedTimezone];
       }
@@ -45,24 +45,24 @@ export default defineComponent({
   },
   async created() {
     try {
-      const data = (await invoke('list_timezone')) as Timezone[];
+      const data = (await invoke("list_timezone")) as Timezone[];
       this.timezones = data;
 
       if (this.config.timezone) {
         this.selectedTimezone = this.timezones.findIndex(
-          (v) => v.text === this.config.timezone.text,
+          (v) => v.text === this.config.timezone.text
         );
       } else {
         this.selectedTimezone = 0;
       }
 
       if (this.config.rtc_as_localtime !== null) {
-        this.rtcTimezone = this.config.rtc_as_localtime ? '1' : '0';
+        this.rtcTimezone = this.config.rtc_as_localtime ? "1" : "0";
       }
 
       if (this.config.locale) {
         this.selectedLocale = langData.findIndex(
-          (v) => v.locale === this.config.locale.locale,
+          (v) => v.locale === this.config.locale.locale
         );
       }
     } catch (e) {
@@ -85,7 +85,7 @@ export default defineComponent({
       <h1>{{ $t("locale.title") }}</h1>
       <p>{{ $t("locale.p1") }}</p>
       <div class="form-layout">
-        <label for="locale">{{ $t("locale.l1") }}</label>
+        <label for="locale" class="label">{{ $t("locale.l1") }}</label>
         <DKFilterSelect
           :default="selectedLocale"
           :options="locales"
@@ -97,7 +97,7 @@ export default defineComponent({
       <p>{{ $t("locale.p2") }}</p>
       <p class="error-msg"></p>
       <div class="form-layout">
-        <label for="timezone">{{ $t("locale.l2") }}</label>
+        <label for="timezone" class="label">{{ $t("locale.l2") }}</label>
         <p>
           <DKFilterSelect
             v-if="!loading"
@@ -107,12 +107,12 @@ export default defineComponent({
             v-model:selected="selectedTimezone"
           />
         </p>
-        <label for="rtc">{{ $t("locale.l3") }}</label>
-        <p class="select">
-          <select id="rtc" name="rtc" v-model="rtcTimezone">
-            <option value="0">{{ $t("locale.o1") }}</option>
-            <option value="1">{{ $t("locale.o2") }}</option>
-          </select>
+        <label for="rtc" class="label">{{ $t("locale.l3") }}</label>
+        <p>
+          <el-select id="rtc" name="rtc" v-model="rtcTimezone">
+            <el-option key="0" :label="$t('locale.o1')" value="0"></el-option>
+            <el-option key="1" :label="$t('locale.o2')" value="1"></el-option>
+          </el-select>
         </p>
       </div>
     </div>
@@ -121,7 +121,10 @@ export default defineComponent({
 </template>
 
 <style scoped>
-input,
+.label {
+  margin-top: .5em;
+}
+/* input,
 select {
   margin-bottom: 0.5em;
   width: 100%;
@@ -130,5 +133,9 @@ select {
 select {
   text-align-last: center;
   border-radius: unset;
+} */
+
+.form-layout {
+  margin-bottom: 1em;
 }
 </style>
