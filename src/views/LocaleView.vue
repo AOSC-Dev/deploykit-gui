@@ -122,18 +122,8 @@ export default defineComponent({
 
 <style scoped>
 .label {
-  margin-top: .5em;
+  margin-top: .3em;
 }
-/* input,
-select {
-  margin-bottom: 0.5em;
-  width: 100%;
-}
-
-select {
-  text-align-last: center;
-  border-radius: unset;
-} */
 
 .form-layout {
   margin-bottom: 1em;
