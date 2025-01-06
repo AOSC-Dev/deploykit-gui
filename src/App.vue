@@ -31,7 +31,7 @@ export default defineComponent({
       muted: false,
       playing: true,
       curr: 0,
-      switchLocale: inject('switchLocale') as Function,
+      switchLocale: inject('switchLocale') as (text: string) => Promise<void>,
     };
   },
   computed: {

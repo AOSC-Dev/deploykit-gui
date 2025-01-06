@@ -2,13 +2,14 @@ import { createApp } from 'vue';
 import { createI18n } from 'vue-i18n';
 import humanFormat from 'human-format';
 import VuePlyr from 'vue-plyr';
+import ElementPlus from 'element-plus';
 import App from './App.vue';
 import router from './router/index.ts';
 
 import '@/../assets/vue-plyr.css';
 
 import enMsg from './locales/en.json';
-
+import 'element-plus/dist/index.css';
 import '../assets/main.css';
 
 const app = createApp(App);
@@ -32,7 +33,7 @@ app.provide('humanSize', humanFormat.bytes);
 
 app.use(router);
 app.use(i18n);
-
+app.use(ElementPlus);
 app.use(VuePlyr);
 
 // load default translations
