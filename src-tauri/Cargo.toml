@@ -28,7 +28,7 @@ thiserror = "2"
 libc = "0.2.159"
 futures = "0.3.30"
 rand = "0.8.5"
-axum = "0.7.7"
+axum = "0.8"
 tower-http = { version = "0.6.1", features = ["fs", "cors"] }
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
