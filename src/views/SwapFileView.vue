@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import DKBottomSteps from '@/components/DKBottomSteps.vue';
-import DKSpinner from '@/components/DKSpinner.vue';
-import DKBody from '@/components/DKBody.vue';
+import DKBottomSteps from "@/components/DKBottomSteps.vue";
+import DKSpinner from "@/components/DKSpinner.vue";
+import DKBody from "@/components/DKBody.vue";
 </script>
 
 <script lang="ts">
-import { invoke } from '@tauri-apps/api/core';
-import { defineComponent, inject } from 'vue';
-import { Config, SquashfsInfo } from '../config.ts';
+import { invoke } from "@tauri-apps/api/core";
+import { defineComponent, inject } from "vue";
+import { Config, SquashfsInfo } from "../config.ts";
 
 function recommendSizeGiB(recommendSize: number) {
   return Math.floor(recommendSize / 1073741824);
@@ -30,31 +30,32 @@ export default defineComponent({
       recommendSize: 0,
       loading: true,
       canRecommend: true,
-      config: inject('config') as Config,
-      humanSize: inject('humanSize') as Function,
+      config: inject("config") as Config,
+      humanSize: inject("humanSize") as Function,
     };
   },
   async created() {
     try {
-      const requireRamSize = (await invoke('get_memory')) as number;
+      const requireRamSize = (await invoke("get_memory")) as number;
       const recommendSwapSize = (await invoke(
-        'get_recommend_swap_size',
+        "get_recommend_swap_size"
       )) as number;
 
       this.ramSize = requireRamSize;
-      this.recommendSize = recommendSwapSize > 32 * 1024 * 1024 * 1024
-        ? 32 * 1024 * 1024 * 1024
-        : recommendSwapSize;
+      this.recommendSize =
+        recommendSwapSize > 32 * 1024 * 1024 * 1024
+          ? 32 * 1024 * 1024 * 1024
+          : recommendSwapSize;
 
       let sqfsSize;
       if (!this.config.is_offline_install) {
-        const squashfsInfo = (await invoke('get_squashfs_info', {
+        const squashfsInfo = (await invoke("get_squashfs_info", {
           v: this.config.variant,
           url: this.config.mirror?.url,
         })) as SquashfsInfo;
         sqfsSize = squashfsInfo.downloadSize + squashfsInfo.instSize;
       } else {
-        const info = (await invoke('get_squashfs_info', {
+        const info = (await invoke("get_squashfs_info", {
           v: this.config.variant,
         })) as SquashfsInfo;
         sqfsSize = info.instSize * 1.25;
@@ -103,15 +104,18 @@ export default defineComponent({
       </p>
       <div>
         <section class="form-layout">
-          <label for="swap">{{ $t("swap.title") }}</label>
+          <label for="swap" class="label">{{ $t("swap.title") }}</label>
           <p class="select">
-            <select name="swap" v-model="type">
-              <option :value="0" v-if="canRecommend">
-                {{ $t("swap.o1") }}
-              </option>
-              <option :value="1">{{ $t("swap.o2") }}</option>
-              <option :value="2">{{ $t("swap.o3") }}</option>
-            </select>
+            <el-select id="swap" name="swap" v-model="type">
+              <el-option
+                key="0"
+                v-if="canRecommend"
+                :label="$t('swap.o1')"
+                :value="0"
+              ></el-option>
+              <el-option key="1" :label="$t('swap.o2')" :value="1"></el-option>
+              <el-option key="2" :label="$t('swap.o3')" :value="2"></el-option>
+            </el-select>
           </p>
           <div></div>
           <p v-if="type === 0" style="font-size: 0.9rem">
@@ -231,5 +235,9 @@ select {
   background: #d3d3d3;
   height: 10px;
   line-height: 40px;
+}
+
+.label {
+  margin-top: .3em;
 }
 </style>
