@@ -25,8 +25,8 @@ use std::io::ErrorKind;
 use std::process;
 use std::process::exit;
 use std::process::Command;
-use std::sync::atomic;
 use std::sync::atomic::AtomicBool;
+use std::sync::atomic::Ordering;
 use std::sync::LazyLock;
 use std::thread;
 use std::time::Duration;
@@ -36,6 +36,7 @@ use tauri::Manager;
 use tauri::State;
 use tauri::WebviewWindow;
 use tauri::Window;
+use tauri::WindowEvent;
 use tauri_plugin_cli::CliExt;
 use tokio::sync::OnceCell;
 use tokio::time::sleep;
@@ -77,6 +78,7 @@ static IS_BASE_SQFS: AtomicBool = AtomicBool::new(false);
 const DEFAULT_LANG: &str = "en_US.UTF-8";
 static USERNAME_BLOCKLIST: LazyLock<HashSet<&str>> =
     LazyLock::new(|| include_str!("../users").lines().collect::<HashSet<_>>());
+static CAN_CLOSE: AtomicBool = AtomicBool::new(false);
 
 #[proxy(
     interface = "io.aosc.Deploykit1",
@@ -341,7 +343,7 @@ async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<
     };
 
     if name == "Base" || name == "Server" {
-        IS_BASE_SQFS.store(true, atomic::Ordering::Relaxed);
+        IS_BASE_SQFS.store(true, Ordering::Relaxed);
     }
 
     Dbus::run(
@@ -527,6 +529,8 @@ async fn cancel_install_and_exit(
         Dbus::run(&state.proxy, DbusMethod::ResetConfig).await?;
     }
 
+    CAN_CLOSE.store(true, Ordering::SeqCst);
+
     process::exit(0);
 }
 
@@ -672,7 +676,7 @@ async fn reboot(state: State<'_, DkState<'_>>) -> TauriResult<()> {
 
 #[tauri::command]
 fn is_skip() -> bool {
-    SKIP_DESKTOP_OR_INSTALL.load(atomic::Ordering::SeqCst)
+    SKIP_DESKTOP_OR_INSTALL.load(Ordering::SeqCst)
 }
 
 #[tauri::command]
@@ -817,7 +821,7 @@ pub async fn run() {
                                 .map(|x| x.occurrences != 0)
                                 .unwrap_or(false)
                             {
-                                SKIP_DESKTOP_OR_INSTALL.store(true, atomic::Ordering::SeqCst);
+                                SKIP_DESKTOP_OR_INSTALL.store(true, Ordering::SeqCst);
                             }
 
                             let resources_dir = matches.args.get("resource-dir").unwrap();
@@ -851,6 +855,14 @@ pub async fn run() {
                     let pc = pc.clone();
                     let pcc = pc.clone();
                     let window = app.get_webview_window("main").unwrap();
+
+                    window.on_window_event(|e| {
+                        if let WindowEvent::CloseRequested { api, .. } = e {
+                            if !CAN_CLOSE.load(Ordering::SeqCst) {
+                                api.prevent_close();
+                            }
+                        }
+                    });
 
                     tauri::async_runtime::spawn(async move {
                         // 重新设置后端状态，若后端状态是已完成安装或安装遇到了错误
@@ -934,7 +946,7 @@ async fn progress_event(window: WebviewWindow, p: DeploykitProxy<'_>) -> TauriRe
         match data {
             ProgressStatus::Working { step, progress, .. } => {
                 if now_step == 0 {
-                    all = if IS_BASE_SQFS.load(atomic::Ordering::Relaxed) {
+                    all = if IS_BASE_SQFS.load(Ordering::Relaxed) {
                         24
                     } else {
                         31
@@ -944,8 +956,7 @@ async fn progress_event(window: WebviewWindow, p: DeploykitProxy<'_>) -> TauriRe
                 if step != now_step {
                     now_step = step;
                     if step != 1 {
-                        let (lo, hi) =
-                            calc_eta(step - 1, IS_BASE_SQFS.load(atomic::Ordering::Relaxed));
+                        let (lo, hi) = calc_eta(step - 1, IS_BASE_SQFS.load(Ordering::Relaxed));
                         if lo.is_none() {
                             all -= hi.unwrap_or(0) as i8;
                         } else {
