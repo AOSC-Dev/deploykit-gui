@@ -838,7 +838,7 @@ pub async fn run() {
                     tokio::spawn(async move {
                         let serve_dir = ServeDir::new(dir);
 
-                        let axum_app = Router::new().nest_service("/", serve_dir).layer(
+                        let axum_app = Router::new().fallback_service(serve_dir).layer(
                             CorsLayer::new()
                                 .allow_origin(Any)
                                 .allow_headers(Any)
