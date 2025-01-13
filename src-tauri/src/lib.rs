@@ -55,7 +55,6 @@ use tracing_subscriber::Layer;
 use utils::candidate_sqfs;
 use utils::control_window_above;
 use utils::get_mirror_speed_score;
-use utils::is_efi;
 use utils::is_local_recipe;
 use utils::Mirror;
 use utils::Recipe;
@@ -106,6 +105,7 @@ trait Deploykit {
     async fn sync_disk(&self) -> zResult<String>;
     async fn sync_and_reboot(&self) -> zResult<String>;
     async fn is_lvm_device(&self, dev: &str) -> zResult<String>;
+    async fn is_efi(&self) -> zResult<String>;
 }
 
 #[derive(Debug, Deserialize)]
@@ -135,6 +135,7 @@ enum DbusMethod<'a> {
     SyncDisk,
     SyncAndReboot,
     IsLvmDevice(&'a str),
+    IsEFI,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -191,6 +192,7 @@ impl Dbus {
             DbusMethod::SyncDisk => proxy.sync_disk().await?,
             DbusMethod::SyncAndReboot => proxy.sync_and_reboot().await?,
             DbusMethod::IsLvmDevice(dev) => proxy.is_lvm_device(dev).await?,
+            DbusMethod::IsEFI => proxy.is_efi().await?,
         };
 
         let res = Self::try_from(s)?;
@@ -402,7 +404,12 @@ async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<
     if let Some(efi) = config.efi_partition {
         let part_config = serde_json::to_string(&efi)?;
         Dbus::run(proxy, DbusMethod::SetConfig("efi_partition", &part_config)).await?;
-    } else if is_efi() {
+    } else if Dbus::run(proxy, DbusMethod::IsEFI)
+        .await?
+        .data
+        .as_bool()
+        .unwrap()
+    {
         let parent_path = config.partition.parent_path;
 
         if parent_path.is_none() {
@@ -481,8 +488,12 @@ async fn disk_is_right_combo(state: State<'_, DkState<'_>>, disk: &str) -> Tauri
 }
 
 #[tauri::command]
-fn is_efi_api() -> TauriResult<bool> {
-    Ok(is_efi())
+async fn is_efi_api(state: State<'_, DkState<'_>>) -> TauriResult<bool> {
+    Ok(Dbus::run(&state.proxy, DbusMethod::IsEFI)
+        .await?
+        .data
+        .as_bool()
+        .unwrap())
 }
 
 #[tauri::command]

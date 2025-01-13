@@ -253,11 +253,6 @@ pub(crate) fn get_arch_name() -> Option<&'static str> {
     }
 }
 
-pub fn is_efi() -> bool {
-    let efi_path = "/sys/firmware/efi";
-    Path::new(efi_path).exists()
-}
-
 pub fn control_window_above(pin_pids: &[u32], enable: bool) -> Result<()> {
     let mut fined = false;
 
