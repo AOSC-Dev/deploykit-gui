@@ -56,7 +56,7 @@ export default defineComponent({
       });
 
       this.options = variants
-        .filter((v) => !v.retro && v.name !== 'BuildKit')
+        .filter((v) => !v.retro && v.name !== 'BuildKit' && v.name !== 'WSL')
         .filter((v) => v.squashfs.some((r) => r.arch === arch));
 
       if (this.config.variant) {
