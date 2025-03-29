@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import vueI18n from '@intlify/vite-plugin-vue-i18n';
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 import path from 'path';
 import { fileURLToPath, URL } from 'url';
 import checker from 'vite-plugin-checker';
@@ -9,7 +9,7 @@ import checker from 'vite-plugin-checker';
 export default defineConfig(async () => ({
   plugins: [
     vue(),
-    vueI18n({ include: path.resolve(__dirname, './src/locales/**') }),
+    VueI18nPlugin({ include: path.resolve(__dirname, './src/locales/**') }),
     checker({
       // e.g. use TypeScript check
       typescript: true,

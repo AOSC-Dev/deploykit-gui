@@ -6,8 +6,8 @@ use nom::{
     character::complete::multispace1,
     combinator::{map, map_res},
     multi::many0,
-    sequence::{preceded, terminated, tuple},
-    IResult,
+    sequence::{preceded, terminated},
+    IResult, Parser,
 };
 
 use eyre::eyre;
@@ -15,7 +15,7 @@ use serde::Serialize;
 
 #[inline]
 fn zone1970_single_line(input: &[u8]) -> IResult<&[u8], &[u8]> {
-    let (input, (_, _, _, _, tz, _, _)) = tuple((
+    let (input, (_, _, _, _, tz, _, _)) = (
         take_until("\t"),
         multispace1,
         take_until("\t"),
@@ -23,36 +23,38 @@ fn zone1970_single_line(input: &[u8]) -> IResult<&[u8], &[u8]> {
         take_while1(|c| c != b'\t' && c != b'\n'),
         take_until("\n"),
         line_rest,
-    ))(input)?;
+    )
+        .parse(input)?;
 
     Ok((input, tz))
 }
 
 #[inline]
 fn line_rest(input: &[u8]) -> IResult<&[u8], ()> {
-    map(take_until("\n"), |_| ())(input)
+    map(take_until("\n"), |_| ()).parse(input)
 }
 
 #[inline]
 fn comment(input: &[u8]) -> IResult<&[u8], ()> {
-    map(terminated(tag("#"), line_rest), |_| ())(input)
+    map(terminated(tag("#"), line_rest), |_| ()).parse(input)
 }
 
 #[inline]
 fn whitespace(input: &[u8]) -> IResult<&[u8], ()> {
-    alt((map(multispace1, |_| ()), comment))(input)
+    alt((map(multispace1, |_| ()), comment)).parse(input)
 }
 
 #[inline]
 fn hr(input: &[u8]) -> IResult<&[u8], ()> {
-    map(many0(whitespace), |_| ())(input)
+    map(many0(whitespace), |_| ()).parse(input)
 }
 
 fn list_zoneinfo_inner(input: &[u8]) -> IResult<&[u8], Vec<&str>> {
     let (input, result) = many0(preceded(
         hr,
         map_res(zone1970_single_line, std::str::from_utf8),
-    ))(input)?;
+    ))
+    .parse(input)?;
 
     Ok((input, result))
 }
