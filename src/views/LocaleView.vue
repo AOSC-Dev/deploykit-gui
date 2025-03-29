@@ -39,7 +39,7 @@ export default defineComponent({
       }
       this.config.locale = langData[this.selectedLocale];
     },
-    canProced() {
+    canProceed() {
       return this.selectedLocale != null && this.selectedTimezone != null;
     },
   },
@@ -117,7 +117,7 @@ export default defineComponent({
       </div>
     </div>
   </DKBody>
-  <DKBottomSteps :trigger="save_config" :can_proceed="canProced()" />
+  <DKBottomSteps :trigger="save_config" :can_proceed="canProceed()" />
 </template>
 
 <style scoped>

@@ -76,7 +76,7 @@
         "l1": "Your system has {size} of RAM.",
         "l2": "Installer will create a swapfile of {size} on your AOSC OS system partition.",
         "l3": "Installer recommends that you create a swapfile of {size} in size.",
-        "lo1": "Getting necessary infomation..."
+        "lo1": "Getting necessary information..."
     },
     "rescue": {
         "title": "RescueKit",

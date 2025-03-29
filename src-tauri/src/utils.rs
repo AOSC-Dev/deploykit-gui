@@ -46,7 +46,7 @@ pub async fn get_recipe(client: &Client) -> Result<Recipe> {
         return get_recipe_local().await;
     }
 
-    get_recpie_online(client).await
+    get_recipe_online(client).await
 }
 
 pub async fn get_i18n_file(client: &Client) -> Result<HashMap<String, Value>> {
@@ -57,7 +57,7 @@ pub async fn get_i18n_file(client: &Client) -> Result<HashMap<String, Value>> {
     get_i18n_file_online(client).await
 }
 
-pub async fn get_recpie_online(client: &Client) -> Result<Recipe> {
+pub async fn get_recipe_online(client: &Client) -> Result<Recipe> {
     get(client, "https://releases.aosc.io/manifest/recipe.json").await
 }
 
@@ -289,7 +289,7 @@ pub fn control_window_above(pin_pids: &[u32], enable: bool) -> Result<()> {
             if let Ok(pid) = pid {
                 let pids = pid
                     .value32()
-                    .ok_or_eyre("illage reply")?
+                    .ok_or_eyre("illegal reply")?
                     .collect::<Vec<_>>();
 
                 if pids.iter().any(|x| pin_pids.contains(x)) {
