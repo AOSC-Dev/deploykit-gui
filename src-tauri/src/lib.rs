@@ -9,7 +9,7 @@ use eyre::Result;
 use parser::list_zoneinfo;
 use parser::ZoneInfo;
 use rand::prelude::SliceRandom;
-use rand::thread_rng;
+use rand::rng;
 use reqwest::Client;
 use serde::Deserialize;
 use serde::Serialize;
@@ -595,7 +595,7 @@ async fn mirrors_speedtest(mirrors: Vec<Mirror>) -> TauriResult<Vec<Mirror>> {
 #[tauri::command]
 fn get_bgm_list() -> TauriResult<Vec<Value>> {
     let mut bgm_list: Vec<Value> = serde_json::from_slice(BGM_LIST)?;
-    let mut rng = thread_rng();
+    let mut rng = rng();
 
     bgm_list.shuffle(&mut rng);
 
