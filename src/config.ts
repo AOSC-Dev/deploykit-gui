@@ -39,6 +39,7 @@ export interface Partition {
   parent_path?: string;
   fs_type?: string;
   size: number;
+  os?: string;
 }
 
 export interface SquashfsInfo {

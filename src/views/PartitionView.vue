@@ -383,7 +383,7 @@ export default defineComponent({
           >
             <template #item="option">
               <div style="width: 100%">
-                <span class="column-80">{{ option.path }}</span>
+                <span class="column-80">{{ option.os ? `${ option.path } [${$t("part.installed", { os: option.os })}]` : option.path }}</span>
                 <span class="column-20">{{ humanSize(option.size) }}</span>
                 <p class="secondary">
                   <span>{{ option.fs_type || $t("part.k0") }}</span>
