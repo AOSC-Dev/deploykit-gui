@@ -123,7 +123,8 @@
         "e4": "The unit does not have an EFI partition to continue the installation.",
         "e5": "This partitioned table type is not supported: {table}",
         "e6": "LVM is not supported",
-        "r2": "Waiting on you to finish partitioning...\nIf you are stuck, please try and strike Alt-Tab to bring up the GParted window and close it when you are done."
+        "r2": "Waiting on you to finish partitioning...\nIf you are stuck, please try and strike Alt-Tab to bring up the GParted window and close it when you are done.",
+        "installed": "{os} installed"
     },
     "esp": {
         "title": "ESP Partition",
