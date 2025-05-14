@@ -269,8 +269,7 @@ pub fn control_window_above(pin_pids: &[u32], enable: bool) -> Result<()> {
 
         let windows = reply
             .value32()
-            .ok_or_eyre("illage reply")?
-            .collect::<Vec<_>>();
+            .ok_or_eyre("illegal reply")?;
 
         let cookie = conn.intern_atom(true, b"_NET_WM_PID")?;
         let atom = cookie.reply()?.atom;
