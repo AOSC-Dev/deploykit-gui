@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::path::Path;
 
 use eyre::{OptionExt, Result};
+use libaosc::arch::get_arch_name;
 use reqwest::Client;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
@@ -215,42 +216,6 @@ pub async fn get_mirror_speed_score(mirror_url: &str, client: &Client) -> Result
     let result_time = timer.elapsed().as_secs_f32();
 
     Ok((result_time, download_len))
-}
-
-// AOSC OS specific architecture mapping for ppc64
-#[cfg(target_arch = "powerpc64")]
-#[inline]
-pub(crate) fn get_arch_name() -> Option<&'static str> {
-    let mut endian: libc::c_int = -1;
-    let result;
-    unsafe {
-        result = libc::prctl(libc::PR_GET_ENDIAN, &mut endian as *mut libc::c_int);
-    }
-    if result < 0 {
-        return None;
-    }
-    match endian {
-        libc::PR_ENDIAN_LITTLE | libc::PR_ENDIAN_PPC_LITTLE => Some("ppc64el"),
-        libc::PR_ENDIAN_BIG => Some("ppc64"),
-        _ => None,
-    }
-}
-
-/// AOSC OS specific architecture mapping table
-#[cfg(not(target_arch = "powerpc64"))]
-#[inline]
-pub(crate) fn get_arch_name() -> Option<&'static str> {
-    use std::env::consts::ARCH;
-    match ARCH {
-        "x86_64" => Some("amd64"),
-        "x86" => Some("i486"),
-        "powerpc" => Some("powerpc"),
-        "aarch64" => Some("arm64"),
-        "mips64" => Some("loongson3"),
-        "riscv64" => Some("riscv64"),
-        "loongarch64" => Some("loongarch64"),
-        _ => None,
-    }
 }
 
 pub fn control_window_above(pin_pids: &[u32], enable: bool) -> Result<()> {

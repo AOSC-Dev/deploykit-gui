@@ -432,7 +432,7 @@ async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<
 
 #[tauri::command]
 fn get_arch_name() -> TauriResult<&'static str> {
-    let res = utils::get_arch_name().context("Failed to get arch name")?;
+    let res = libaosc::arch::get_arch_name().context("Failed to get arch name")?;
 
     Ok(res)
 }
