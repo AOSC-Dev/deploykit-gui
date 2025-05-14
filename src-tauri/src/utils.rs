@@ -4,11 +4,11 @@ use std::path::Path;
 use eyre::{OptionExt, Result};
 use libaosc::arch::get_arch_name;
 use reqwest::Client;
+use reqwest::Url;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::time::Instant;
-use url::Url;
 use x11rb::connection::Connection;
 use x11rb::protocol::xproto::{
     AtomEnum, ClientMessageEvent, ConnectionExt as ConnectionExtB, EventMask,
