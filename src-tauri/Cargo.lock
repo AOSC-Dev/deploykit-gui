@@ -905,6 +905,7 @@ dependencies = [
  "axum",
  "eyre",
  "futures",
+ "libaosc",
  "libc",
  "nom",
  "rand 0.9.1",
@@ -3223,6 +3224,16 @@ name = "lazy_static"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
+
+[[package]]
+name = "libaosc"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d593958383701b051fe48f2d6b24418d2fd82b7429a7213e01a5866dec6298fd"
+dependencies = [
+ "libc",
+ "thiserror 2.0.12",
+]
 
 [[package]]
 name = "libappindicator"

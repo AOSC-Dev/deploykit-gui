@@ -37,6 +37,7 @@ sysinfo = "0.35"
 tauri-plugin-shell = "2.0.0"
 tauri-plugin-dialog = "2.0.0"
 tauri-plugin-cli = "2.0.0"
+libaosc = { version = "0.3", default-features = false, features = ["arch"] }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
