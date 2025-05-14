@@ -6,8 +6,10 @@ use axum::Router;
 use eyre::ContextCompat;
 use eyre::OptionExt;
 use eyre::Result;
-use parser::list_zoneinfo;
-use parser::ZoneInfo;
+use parser::timezone::list_zoneinfo;
+use parser::timezone::ZoneInfo;
+use parser::xkeyboard::get_keyboard_layouts;
+use parser::xkeyboard::KeyboardLayouts;
 use rand::prelude::SliceRandom;
 use rand::rng;
 use reqwest::Client;
@@ -300,6 +302,11 @@ async fn list_devices(state: State<'_, DkState<'_>>) -> TauriResult<Value> {
 #[tauri::command]
 fn list_timezone() -> TauriResult<Vec<ZoneInfo>> {
     Ok(list_zoneinfo()?)
+}
+
+#[tauri::command]
+fn list_xkeyboard_config() -> TauriResult<KeyboardLayouts> {
+    Ok(get_keyboard_layouts()?)
 }
 
 #[tauri::command]
@@ -928,6 +935,7 @@ pub async fn run() {
                     is_lang_already_set,
                     is_offline_install,
                     is_block_username,
+                    list_xkeyboard_config,
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");
