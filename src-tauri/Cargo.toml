@@ -22,7 +22,6 @@ zbus = { version = "5.1.0", features = ["tokio"] }
 tokio = { version = "1.42.0", features = ["rt-multi-thread", "process"] }
 eyre = "0.6.12"
 nom = "8"
-url = "2.5.2"
 reqwest = { version = "0.12.8", features = ["json"] }
 thiserror = "2"
 libc = "0.2.159"
@@ -38,6 +37,7 @@ tauri-plugin-shell = "2.0.0"
 tauri-plugin-dialog = "2.0.0"
 tauri-plugin-cli = "2.0.0"
 libaosc = { version = "0.3", default-features = false, features = ["arch"] }
+serde-xml-rs = "0.8.0"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
