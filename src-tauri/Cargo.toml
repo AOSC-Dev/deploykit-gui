@@ -33,7 +33,7 @@ tower-http = { version = "0.6.1", features = ["fs", "cors"] }
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 x11rb = "0.13.1"
-sysinfo = "0.35"
+sysinfo = "0.36"
 tauri-plugin-shell = "2.0.0"
 tauri-plugin-dialog = "2.0.0"
 tauri-plugin-cli = "2.0.0"
