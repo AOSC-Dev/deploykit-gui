@@ -173,7 +173,7 @@ export default defineComponent({
   <DKBottomSteps
     :trigger="save_config"
     :guard="validate"
-    :can_proceed="pwd2.length && !error_msg"
+    :can_proceed="user.length && pwd2.length && !error_msg"
   />
 </template>
 
