@@ -11,8 +11,8 @@ edition = "2021"
 
 [build-dependencies]
 tauri-build = { version = "2.0.0", features = [] }
-vergen-gix = "1.0.2"
-vergen = "9.0.1"
+vergen-gix = { version = "10.0.3", default-features = false }
+vergen = { version = "10.0.3", default-features = false }
 
 [dependencies]
 tauri = { version = "2.0.0", features = [] }
@@ -23,21 +23,28 @@ tokio = { version = "1.42.0", features = ["rt-multi-thread", "process"] }
 eyre = "0.6.12"
 nom = "8"
 url = "2.5.2"
-reqwest = { version = "0.12.8", features = ["json"] }
+reqwest = { version = "0.13", default-features = false, features = [
+    "json",
+    "rustls-no-provider",
+] }
 thiserror = "2"
 libc = "0.2.159"
 futures = "0.3.30"
-rand = "0.9"
+rand = "0.10"
 axum = "0.8"
-tower-http = { version = "0.6.1", features = ["fs", "cors"] }
+tower-http = { version = "0.7", features = ["fs", "cors"] }
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
-x11rb = "0.13.1"
-sysinfo = "0.37"
+x11rb = "0.14"
+sysinfo = "0.39"
 tauri-plugin-shell = "2.0.0"
 tauri-plugin-dialog = "2.0.0"
 tauri-plugin-cli = "2.0.0"
 libaosc = { version = "0.4", default-features = false, features = ["arch"] }
+rustls = { version = "0.23", default-features = false, features = [
+    "ring",
+    "tls12",
+] }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

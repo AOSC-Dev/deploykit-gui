@@ -792,6 +792,10 @@ async fn init() -> Result<DeploykitProxy<'static>> {
 #[tokio::main]
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
+    rustls::crypto::ring::default_provider()
+        .install_default()
+        .expect("Failed to install rustls crypto provider");
+
     // initialize tracing
     let env_log = EnvFilter::try_from_default_env();
 
