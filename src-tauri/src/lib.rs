@@ -6,8 +6,11 @@ use axum::Router;
 use eyre::ContextCompat;
 use eyre::OptionExt;
 use eyre::Result;
-use parser::list_zoneinfo;
-use parser::ZoneInfo;
+use parser::timezone::list_zoneinfo;
+use parser::timezone::ZoneInfo;
+use parser::xkeyboard::get_keyboard_layouts;
+use parser::xkeyboard::is_valid_name;
+use parser::xkeyboard::KeyboardLayoutInfo;
 use rand::prelude::SliceRandom;
 use rand::rng;
 use reqwest::Client;
@@ -47,6 +50,7 @@ use tracing::debug;
 use tracing::error;
 use tracing::info;
 use tracing::level_filters::LevelFilter;
+use tracing::warn;
 use tracing_subscriber::fmt;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
@@ -117,6 +121,7 @@ struct Dbus {
 #[derive(Debug)]
 enum DbusMethod<'a> {
     SetConfig(&'a str, &'a str),
+    GetConfig(&'a str),
     AutoPartition(&'a str),
     GetProgress,
     StartInstall,
@@ -174,6 +179,7 @@ impl Dbus {
     ) -> Result<Self, DeploykitGuiError> {
         let s = match method {
             DbusMethod::SetConfig(field, value) => proxy.set_config(field, value).await?,
+            DbusMethod::GetConfig(field) => proxy.get_config(field).await?,
             DbusMethod::AutoPartition(p) => proxy.auto_partition(p).await?,
             DbusMethod::GetProgress => proxy.get_progress().await?,
             DbusMethod::StartInstall => proxy.start_install().await?,
@@ -303,6 +309,18 @@ fn list_timezone() -> TauriResult<Vec<ZoneInfo>> {
 }
 
 #[tauri::command]
+fn list_xkeyboard_config() -> TauriResult<Vec<KeyboardLayoutInfo>> {
+    Ok(get_keyboard_layouts()?.to_info())
+}
+
+#[tauri::command]
+fn set_xkeyboard_config(layout: &str, variant: Option<&str>) -> TauriResult<()> {
+    apply_keyboard_layout(layout, variant)?;
+
+    Ok(())
+}
+
+#[tauri::command]
 async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<()> {
     let proxy = &state.proxy;
     let config = handle_serde_config(config)?;
@@ -381,6 +399,15 @@ async fn set_config(state: State<'_, DkState<'_>>, config: &str) -> TauriResult<
         DbusMethod::SetConfig("rtc_as_localtime", &(config.rtc_as_localtime).to_string()),
     )
     .await?;
+
+    if let Some(keyboard) = &config.keyboard {
+        if backend_supports_keyboard(&state).await {
+            let keyboard_value = serde_json::to_string(keyboard)?;
+            Dbus::run(proxy, DbusMethod::SetConfig("keyboard", &keyboard_value)).await?;
+        } else {
+            warn!("deploykit-backend does not support keyboard configuration, skipping");
+        }
+    }
 
     let swap_config = if config.swapfile.size == 0.0 {
         "\"Disable\"".to_string()
@@ -772,9 +799,50 @@ fn set_locale_inner(locale: &str) -> io::Result<()> {
     Ok(())
 }
 
+/// Change the keyboard layout of the current X11 session.
+fn apply_keyboard_layout(layout: &str, variant: Option<&str>) -> io::Result<()> {
+    if !is_valid_name(layout) || variant.is_some_and(|x| !is_valid_name(x)) {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            format!("Invalid keyboard layout or variant: {layout} {variant:?}"),
+        ));
+    }
+
+    let mut cmd = Command::new("setxkbmap");
+    cmd.arg("-layout").arg(layout);
+    if let Some(variant) = variant.filter(|x| !x.is_empty()) {
+        cmd.arg("-variant").arg(variant);
+    }
+
+    let output = cmd.output()?;
+    if !output.status.success() {
+        return Err(io::Error::other(format!(
+            "Failed to apply keyboard layout: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        )));
+    }
+
+    Ok(())
+}
+
+/// Check whether deploykit-backend supports keyboard configuration.
+async fn backend_supports_keyboard(state: &DkState<'_>) -> bool {
+    if let Some(supported) = state.supports_keyboard.get() {
+        return *supported;
+    }
+
+    let supported = Dbus::run(&state.proxy, DbusMethod::GetConfig("keyboard"))
+        .await
+        .is_ok();
+    let _ = state.supports_keyboard.set(supported);
+
+    supported
+}
+
 struct DkState<'a> {
     recipe: OnceCell<Recipe>,
     recipe_i18n: OnceCell<HashMap<String, Value>>,
+    supports_keyboard: OnceCell<bool>,
     proxy: DeploykitProxy<'a>,
     process_id: u32,
     http_client: Client,
@@ -896,6 +964,7 @@ pub async fn run() {
                 .manage(DkState {
                     recipe: OnceCell::new(),
                     recipe_i18n: OnceCell::new(),
+                    supports_keyboard: OnceCell::new(),
                     proxy: p,
                     process_id,
                     http_client: Client::builder().user_agent("deploykit").build().unwrap(),
@@ -932,6 +1001,8 @@ pub async fn run() {
                     is_lang_already_set,
                     is_offline_install,
                     is_block_username,
+                    list_xkeyboard_config,
+                    set_xkeyboard_config,
                 ])
                 .run(tauri::generate_context!())
                 .expect("error while running tauri application");

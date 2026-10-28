@@ -8,6 +8,7 @@ import ConfirmView from '@/views/ConfirmView.vue';
 import MirrorView from '@/views/MirrorView.vue';
 import SwapFileView from '@/views/SwapFileView.vue';
 import LocaleView from '@/views/LocaleView.vue';
+import KeyboardView from '@/views/KeyboardView.vue';
 import MirrorSelectView from '@/views/MirrorSelectView.vue';
 import PartitionView from '@/views/PartitionView.vue';
 import VariantView from '@/views/VariantView.vue';
@@ -28,6 +29,12 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: WelcomeView,
+      meta: { steps: 0, next: '/keyboard' },
+    },
+    {
+      path: '/keyboard',
+      name: 'keyboard',
+      component: KeyboardView,
       meta: { steps: 0, next: '/variants' },
     },
     {
