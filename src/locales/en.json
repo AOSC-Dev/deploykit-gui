@@ -166,7 +166,20 @@
         "l7": "AOSC OS will use {0}.",
         "l7-1": "UTC as local time",
         "l7-2": "RTC as local time",
+        "l8": "AOSC OS will use the {0} keyboard layout.",
         "w1": "By pressing \"Next,\" Installer will begin downloading, installing, and configuring AOSC OS on your device. If anything looks off, please use the \"Previous\" button to return to the previous configuration pages."
+    },
+    "keyboard": {
+        "title": "Keyboard",
+        "p1": "Please select the keyboard layout that matches your keyboard. Installer will apply the layout to the current session, and your AOSC OS installation will use it as well.",
+        "l1": "Keyboard Layout",
+        "l2": "Layout Variant",
+        "l3": "Test Your Keyboard",
+        "p2": "Type in the field below to make sure that the selected layout works as expected.",
+        "placeholder": "Type here to test the keyboard...",
+        "default-variant": "Default (no variant)",
+        "error-apply": "Failed to apply the keyboard layout: {err}",
+        "error-list": "Failed to load keyboard layouts: {err}"
     },
     "locale": {
         "title": "Locale & Time",

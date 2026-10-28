@@ -24,6 +24,17 @@ export default defineComponent({
       config: inject('config') as Config,
     };
   },
+  computed: {
+    keyboard_name() {
+      const keyboard = this.config.keyboard;
+      if (!keyboard) return '';
+
+      const layout = keyboard.layout_description ?? keyboard.layout;
+      return keyboard.variant_description
+        ? `${layout} (${keyboard.variant_description})`
+        : layout;
+    },
+  },
   methods: {
     async set_config() {
       try {
@@ -76,6 +87,9 @@ export default defineComponent({
         </i18n-t>
         <i18n-t keypath="confirm.l6" tag="li">
           <span class="emphasis">{{ config.timezone.text }}</span>
+        </i18n-t>
+        <i18n-t keypath="confirm.l8" tag="li" v-if="config.keyboard">
+          <span class="emphasis">{{ keyboard_name }}</span>
         </i18n-t>
         <ul>
           <i18n-t keypath="confirm.l7" tag="li">

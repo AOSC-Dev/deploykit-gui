@@ -42,6 +42,24 @@ export interface Partition {
   os?: string;
 }
 
+export interface KeyboardVariant {
+  name: string;
+  description: string;
+}
+
+export interface KeyboardLayout {
+  name: string;
+  description: string;
+  variants: KeyboardVariant[];
+}
+
+export interface KeyboardConfig {
+  layout: string;
+  variant?: string;
+  layout_description?: string;
+  variant_description?: string;
+}
+
 export interface SquashfsInfo {
   downloadSize: number;
   instSize: number;
@@ -90,6 +108,7 @@ export interface Config {
     data: string;
   };
   rtc_as_localtime: boolean;
+  keyboard?: KeyboardConfig;
   device: Device;
   hostname: string;
   mirrors: Mirror[];

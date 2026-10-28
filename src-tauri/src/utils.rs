@@ -98,8 +98,16 @@ pub struct InstallConfig {
     pub hostname: String,
     pub rtc_as_localtime: bool,
     pub timezone: Timezone,
+    pub keyboard: Option<Keyboard>,
     pub swapfile: SwapFile,
     pub is_offline_install: bool,
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct Keyboard {
+    pub layout: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub variant: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -232,9 +240,7 @@ pub fn control_window_above(pin_pids: &[u32], enable: bool) -> Result<()> {
             .get_property(false, root_id, atom, AtomEnum::ANY, 0, u32::MAX)?
             .reply()?;
 
-        let windows = reply
-            .value32()
-            .ok_or_eyre("illegal reply")?;
+        let windows = reply.value32().ok_or_eyre("illegal reply")?;
 
         let cookie = conn.intern_atom(true, b"_NET_WM_PID")?;
         let atom = cookie.reply()?.atom;
@@ -282,4 +288,77 @@ pub fn control_window_above(pin_pids: &[u32], enable: bool) -> Result<()> {
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn keyboard_ignores_frontend_metadata() {
+        let keyboard: Keyboard = serde_json::from_str(
+            r#"{
+                "layout": "us",
+                "variant": "dvorak",
+                "layout_description": "English (US)",
+                "variant_description": "English (Dvorak)"
+            }"#,
+        )
+        .unwrap();
+
+        assert_eq!(keyboard.layout, "us");
+        assert_eq!(keyboard.variant.as_deref(), Some("dvorak"));
+
+        // Only the XKB names are forwarded to deploykit-backend.
+        let value = serde_json::to_value(&keyboard).unwrap();
+        assert_eq!(
+            value,
+            serde_json::json!({"layout": "us", "variant": "dvorak"})
+        );
+    }
+
+    #[test]
+    fn keyboard_variant_is_optional() {
+        let keyboard: Keyboard = serde_json::from_str(r#"{"layout": "us"}"#).unwrap();
+
+        assert_eq!(keyboard.layout, "us");
+        assert_eq!(keyboard.variant, None);
+    }
+
+    fn config_json(keyboard: &str) -> String {
+        format!(
+            r#"{{
+                "locale": {{"locale": "en_US.UTF-8"}},
+                "variant": {{"name": "Base", "squashfs": []}},
+                "partition": {{"fs_type": "ext4", "size": 1}},
+                "user": "live",
+                "pwd": "password",
+                "hostname": "aosc",
+                "rtc_as_localtime": false,
+                "timezone": {{"data": "UTC"}},
+                "swapfile": {{"size": 0.0}},
+                "is_offline_install": false
+                {keyboard}
+            }}"#
+        )
+    }
+
+    #[test]
+    fn config_keyboard_is_optional() {
+        let config = handle_serde_config(&config_json("")).unwrap();
+
+        assert!(config.keyboard.is_none());
+    }
+
+    #[test]
+    fn config_accepts_keyboard() {
+        let config = handle_serde_config(&config_json(
+            r#", "keyboard": {"layout": "us", "variant": "dvorak", "layout_description": "English (US)"}"#,
+        ))
+        .unwrap();
+
+        let keyboard = config.keyboard.unwrap();
+        assert_eq!(keyboard.layout, "us");
+        assert_eq!(keyboard.variant.as_deref(), Some("dvorak"));
+    }
 }
